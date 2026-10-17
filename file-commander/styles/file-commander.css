@@ -1,0 +1,35 @@
+.dewarim-file-commander .window-content { padding: 0.5rem; }
+.dewarim-file-commander .fc-body { display: flex; flex-direction: column; gap: 0.5rem; height: 100%; }
+.dewarim-file-commander .fc-panes { display: flex; gap: 0.5rem; flex: 1; min-height: 0; }
+.dewarim-file-commander .pane {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;
+  border: 1px solid var(--color-border, #555); border-radius: 4px; padding: 0.3rem;
+}
+.dewarim-file-commander .pane.active { border-color: var(--color-warm-2, #ff6400); }
+.dewarim-file-commander .pane.drag-over { background: rgb(255 100 0 / 8%); }
+.dewarim-file-commander .pane header { display: flex; gap: 0.4rem; align-items: center; }
+.dewarim-file-commander .pane header select { width: auto; }
+.dewarim-file-commander .pane header input { flex: 1; }
+.dewarim-file-commander .crumbs { font-size: 0.85rem; white-space: nowrap; overflow-x: auto; }
+.dewarim-file-commander .crumbs a { text-decoration: underline dotted; }
+.dewarim-file-commander .error { color: var(--color-level-error, #c33); margin: 0; }
+.dewarim-file-commander .entries { flex: 1; overflow-y: auto; list-style: none; margin: 0; padding: 0; }
+.dewarim-file-commander .entry {
+  display: flex; gap: 0.4rem; align-items: center; padding: 1px 3px; border-radius: 3px; cursor: default;
+  user-select: none;
+}
+.dewarim-file-commander .entry:hover { background: rgb(255 255 255 / 5%); }
+.dewarim-file-commander .entry.selected { background: rgb(255 100 0 / 25%); }
+.dewarim-file-commander .entry img { width: 2rem; height: 2rem; object-fit: cover; border: none; flex: none; }
+.dewarim-file-commander .entry .icon { width: 2rem; text-align: center; flex: none; opacity: 0.8; }
+.dewarim-file-commander .entry.dir .icon { color: var(--color-warm-2, #e8a33a); }
+.dewarim-file-commander .entry .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dewarim-file-commander .empty { opacity: 0.5; font-style: italic; padding: 0.3rem; }
+.dewarim-file-commander .pane footer { font-size: 0.8rem; opacity: 0.7; }
+.dewarim-file-commander .fc-bottom { display: flex; gap: 0.75rem; height: 11rem; flex: none; }
+.dewarim-file-commander .fc-preview { flex: 1; display: flex; gap: 0.75rem; align-items: center; min-width: 0; }
+.dewarim-file-commander .fc-preview img, .dewarim-file-commander .fc-preview video { max-height: 10.5rem; max-width: 60%; object-fit: contain; border: none; }
+.dewarim-file-commander .fc-preview-info { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.dewarim-file-commander .fc-preview-info code { word-break: break-all; font-size: 0.8rem; }
+.dewarim-file-commander .fc-actions { width: 18rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.dewarim-file-commander .fc-actions .hint { margin: 0; font-size: 0.8rem; opacity: 0.7; }

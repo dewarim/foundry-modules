@@ -1,0 +1,39 @@
+{
+  "DEWARIM_FILES": {
+    "Title": "Datei-Commander",
+    "Open": "Datei-Commander öffnen",
+    "Source": {
+      "data": "Benutzerdaten",
+      "public": "Foundry (nur lesen)"
+    },
+    "Up": "Hoch (Rücktaste)",
+    "Refresh": "Neu laden",
+    "NewFolder": "Neuer Ordner",
+    "FolderName": "Ordnername",
+    "Filter": "Filtern…",
+    "Empty": "Leerer Ordner.",
+    "Files": "Dateien",
+    "Selected": "ausgewählt",
+    "ReadOnlyShort": "nur lesen",
+    "CopyTo": "{count} nach {folder} kopieren",
+    "SameFolder": "Gleicher Ordner in beiden Hälften",
+    "CopyPath": "Pfad kopieren",
+    "PathCopied": "Kopiert: {path}",
+    "PreviewHint": "Datei anklicken für die Vorschau. Dateien in die andere Hälfte ziehen zum Kopieren, auf die Karte für eine Kachel, oder vom Desktop in eine Hälfte ziehen zum Hochladen dorthin.",
+    "Keys": "F4 kopieren · F6 kopieren als · F7 neuer Ordner · Tab andere Hälfte · Rücktaste hoch · Strg/Umschalt-Klick für mehrere",
+    "LedgerCount": "{count} Kopien vermerkt - ihre Quellen können gelöscht werden, sobald nichts sie mehr nutzt.",
+    "ReadOnly": "Foundrys eigene Dateien sind schreibgeschützt - stattdessen in die Benutzerdaten kopieren.",
+    "NoUpload": "Du darfst keine Dateien hochladen (Recht \"Neue Dateien hochladen\").",
+    "Copying": "{count} Datei(en) werden kopiert…",
+    "Copied": "{count} Datei(en) nach {folder} kopiert.",
+    "Uploaded": "{count} Datei(en) nach {folder} hochgeladen.",
+    "CopyAs": "Kopieren als…",
+    "CopyAsMany": "{count} Dateien",
+    "CopyAsHint": "Neuer Name; die Endung (.{ext}) bleibt, wenn du sie weglässt. Das Original bleibt erhalten.",
+    "CopyAsManyHint": "{n} nummeriert die Dateien (hoehle-{n} → hoehle-1, hoehle-2 …); ohne wird -1, -2 … angehängt. Endungen bleiben.",
+    "CopyAsHere": "Hierher",
+    "CopyAsOther": "In die andere Hälfte",
+    "SelectFirst": "Erst eine Datei auswählen.",
+    "NameTaken": "Name schon vergeben, stattdessen nummeriert: {names}"
+  }
+}

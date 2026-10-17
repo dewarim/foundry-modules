@@ -1,0 +1,39 @@
+{
+  "DEWARIM_FILES": {
+    "Title": "File Commander",
+    "Open": "Open the File Commander",
+    "Source": {
+      "data": "User data",
+      "public": "Foundry (read-only)"
+    },
+    "Up": "Up (Backspace)",
+    "Refresh": "Refresh",
+    "NewFolder": "New folder",
+    "FolderName": "folder name",
+    "Filter": "Filter…",
+    "Empty": "Empty folder.",
+    "Files": "files",
+    "Selected": "selected",
+    "ReadOnlyShort": "read-only",
+    "CopyTo": "Copy {count} to {folder}",
+    "SameFolder": "Same folder in both panes",
+    "CopyPath": "Copy path",
+    "PathCopied": "Copied: {path}",
+    "PreviewHint": "Click a file to preview it. Drag files to the other pane to copy, onto the canvas for a tile, or drop files from the desktop into a pane to upload them there.",
+    "Keys": "F4 copy · F6 copy as · F7 new folder · Tab other pane · Backspace up · Ctrl/Shift-click to select several",
+    "LedgerCount": "{count} copies recorded - their sources can be deleted once nothing uses them.",
+    "ReadOnly": "Foundry's own files are read-only - copy into user data instead.",
+    "NoUpload": "You may not upload files (permission \"Upload New Files\").",
+    "Copying": "Copying {count} file(s)…",
+    "Copied": "{count} file(s) copied to {folder}.",
+    "Uploaded": "{count} file(s) uploaded to {folder}.",
+    "CopyAs": "Copy as…",
+    "CopyAsMany": "{count} files",
+    "CopyAsHint": "New name; the extension (.{ext}) is kept if you leave it out. The original stays.",
+    "CopyAsManyHint": "{n} numbers the files (cave-{n} → cave-1, cave-2 …); without it, -1, -2 … are appended. Extensions are kept.",
+    "CopyAsHere": "Here",
+    "CopyAsOther": "To the other pane",
+    "SelectFirst": "Select a file first.",
+    "NameTaken": "Name taken, numbered instead: {names}"
+  }
+}

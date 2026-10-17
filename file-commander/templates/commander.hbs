@@ -1,0 +1,59 @@
+<div class="fc-body" data-accepts-files>
+  <div class="fc-panes">
+    {{#each panes}}
+    <section class="pane {{#if active}}active{{/if}}" data-index="{{index}}">
+      <header>
+        <select name="source">{{#each sources}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+        <a data-action="up" data-tooltip="{{localize 'DEWARIM_FILES.Up'}}"><i class="fa-solid fa-turn-up" inert></i></a>
+        <a data-action="refresh" data-tooltip="{{localize 'DEWARIM_FILES.Refresh'}}"><i class="fa-solid fa-rotate" inert></i></a>
+        {{#unless readonly}}<a data-action="newFolder" data-tooltip="{{localize 'DEWARIM_FILES.NewFolder'}} (F7)"><i class="fa-solid fa-folder-plus" inert></i></a>{{/unless}}
+        <input type="search" name="filter" value="{{filter}}" placeholder="{{localize 'DEWARIM_FILES.Filter'}}">
+      </header>
+      <nav class="crumbs">
+        {{#each crumbs}}<a data-action="crumb" data-path="{{path}}">{{name}}</a>{{#unless @last}} / {{/unless}}{{/each}}
+      </nav>
+      {{#if error}}<p class="error">{{error}}</p>{{/if}}
+      <ul class="entries">
+        {{#each dirs}}
+        <li class="entry dir {{#if selected}}selected{{/if}}" data-path="{{path}}" data-dir="true">
+          <i class="fa-solid fa-folder icon" inert></i><span class="name">{{name}}</span>
+        </li>
+        {{/each}}
+        {{#each files}}
+        <li class="entry file kind-{{kind}} {{#if selected}}selected{{/if}}" data-path="{{path}}" draggable="true">
+          {{#if isImage}}<img src="{{path}}" loading="lazy" alt="">
+          {{else}}<i class="fa-solid {{#if (eq kind 'video')}}fa-film{{else if (eq kind 'audio')}}fa-music{{else}}fa-file{{/if}} icon" inert></i>{{/if}}
+          <span class="name">{{name}}</span>
+        </li>
+        {{/each}}
+        {{#unless (or dirs.length files.length)}}<li class="empty">{{localize "DEWARIM_FILES.Empty"}}</li>{{/unless}}
+      </ul>
+      <footer>{{count}} {{localize "DEWARIM_FILES.Files"}}{{#if selectedCount}}, {{selectedCount}} {{localize "DEWARIM_FILES.Selected"}}{{/if}}{{#if readonly}} · {{localize "DEWARIM_FILES.ReadOnlyShort"}}{{/if}}</footer>
+    </section>
+    {{/each}}
+  </div>
+
+  <div class="fc-bottom">
+    <div class="fc-preview">
+      {{#if preview}}
+        {{#if preview.isImage}}<img src="{{preview.path}}" alt="">{{/if}}
+        {{#if preview.isVideo}}<video src="{{preview.path}}" controls muted loop></video>{{/if}}
+        {{#if preview.isAudio}}<audio src="{{preview.path}}" controls></audio>{{/if}}
+        <div class="fc-preview-info">
+          <strong>{{preview.name}}</strong>
+          <code>{{preview.path}}</code>
+          <a data-action="copyPath"><i class="fa-solid fa-clipboard" inert></i> {{localize "DEWARIM_FILES.CopyPath"}}</a>
+        </div>
+      {{else}}
+      <p class="hint">{{localize "DEWARIM_FILES.PreviewHint"}}</p>
+      {{/if}}
+    </div>
+    <div class="fc-actions">
+      <button type="button" data-action="copy" {{#unless canCopy}}disabled{{/unless}}><i class="fa-solid fa-copy" inert></i> {{copyLabel}} (F4)</button>
+      <button type="button" data-action="copyAs" {{#unless canCopyAs}}disabled{{/unless}}><i class="fa-solid fa-i-cursor" inert></i> {{localize "DEWARIM_FILES.CopyAs"}} (F6)</button>
+      <button type="button" data-action="sameFolder"><i class="fa-solid fa-equals" inert></i> {{localize "DEWARIM_FILES.SameFolder"}}</button>
+      <p class="hint">{{localize "DEWARIM_FILES.Keys"}}</p>
+      <p class="hint">{{localize "DEWARIM_FILES.LedgerCount" count=ledger}}</p>
+    </div>
+  </div>
+</div>
