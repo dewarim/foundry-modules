@@ -1,0 +1,20 @@
+{
+  "DEWARIM_IMAGE_DROP": {
+    "Settings": {
+      "Folder": {
+        "Name": "Upload-Ordner",
+        "Hint": "Ordner im Benutzerdatenverzeichnis, in dem abgelegte Bilder gespeichert werden. Wird beim ersten Ablegen angelegt."
+      },
+      "Enabled": {
+        "Name": "Abgelegte Bilder hochladen",
+        "Hint": "Ausschalten, damit auf das Fenster gezogene Bilddateien wieder ignoriert werden (nur dieser Browser)."
+      }
+    },
+    "DropHint": "Bilder ablegen zum Hochladen nach {folder}",
+    "NoPermission": "Du darfst keine Dateien hochladen (Recht \"Neue Dateien hochladen\").",
+    "Uploaded": "{count} Bild(er) nach {folder} hochgeladen.",
+    "Skipped": "Kein Bild, übersprungen: {names}",
+    "UploadFailed": "Hochladen fehlgeschlagen: {name}",
+    "FolderFailed": "Ordner {folder} konnte nicht vorbereitet werden: {error}"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "DEWARIM_IMAGE_DROP": {
+    "Settings": {
+      "Folder": {
+        "Name": "Upload folder",
+        "Hint": "Folder inside the user data directory that dropped images are stored in. Created on first drop."
+      },
+      "Enabled": {
+        "Name": "Upload dropped images",
+        "Hint": "Turn off to let image files dropped on the window be ignored again (this browser only)."
+      }
+    },
+    "DropHint": "Drop images to upload to {folder}",
+    "NoPermission": "You are not allowed to upload files (permission \"Upload New Files\").",
+    "Uploaded": "Uploaded {count} image(s) to {folder}.",
+    "Skipped": "Not an image, skipped: {names}",
+    "UploadFailed": "Upload failed: {name}",
+    "FolderFailed": "Could not prepare folder {folder}: {error}"
+  }
+}

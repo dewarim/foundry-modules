@@ -1,0 +1,51 @@
+{
+  "id": "dewarim-image-drop",
+  "title": "Dewarim: Image Drop",
+  "description": "Drag image files from your desktop onto the Foundry window to upload them into a configurable folder. System-agnostic.",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Ingo Wiarda",
+      "email": "ingo@dewarim.de"
+    }
+  ],
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "esmodules": [
+    "scripts/image-drop.mjs"
+  ],
+  "styles": [
+    "styles/image-drop.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    }
+  ],
+  "flags": {
+    "hotReload": {
+      "extensions": [
+        "css",
+        "json"
+      ],
+      "paths": [
+        "styles",
+        "lang"
+      ]
+    }
+  },
+  "url": "https://github.com/dewarim/foundry-modules/tree/main/image-drop",
+  "manifest": "https://raw.githubusercontent.com/dewarim/foundry-modules/main/image-drop/module.json",
+  "download": "https://github.com/dewarim/foundry-modules/releases/download/image-drop-v0.1.0/image-drop.zip",
+  "readme": "https://github.com/dewarim/foundry-modules/blob/main/image-drop/README.md",
+  "bugs": "https://github.com/dewarim/foundry-modules/issues"
+}

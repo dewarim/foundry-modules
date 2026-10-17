@@ -1,0 +1,24 @@
+#dewarim-image-drop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px dashed var(--color-warm-2, #ff6400);
+  background: rgb(0 0 0 / 35%);
+}
+#dewarim-image-drop-overlay[hidden] {
+  display: none;
+}
+#dewarim-image-drop-overlay .label {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  background: rgb(0 0 0 / 75%);
+  color: #fff;
+  font-size: 1.5rem;
+}
+#dewarim-image-drop-overlay.denied {
+  border-color: #c33;
+}
