@@ -21,7 +21,7 @@
     "PathCopied": "Copied: {path}",
     "PreviewHint": "Click a file to preview it. Drag files to the other pane to copy, onto the canvas for a tile, or drop files from the desktop into a pane to upload them there.",
     "Keys": "F4 copy · F6 copy as · F7 new folder · Tab other pane · Backspace up · Ctrl/Shift-click to select several",
-    "LedgerCount": "{count} copies recorded - their sources can be deleted once nothing uses them.",
+    "LedgerCount": "{count} copies recorded - a source can be deleted once nothing uses it (Where used).",
     "ReadOnly": "Foundry's own files are read-only - copy into user data instead.",
     "NoUpload": "You may not upload files (permission \"Upload New Files\").",
     "Copying": "Copying {count} file(s)…",
@@ -34,6 +34,14 @@
     "CopyAsHere": "Here",
     "CopyAsOther": "To the other pane",
     "SelectFirst": "Select a file first.",
-    "NameTaken": "Name taken, numbered instead: {names}"
+    "NameTaken": "Name taken, numbered instead: {names}",
+    "Uses": "Where used",
+    "UsedBy": "Used by {count} world document(s):",
+    "NotUsed": "No world document uses this file (scenes, actors, items, journals, playlists, macros, tables, cards, users).",
+    "RepointAfterCopy": "Point the {count} document(s) that use it at the copy",
+    "RepointTo": "Point these {count} at {file}",
+    "RepointFrom": "Point the {count} user(s) of {file} here",
+    "RepointGMOnly": "Only a GM can repoint documents.",
+    "Repointed": "{uses} use(s) in {documents} document(s) now point at {file}."
   }
 }

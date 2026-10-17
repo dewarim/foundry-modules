@@ -21,7 +21,7 @@
     "PathCopied": "Kopiert: {path}",
     "PreviewHint": "Datei anklicken für die Vorschau. Dateien in die andere Hälfte ziehen zum Kopieren, auf die Karte für eine Kachel, oder vom Desktop in eine Hälfte ziehen zum Hochladen dorthin.",
     "Keys": "F4 kopieren · F6 kopieren als · F7 neuer Ordner · Tab andere Hälfte · Rücktaste hoch · Strg/Umschalt-Klick für mehrere",
-    "LedgerCount": "{count} Kopien vermerkt - ihre Quellen können gelöscht werden, sobald nichts sie mehr nutzt.",
+    "LedgerCount": "{count} Kopien erfasst - eine Quelle kann gelöscht werden, sobald nichts sie verwendet (Verwendung).",
     "ReadOnly": "Foundrys eigene Dateien sind schreibgeschützt - stattdessen in die Benutzerdaten kopieren.",
     "NoUpload": "Du darfst keine Dateien hochladen (Recht \"Neue Dateien hochladen\").",
     "Copying": "{count} Datei(en) werden kopiert…",
@@ -34,6 +34,14 @@
     "CopyAsHere": "Hierher",
     "CopyAsOther": "In die andere Hälfte",
     "SelectFirst": "Erst eine Datei auswählen.",
-    "NameTaken": "Name schon vergeben, stattdessen nummeriert: {names}"
+    "NameTaken": "Name schon vergeben, stattdessen nummeriert: {names}",
+    "Uses": "Verwendung",
+    "UsedBy": "Verwendet von {count} Weltdokument(en):",
+    "NotUsed": "Kein Weltdokument verwendet diese Datei (Szenen, Akteure, Gegenstände, Journale, Playlists, Makros, Tabellen, Karten, Benutzer).",
+    "RepointAfterCopy": "Die {count} Dokument(e), die sie verwenden, auf die Kopie umstellen",
+    "RepointTo": "Diese {count} auf {file} umstellen",
+    "RepointFrom": "Die {count} Verwender von {file} hierher umstellen",
+    "RepointGMOnly": "Nur eine Spielleitung kann Dokumente umstellen.",
+    "Repointed": "{uses} Verwendung(en) in {documents} Dokument(en) zeigen jetzt auf {file}."
   }
 }

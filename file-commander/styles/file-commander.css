@@ -33,3 +33,7 @@
 .dewarim-file-commander .fc-preview-info code { word-break: break-all; font-size: 0.8rem; }
 .dewarim-file-commander .fc-actions { width: 18rem; display: flex; flex-direction: column; gap: 0.4rem; }
 .dewarim-file-commander .fc-actions .hint { margin: 0; font-size: 0.8rem; opacity: 0.7; }
+.dewarim-file-commander-uses .fc-uses { max-height: 16rem; overflow-y: auto; margin: 0; padding-left: 1rem; }
+.dewarim-file-commander-uses .fc-uses .fields { display: block; font-size: 0.75rem; opacity: 0.6; word-break: break-all; }
+.dewarim-file-commander-uses code { word-break: break-all; }
+.dewarim-file-commander-uses .form-footer { flex-wrap: wrap; }

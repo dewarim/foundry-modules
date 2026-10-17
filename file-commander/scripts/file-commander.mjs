@@ -1,8 +1,10 @@
 // dewarim-file-commander: two independent panes over Foundry's file storage, commander-style.
 // Copy only - Foundry's server offers a client browse, create folder and upload, but no move, rename or
 // delete (see ROADMAP.md). Every copy goes into a ledger (world setting), so the sources can be cleaned
-// up later by hand or from the shell. Generic: no system-specific code.
+// up later by hand or from the shell. Generic: no system-specific code. A copy can take the documents
+// that used the original with it (repoint.mjs) - which is what makes "copy as" a rename.
 import {basename, cleanFolderName, copyNames, crumbs, extensionOf, fileKind, join, parent, planCopy, select} from "./paths.mjs";
+import {findUses, repoint} from "./repoint.mjs";
 
 const MODULE_ID = "dewarim-file-commander";
 const {ApplicationV2, HandlebarsApplicationMixin} = foundry.applications.api;
@@ -42,6 +44,7 @@ class FileCommander extends HandlebarsApplicationMixin(ApplicationV2) {
       copy: FileCommander.#onCopy,
       copyAs: FileCommander.#onCopyAs,
       copyPath: FileCommander.#onCopyPath,
+      uses: FileCommander.#onUses,
       sameFolder: FileCommander.#onSameFolder
     }
   };
@@ -409,23 +412,95 @@ class FileCommander extends HandlebarsApplicationMixin(ApplicationV2) {
     const here = pane.source === "data";
     if ( !here && !otherWritable ) return ui.notifications.warn("DEWARIM_FILES.ReadOnly", {localize: true});
     const esc = foundry.utils.escapeHTML;
+    // One file that documents use: offer to take them along - copy as + repoint is a rename
+    const uses = single && game.user.isGM ? findUses(files[0]) : [];
+    const repointBox = uses.length ? `<label class="checkbox"><input type="checkbox" name="repoint" checked>
+      ${_loc("DEWARIM_FILES.RepointAfterCopy", {count: uses.length})}</label>` : "";
+    const choice = (where, button) => ({where, name: button.form.elements.name.value, repoint: !!button.form.elements.repoint?.checked});
     const result = await foundry.applications.api.DialogV2.wait({
       window: {title: "DEWARIM_FILES.CopyAs"},
       content: `<p>${single ? esc(first) : _loc("DEWARIM_FILES.CopyAsMany", {count: files.length})}</p>
         <input type="text" name="name" value="${single ? esc(stem) : ""}" autofocus
           placeholder="${single ? "" : "cave-{n}"}">
-        <p class="hint">${_loc(single ? "DEWARIM_FILES.CopyAsHint" : "DEWARIM_FILES.CopyAsManyHint", {ext: ext || "–"})}</p>`,
+        <p class="hint">${_loc(single ? "DEWARIM_FILES.CopyAsHint" : "DEWARIM_FILES.CopyAsManyHint", {ext: ext || "–"})}</p>
+        ${repointBox}`,
       buttons: [
         ...(here ? [{action: "here", label: "DEWARIM_FILES.CopyAsHere", icon: "fa-solid fa-clone", default: true,
-          callback: (e, button) => ({where: index, name: button.form.elements.name.value})}] : []),
+          callback: (e, button) => choice(index, button)}] : []),
         ...(otherWritable ? [{action: "other", label: "DEWARIM_FILES.CopyAsOther", icon: "fa-solid fa-right-long", default: !here,
-          callback: (e, button) => ({where: this.#other, name: button.form.elements.name.value})}] : [])
+          callback: (e, button) => choice(this.#other, button)}] : [])
       ],
       rejectClose: false
     });
     if ( !result?.name?.trim() ) return;
     const names = copyNames(result.name, files.map(basename));
-    await this.#copy(files, result.where, names);
+    const copied = await this.#copy(files, result.where, names);
+    if ( result.repoint && (copied?.length === 1) ) await this.#repoint(copied[0].from, copied[0].to);
+  }
+
+  /** Point the documents using `from` at `to`, report, and note it in the ledger. */
+  async #repoint(from, to) {
+    const result = await repoint(from, to);
+    if ( result.failed.length ) ui.notifications.error(result.failed.join(" · "));
+    ui.notifications.info(_loc("DEWARIM_FILES.Repointed", {uses: result.uses, documents: result.documents, file: basename(to)}));
+    const ledger = game.settings.get(MODULE_ID, "ledger").map(l => (l.from === from) && (l.to === to)
+      ? {...l, repointed: (l.repointed ?? 0) + result.uses} : l);
+    await game.settings.set(MODULE_ID, "ledger", ledger);
+    return result;
+  }
+
+  /**
+   * Where the previewed file is used, and - if the ledger knows copies of it, or the file it was copied
+   * from - the offer to move those uses over.
+   */
+  static async #onUses() {
+    const path = this.#preview;
+    if ( !path ) return;
+    const esc = foundry.utils.escapeHTML;
+    const uses = findUses(path);
+    const list = uses.map(({doc, plan}) => {
+      const fields = plan.fields.length > 3 ? [...plan.fields.slice(0, 3), "…"] : plan.fields;
+      return `<li><a data-uuid="${doc.uuid}">${esc(_loc(doc.constructor.metadata.label))}: ${esc(doc.name ?? doc.id)}</a>
+        <span class="fields">${esc(fields.join(", "))}</span></li>`;
+    }).join("");
+    // Repoint offers from the ledger: this file's copies (uses move to the copy), the file it is a copy of
+    // (that file's uses move here)
+    const ledger = game.settings.get(MODULE_ID, "ledger");
+    const offers = [];
+    if ( uses.length ) {
+      for ( const l of ledger.filter(l => l.from === path).slice(-3) ) offers.push({from: path, to: l.to, count: uses.length});
+    }
+    for ( const l of ledger.filter(l => l.to === path).slice(-3) ) {
+      const count = findUses(l.from).length;
+      if ( count ) offers.push({from: l.from, to: path, count});
+    }
+    const content = `<p><code>${esc(decodeURIComponent(path))}</code></p>
+      <p>${uses.length ? _loc("DEWARIM_FILES.UsedBy", {count: uses.length}) : _loc("DEWARIM_FILES.NotUsed")}</p>
+      ${uses.length ? `<ul class="fc-uses">${list}</ul>` : ""}
+      ${offers.length && !game.user.isGM ? `<p class="hint">${_loc("DEWARIM_FILES.RepointGMOnly")}</p>` : ""}`;
+    const buttons = (game.user.isGM ? offers : []).map((o, i) => ({
+      action: `repoint${i}`,
+      icon: "fa-solid fa-arrows-turn-right",
+      label: o.from === path
+        ? _loc("DEWARIM_FILES.RepointTo", {count: o.count, file: basename(o.to)})
+        : _loc("DEWARIM_FILES.RepointFrom", {count: o.count, file: basename(o.from)}),
+      callback: () => o
+    }));
+    buttons.push({action: "close", label: "Close", icon: "fa-solid fa-xmark", default: true});
+    const choice = await foundry.applications.api.DialogV2.wait({
+      window: {title: "DEWARIM_FILES.Uses"},
+      classes: ["dewarim-file-commander-uses"],
+      position: {width: 520},
+      content,
+      buttons,
+      rejectClose: false,
+      render: (event, dialog) => {
+        for ( const a of dialog.element.querySelectorAll("[data-uuid]") ) {
+          a.addEventListener("click", () => fromUuid(a.dataset.uuid).then(d => d?.sheet?.render(true)));
+        }
+      }
+    });
+    if ( choice?.from ) await this.#repoint(choice.from, choice.to);
   }
 
   /** Show the active pane's folder in the other pane too (commander "same folder"). */
@@ -463,7 +538,7 @@ Hooks.once("init", () => {
 });
 
 Hooks.once("ready", () => {
-  game.modules.get(MODULE_ID).api = {open};
+  game.modules.get(MODULE_ID).api = {open, findUses, repoint};
 });
 
 // A button in the Settings sidebar, like the studio's

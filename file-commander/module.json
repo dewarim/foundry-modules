@@ -2,7 +2,7 @@
   "id": "dewarim-file-commander",
   "title": "Dewarim: File Commander",
   "description": "Two-pane file manager for Foundry's user data: browse, preview images, video and audio, copy between folders by drag & drop, upload from the desktop into any folder. Copy only - works on hosted servers. System-agnostic.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "authors": [
     {
       "name": "Ingo Wiarda",
@@ -47,7 +47,7 @@
   },
   "url": "https://github.com/dewarim/foundry-modules/tree/main/file-commander",
   "manifest": "https://raw.githubusercontent.com/dewarim/foundry-modules/main/file-commander/module.json",
-  "download": "https://github.com/dewarim/foundry-modules/releases/download/file-commander-v0.1.0/file-commander.zip",
+  "download": "https://github.com/dewarim/foundry-modules/releases/download/file-commander-v0.2.0/file-commander.zip",
   "readme": "https://github.com/dewarim/foundry-modules/blob/main/file-commander/README.md",
   "bugs": "https://github.com/dewarim/foundry-modules/issues"
 }
