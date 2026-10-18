@@ -7,4 +7,4 @@ Foundry's *Install Module* dialog; Foundry then offers updates by itself.
 |---|---|---|
 | [Dewarim: File Commander](file-commander) | 0.2.0 | `https://raw.githubusercontent.com/dewarim/foundry-modules/main/file-commander/module.json` |
 | [Dewarim: Image Drop](image-drop) | 0.1.0 | `https://raw.githubusercontent.com/dewarim/foundry-modules/main/image-drop/module.json` |
-| [Dewarim: Map Painter](map-painter) | 0.3.0 | `https://raw.githubusercontent.com/dewarim/foundry-modules/main/map-painter/module.json` |
+| [Dewarim: Map Painter](map-painter) | 0.3.1 | `https://raw.githubusercontent.com/dewarim/foundry-modules/main/map-painter/module.json` |

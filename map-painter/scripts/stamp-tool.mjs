@@ -1,8 +1,8 @@
 // The stamp tool on the canvas: while armed, a ghost of the image follows the pointer (snapped to the
 // grid), a click places a tile, a drag places a row of them - created in one call when the button is
 // released. Right-drag still pans, the wheel still zooms. Escape disarms. A stroke is one creation in
-// Foundry's own tile history, so Ctrl+Z (Foundry's undo) takes it back - in order with everything else
-// done to tiles, a tile deleted with the Delete key included.
+// Foundry's own tile history, so Ctrl+Z (Foundry's tile undo, caught by the letter so it works on any
+// keyboard layout) takes it back - in order with everything else done to tiles, a deleted tile included.
 import {isBlocking} from "./blocking.mjs";
 import {cellAt, cellsBetween, centeredOrigin, freeForStamp, stampSize, tileData} from "./stamp-model.mjs";
 
@@ -119,6 +119,8 @@ export class StampTool {
     // Before Foundry's own canvas handlers on the same element: no selection box, no deselect
     event.stopImmediatePropagation();
     event.preventDefault();
+    // preventDefault keeps the focus where it was - in a palette field, which would then take Ctrl+Z
+    releaseFocus();
     const snap = this.#snaps(event);
     this.#stroke = {snap, cells: [], last: null, tiles: []};
     this.#addAt(this.#point(event), snap);
@@ -189,9 +191,12 @@ export class StampTool {
   /* -------------------------------------------- */
 
   #key(event) {
-    if ( !this.armed || event.target.closest?.("input, textarea, select, [contenteditable]") ) return;
+    if ( !this.armed || typingIn(event.target) ) return;
     const handled = () => { event.preventDefault(); event.stopPropagation(); };
     if ( event.key === "Escape" ) { handled(); return this.disarm(); }
+    // Foundry's own Ctrl+Z goes by key position (KeyZ) - on a German keyboard that is the Y key. By the
+    // letter instead, so Strg+Z undoes on any layout; it is still Foundry's tile undo.
+    if ( (event.key?.toLowerCase() === "z") && (event.ctrlKey || event.metaKey) && !event.shiftKey ) { handled(); return this.undo(); }
     if ( event.ctrlKey || event.metaKey || event.altKey ) return;
     switch ( event.key ) {
       case "[": handled(); return this.set({cells: Math.max(1, this.stamp.cells - 1)});
@@ -259,4 +264,16 @@ export function tileDefaults() {
   for ( const key of ["x", "y", "width", "height", "rotation", "_id", "sort"] ) delete defaults[key];
   if ( defaults.texture ) delete defaults.texture.src;
   return defaults;
+}
+
+/** Whether a key goes into a text field (which keeps its own Ctrl+Z) - not a checkbox or a button. */
+function typingIn(target) {
+  if ( target?.isContentEditable || target?.closest?.("textarea, select") ) return true;
+  return (target?.tagName === "INPUT") && !["checkbox", "radio", "button", "range", "color"].includes(target.type);
+}
+
+/** A stroke on the canvas: take the focus out of whatever form field had it. */
+function releaseFocus() {
+  const active = document.activeElement;
+  if ( active && (active !== document.body) && active.closest?.("input, textarea, select, button") ) active.blur();
 }

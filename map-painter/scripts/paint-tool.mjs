@@ -116,6 +116,8 @@ export class PaintTool {
     if ( (event.button !== 0) || !this.armed || (event.target !== this.#view) ) return;
     event.stopImmediatePropagation();
     event.preventDefault();
+    // preventDefault keeps the focus where it was - in a palette field, which would then take Ctrl+Z
+    releaseFocus();
     const cell = this.#cellAt(event);
     this.#stroke = {erase: event.altKey, rect: event.ctrlKey || event.metaKey, start: cell, last: cell, cells: new Map()};
     this.#extend(cell);
@@ -248,10 +250,11 @@ export class PaintTool {
   }
 
   #key(event) {
-    if ( !this.armed || event.target.closest?.("input, textarea, select, [contenteditable]") ) return;
+    if ( !this.armed || typingIn(event.target) ) return;
     const handled = () => { event.preventDefault(); event.stopPropagation(); };
     if ( event.key === "Escape" ) { handled(); return this.disarm(); }
-    if ( (event.key === "z") && (event.ctrlKey || event.metaKey) ) {
+    // By the letter, not the key position (Foundry's KeyZ is the Y key on a German keyboard)
+    if ( (event.key?.toLowerCase() === "z") && (event.ctrlKey || event.metaKey) && !event.shiftKey ) {
       // Something newer in Foundry's tile history (a deleted tile): Foundry's own undo goes first
       const last = this.#undo.findLast(u => u.sceneId === canvas.scene?.id);
       if ( !last || (tileHistory() > last.history) ) return;
@@ -333,7 +336,8 @@ async function removeRock(scene) {
   const ids = scene.tiles.filter(t => t.getFlag(MODULE_ID, "rock")).map(t => t.id);
   if ( ids.length ) await scene.deleteEmbeddedDocuments("Tile", ids, {isUndo: true});
   await syncCarveWalls(scene, null);
-  await scene.update({[`flags.${MODULE_ID}.-=carve`]: null});
+  const {ForcedDeletion} = foundry.data.operators;
+  await scene.update({[`flags.${MODULE_ID}.carve`]: new ForcedDeletion()});
 }
 
 /** A texture's image (loaded once per bake), for canvas patterns. */
@@ -444,4 +448,16 @@ export function bakeRock(scene, state, chunks) {
     for ( const h of holes ) ctx.clearRect(h.col * size, h.row * size, size, size);
     return true;
   }}, chunks);
+}
+
+/** Whether a key goes into a text field (which keeps its own Ctrl+Z) - not a checkbox or a button. */
+function typingIn(target) {
+  if ( target?.isContentEditable || target?.closest?.("textarea, select") ) return true;
+  return (target?.tagName === "INPUT") && !["checkbox", "radio", "button", "range", "color"].includes(target.type);
+}
+
+/** A stroke on the canvas: take the focus out of whatever form field had it. */
+function releaseFocus() {
+  const active = document.activeElement;
+  if ( active && (active !== document.body) && active.closest?.("input, textarea, select, button") ) active.blur();
 }
