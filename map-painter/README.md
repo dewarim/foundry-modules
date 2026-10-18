@@ -32,4 +32,9 @@ Open it from the paintbrush among the **Tiles** tools, with Shift+Alt+M, or
   (sight, light, sound, movement). `game.modules.get("dewarim-map-painter").api.rebuildWalls()` rebuilds
   them for the viewed scene.
 
-Planned (see `ROADMAP.md`): carving dungeon maps.
+- **Carve** (mode *Carve*, square grids): for dungeon maps - the scene is covered in rock (*Black rock*,
+  or a picked texture as rock), and the brush carves tunnels and caves into it: drag carves, Ctrl+drag
+  carves a rectangle, Alt+drag fills rock back in, Ctrl+Z takes a stroke back. Carved cells show what is
+  below - the painted floor or the scene's background. With *Rock blocks view* (on by default) walls run
+  along the edges of the carved area. The rock is baked like the paint, as tiles just above it and below
+  every prop; *Remove the rock layer* takes it away again.

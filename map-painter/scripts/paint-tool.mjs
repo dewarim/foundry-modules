@@ -6,24 +6,32 @@
 // Undo is the brush's own (a stroke changes the flag and several tiles): its tile changes stay out of
 // Foundry's tile history (isUndo), and Ctrl+Z is the brush's only while nothing newer is in that history -
 // a tile deleted with the Delete key after a stroke is Foundry's to bring back.
+// Kind "carve" (step 4) is the same brush on a different layer: the scene is covered in rock (black or a
+// texture, carve-model.mjs), and the brush carves cells open - they show the paint or the scene's
+// background below; Alt fills rock back in. The rock is baked like the paint, one layer above it.
 const MODULE_ID = "dewarim-map-painter";
 import {cellAt, cellsBetween} from "./stamp-model.mjs";
 import {CHUNK, brushCells, chunkRects, paint, parseKey, readState, rectCells, revert, touchedChunks} from "./paint-model.mjs";
+import {carve, carvedChunks, chunkRock, newCarve, readCarve, revertCarve, rockChunks, sceneCells} from "./carve-model.mjs";
 import {tileDefaults} from "./stamp-tool.mjs";
-import {isBlocking, syncPaintWalls} from "./blocking.mjs";
+import {isBlocking, syncCarveWalls, syncPaintWalls} from "./blocking.mjs";
 
 const UNDO_DEPTH = 20;
-/** Below every tile the GM places (Tile sort starts at 0 and grows) */
+/** Below every tile the GM places (Tile sort starts at 0 and grows): the paint, the rock just above it */
 const PAINT_SORT = -100000;
+const ROCK_SORT = -99999;
 
 export class PaintTool {
   /**
-   * @param {{onChange?: () => void}} [options]  onChange: armed state or settings changed (re-render the palette)
+   * @param {{onChange?: () => void, kind?: "paint"|"carve"}} [options]  onChange: armed state or settings
+   *   changed (re-render the palette); kind: paint textures, or carve the rock
    */
-  constructor({onChange} = {}) {
+  constructor({onChange, kind = "paint"} = {}) {
     this.onChange = onChange ?? (() => {});
-    // brush: cells on a side; repeat: grid cells one repeat of the texture covers
-    this.settings = {src: null, brush: 1, repeat: 4};
+    this.kind = kind;
+    // brush: cells on a side; repeat: grid cells one repeat of the texture covers; src: the texture (carve:
+    // the rock's, null = black); rockBlocks: carve - walls along the carved edges
+    this.settings = {src: null, brush: 1, repeat: 4, rockBlocks: true};
     this.#onPointerDown = this.#pointerDown.bind(this);
     this.#onPointerMove = this.#pointerMove.bind(this);
     this.#onPointerUp = this.#pointerUp.bind(this);
@@ -46,7 +54,7 @@ export class PaintTool {
   #queue = Promise.resolve();
 
   get armed() {
-    return !!this.settings.src && this.#listening;
+    return this.#listening && ((this.kind === "carve") || !!this.settings.src);
   }
 
   get canUndo() {
@@ -60,8 +68,8 @@ export class PaintTool {
   async arm(src) {
     if ( !canvas.ready || !canvas.scene ) return ui.notifications.warn("DEWARIM_MAP.NoScene", {localize: true});
     if ( !canvas.grid.isSquare ) return ui.notifications.warn("DEWARIM_MAP.PaintSquareOnly", {localize: true});
-    this.settings.src = src;
-    this.#texture = await foundry.canvas.loadTexture(src);
+    this.settings.src = src ?? null;
+    this.#texture = src ? await foundry.canvas.loadTexture(src) : null;
     if ( !this.#listening ) {
       this.#view.addEventListener("pointerdown", this.#onPointerDown, true);
       this.#view.addEventListener("pointermove", this.#onPointerMove, true);
@@ -145,9 +153,11 @@ export class PaintTool {
     this.#stroke = null;
     event.stopImmediatePropagation();
     this.#preview?.clear();
+    const cells = [...stroke.cells.values()];
+    if ( this.kind === "carve" ) return this.#applyCarve(canvas.scene, cells, !stroke.erase);
     const texture = stroke.erase ? null
       : {src: this.settings.src, repeat: this.settings.repeat, blocks: isBlocking(this.settings.src)};
-    await this.#apply(canvas.scene, [...stroke.cells.values()], texture);
+    await this.#apply(canvas.scene, cells, texture);
   }
 
   /* -------------------------------------------- */
@@ -167,12 +177,37 @@ export class PaintTool {
     });
   }
 
+  /**
+   * Carve cells open (or fill them with rock). The first stroke on a scene lays the rock over all of it;
+   * changed rock settings (texture, scale, walls) apply to the whole layer with the next stroke.
+   */
+  #applyCarve(scene, cells, open) {
+    return this.#run(async () => {
+      const stored = readCarve(scene.getFlag(MODULE_ID, "carve"));
+      const wanted = {src: this.settings.src, repeat: this.settings.repeat, blocks: this.settings.rockBlocks};
+      let state = stored ?? newCarve(wanted);
+      const rockChanged = !!stored && ((stored.rock.src !== wanted.src) || (stored.rock.repeat !== wanted.repeat)
+        || (stored.blocks !== wanted.blocks));
+      if ( rockChanged ) state = {...state, rock: {src: wanted.src, repeat: wanted.repeat}, blocks: wanted.blocks};
+      const result = carve(state, cells, open);
+      if ( stored && !rockChanged && !result.changes.length ) return;
+      await saveCarve(scene, result.state);
+      this.#undo = [...this.#undo, {sceneId: scene.id, kind: "carve", changes: result.changes, before: stored,
+        history: tileHistory()}].slice(-UNDO_DEPTH);
+      const range = sceneCells(scene.dimensions.sceneRect, scene.grid.size);
+      await bakeRock(scene, result.state, (!stored || rockChanged) ? rockChunks(range) : carvedChunks(result.changes));
+      await syncCarveWalls(scene, result.state);
+      this.onChange();
+    });
+  }
+
   /** Take the last stroke on this scene back. */
   undo() {
     const scene = canvas.scene;
     const index = this.#undo.findLastIndex(u => u.sceneId === scene?.id);
     if ( index < 0 ) return;
     const [entry] = this.#undo.splice(index, 1);
+    if ( entry.kind === "carve" ) return this.#undoCarve(scene, entry);
     return this.#run(async () => {
       const state = revert(readState(scene.getFlag(MODULE_ID, "paint")), entry.changes);
       await saveState(scene, state);
@@ -180,6 +215,28 @@ export class PaintTool {
       await syncPaintWalls(scene, state);
       this.onChange();
     });
+  }
+
+  /** A carve stroke back - the first one on a scene takes the whole rock layer with it. */
+  #undoCarve(scene, entry) {
+    return this.#run(async () => {
+      if ( !entry.before ) return removeRock(scene);
+      const current = readCarve(scene.getFlag(MODULE_ID, "carve")) ?? entry.before;
+      const state = {...revertCarve(current, entry.changes), rock: entry.before.rock, blocks: entry.before.blocks};
+      const rockChanged = (current.rock.src !== state.rock.src) || (current.rock.repeat !== state.rock.repeat)
+        || (current.blocks !== state.blocks);
+      await saveCarve(scene, state);
+      const range = sceneCells(scene.dimensions.sceneRect, scene.grid.size);
+      await bakeRock(scene, state, rockChanged ? rockChunks(range) : carvedChunks(entry.changes));
+      await syncCarveWalls(scene, state);
+      this.onChange();
+    });
+  }
+
+  /** Remove the scene's rock layer: its tiles, its walls, the flag. */
+  removeRock(scene = canvas.scene) {
+    this.#undo = this.#undo.filter(u => !((u.sceneId === scene.id) && (u.kind === "carve")));
+    return this.#run(() => removeRock(scene));
   }
 
   #run(task) {
@@ -227,7 +284,9 @@ export class PaintTool {
     if ( !g || !this.#stroke ) return;
     const size = canvas.grid.size;
     g.clear();
-    if ( this.#stroke.erase || !this.#texture ) g.beginFill(0xd04040, 0.35);
+    // Carving: open cells green, rock filled back in black
+    if ( this.kind === "carve" ) g.beginFill(this.#stroke.erase ? 0x000000 : 0x40c080, this.#stroke.erase ? 0.6 : 0.35);
+    else if ( this.#stroke.erase || !this.#texture ) g.beginFill(0xd04040, 0.35);
     else {
       const scale = (this.settings.repeat * size) / this.#texture.width;
       g.beginTextureFill({texture: this.#texture, alpha: 0.75, matrix: new PIXI.Matrix().scale(scale, scale)});
@@ -263,66 +322,126 @@ async function bakeFolder(scene) {
   return parts.join("/");
 }
 
+/** Replace the carve flag. */
+function saveCarve(scene, state) {
+  const {ForcedReplacement} = foundry.data.operators;
+  return scene.update({[`flags.${MODULE_ID}.carve`]: new ForcedReplacement(state)});
+}
+
+/** The rock layer goes: tiles, walls, flag. */
+async function removeRock(scene) {
+  const ids = scene.tiles.filter(t => t.getFlag(MODULE_ID, "rock")).map(t => t.id);
+  if ( ids.length ) await scene.deleteEmbeddedDocuments("Tile", ids, {isUndo: true});
+  await syncCarveWalls(scene, null);
+  await scene.update({[`flags.${MODULE_ID}.-=carve`]: null});
+}
+
+/** A texture's image (loaded once per bake), for canvas patterns. */
+function imageLoader() {
+  const images = new Map();
+  return async src => {
+    if ( !images.has(src) ) {
+      const texture = await foundry.canvas.loadTexture(src);
+      images.set(src, texture?.baseTexture?.resource?.source ?? null);
+    }
+    return images.get(src);
+  };
+}
+
+/** A pattern of a texture at `repeat` cells per copy, anchored to the grid origin (chunks continue it). */
+function gridPattern(ctx, source, repeat, size, ox, oy) {
+  const pattern = ctx.createPattern(source, "repeat");
+  const scale = (repeat * size) / source.width;
+  pattern.setTransform(new DOMMatrix().translateSelf(-ox, -oy).scaleSelf(scale, scale));
+  return pattern;
+}
+
 /**
- * Re-bake chunks of a scene from the state: draw, upload, create or update the chunk's tile - or delete
- * it when nothing is painted there any more.
+ * Bake chunks of one layer: draw each, upload it, create or update its tile - or delete the tile when the
+ * chunk is empty now.
  * @param {Scene} scene
- * @param {{textures: object[], cells: object}} state
+ * @param {object} layer
+ * @param {string} layer.flag     tile flag naming the chunk ("chunk": paint, "rock": carving)
+ * @param {string} layer.prefix   image file prefix
+ * @param {number} layer.sort
+ * @param {(ctx: CanvasRenderingContext2D, chunk: {cx, cy}, origin: {ox, oy}) => Promise<boolean>} layer.draw
+ *   draws the chunk; false: nothing there
  * @param {string[]} chunks  "cx,cy"
  */
-export async function bake(scene, state, chunks) {
-  const size = scene.grid.size;
-  const px = CHUNK * size;
-  const tiles = new Map(scene.tiles.filter(t => t.getFlag(MODULE_ID, "chunk")).map(t => [t.getFlag(MODULE_ID, "chunk"), t]));
-  const images = new Map();
-  const image = async index => {
-    if ( !images.has(index) ) {
-      const texture = await foundry.canvas.loadTexture(state.textures[index].src);
-      images.set(index, texture?.baseTexture?.resource?.source ?? null);
-    }
-    return images.get(index);
-  };
+async function bakeLayer(scene, {flag, prefix, sort, draw}, chunks) {
+  const px = CHUNK * scene.grid.size;
+  const tiles = new Map(scene.tiles.filter(t => t.getFlag(MODULE_ID, flag)).map(t => [t.getFlag(MODULE_ID, flag), t]));
   const folder = await bakeFolder(scene);
   const FilePicker = foundry.applications.apps.FilePicker.implementation;
   const create = [], update = [], remove = [];
   for ( const key of chunks ) {
     const {col: cx, row: cy} = parseKey(key);
-    const rects = chunkRects(state, {cx, cy});
-    const tile = tiles.get(key);
-    if ( !rects.size ) {
-      if ( tile ) remove.push(tile.id);
-      continue;
-    }
     const [ox, oy] = [cx * px, cy * px];
     const el = document.createElement("canvas");
     el.width = el.height = px;
     const ctx = el.getContext("2d");
-    for ( const [index, list] of rects ) {
-      const source = await image(index);
-      if ( !source ) continue;
-      const pattern = ctx.createPattern(source, "repeat");
-      const scale = (state.textures[index].repeat * size) / source.width;
-      // Anchored to the grid origin, not the chunk: neighbouring chunks continue the same pattern
-      pattern.setTransform(new DOMMatrix().translateSelf(-ox, -oy).scaleSelf(scale, scale));
-      ctx.fillStyle = pattern;
-      for ( const r of list ) ctx.fillRect(r.col * size, r.row * size, r.width * size, r.height * size);
+    const tile = tiles.get(key);
+    if ( !(await draw(ctx, {cx, cy}, {ox, oy})) ) {
+      if ( tile ) remove.push(tile.id);
+      continue;
     }
     const blob = await new Promise(resolve => el.toBlob(resolve, "image/webp", 0.88));
-    const name = `chunk_${cx}_${cy}.webp`.replace(/-/g, "m");
+    const name = `${prefix}_${cx}_${cy}.webp`.replace(/-/g, "m");
     const result = await FilePicker.upload("data", folder, new File([blob], name, {type: "image/webp"}), {}, {notify: false});
     // A new query string per bake: the same file name, but every client loads the new image
     const src = `${result?.path ?? `${folder}/${name}`}?v=${Date.now()}`;
     const data = {
-      x: ox + (px / 2), y: oy + (px / 2), width: px, height: px, rotation: 0, sort: PAINT_SORT, locked: true,
+      x: ox + (px / 2), y: oy + (px / 2), width: px, height: px, rotation: 0, sort, locked: true,
       texture: {src, anchorX: 0.5, anchorY: 0.5, scaleX: 1, scaleY: 1}
     };
     if ( tile ) update.push({_id: tile.id, ...data});
-    else create.push(foundry.utils.mergeObject(tileDefaults(), {...data, flags: {[MODULE_ID]: {chunk: key}}}));
+    else create.push(foundry.utils.mergeObject(tileDefaults(), {...data, flags: {[MODULE_ID]: {[flag]: key}}}));
   }
   // isUndo: not into Foundry's tile history - the brush has its own undo, and Foundry's would leave the
-  // flag behind
   // flag behind. A fresh options object per call: Foundry writes the operation into it.
   if ( create.length ) await scene.createEmbeddedDocuments("Tile", create, {isUndo: true});
   if ( update.length ) await scene.updateEmbeddedDocuments("Tile", update, {isUndo: true});
   if ( remove.length ) await scene.deleteEmbeddedDocuments("Tile", remove, {isUndo: true});
+}
+
+/**
+ * Re-bake paint chunks of a scene from the state.
+ * @param {Scene} scene
+ * @param {{textures: object[], cells: object}} state
+ * @param {string[]} chunks  "cx,cy"
+ */
+export function bake(scene, state, chunks) {
+  const size = scene.grid.size;
+  const image = imageLoader();
+  return bakeLayer(scene, {flag: "chunk", prefix: "chunk", sort: PAINT_SORT, draw: async (ctx, chunk, {ox, oy}) => {
+    const rects = chunkRects(state, chunk);
+    for ( const [index, list] of rects ) {
+      const source = await image(state.textures[index].src);
+      if ( !source ) continue;
+      ctx.fillStyle = gridPattern(ctx, source, state.textures[index].repeat, size, ox, oy);
+      for ( const r of list ) ctx.fillRect(r.col * size, r.row * size, r.width * size, r.height * size);
+    }
+    return rects.size > 0;
+  }}, chunks);
+}
+
+/**
+ * Re-bake rock chunks: the scene's area in rock (black or the texture), open cells cut out.
+ * @param {Scene} scene
+ * @param {object} state  carve state
+ * @param {string[]} chunks
+ */
+export function bakeRock(scene, state, chunks) {
+  const size = scene.grid.size;
+  const range = sceneCells(scene.dimensions.sceneRect, size);
+  const image = imageLoader();
+  return bakeLayer(scene, {flag: "rock", prefix: "rock", sort: ROCK_SORT, draw: async (ctx, chunk, {ox, oy}) => {
+    const {rock, holes} = chunkRock(state, chunk, range);
+    if ( !rock ) return false;
+    const source = state.rock.src ? await image(state.rock.src) : null;
+    ctx.fillStyle = source ? gridPattern(ctx, source, state.rock.repeat, size, ox, oy) : "#000000";
+    ctx.fillRect(rock.col * size, rock.row * size, rock.width * size, rock.height * size);
+    for ( const h of holes ) ctx.clearRect(h.col * size, h.row * size, size, size);
+    return true;
+  }}, chunks);
 }

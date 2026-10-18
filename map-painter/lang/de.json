@@ -28,6 +28,13 @@
     "PaintSquareOnly": "Der Pinsel malt nur auf quadratischen Rastern.",
     "PaintFailed": "Malen fehlgeschlagen",
     "Blocks": "Blockiert Sicht (Wände)",
-    "BlocksHint": "Dieses Bild wird zu Wänden: gestempelte Kacheln bekommen Wände ringsum, bemalte Felder entlang des Umrisses. Wird pro Bild für die Welt gemerkt."
+    "BlocksHint": "Dieses Bild wird zu Wänden: gestempelte Kacheln bekommen Wände ringsum, bemalte Felder entlang des Umrisses. Wird pro Bild für die Welt gemerkt.",
+    "ModeCarve": "Meißel",
+    "BlackRock": "Schwarzer Fels",
+    "CarveHint": "Eine Felstextur wählen (oder schwarzen Fels), dann Gänge und Höhlen in die Szene meißeln.",
+    "RockBlocks": "Fels blockiert Sicht (Wände an den Rändern)",
+    "CarveKeys": "Ziehen meißelt · Strg+Ziehen meißelt ein Rechteck · Alt+Ziehen füllt Fels zurück",
+    "RemoveRock": "Felsschicht entfernen",
+    "RemoveRockConfirm": "Die Felsschicht dieser Szene entfernen - ihre Kacheln, ihre Wände und alles Gemeißelte? Das lässt sich nicht rückgängig machen."
   }
 }

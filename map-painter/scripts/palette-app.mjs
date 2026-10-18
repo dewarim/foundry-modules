@@ -38,7 +38,8 @@ export class PaletteApp extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor(options) {
     super(options);
     const onChange = () => this.rendered && this.render();
-    this.tools = {stamp: new StampTool({onChange}), paint: new PaintTool({onChange})};
+    this.tools = {stamp: new StampTool({onChange}), paint: new PaintTool({onChange}),
+      carve: new PaintTool({onChange, kind: "carve"})};
     const last = game.settings.get(MODULE_ID, "last") ?? {};
     this.#mode = (last.mode in this.tools) ? last.mode : "stamp";
     this.#root = Math.min(last.root ?? 0, Math.max(0, this.#roots.length - 1));
@@ -59,6 +60,8 @@ export class PaletteApp extends HandlebarsApplicationMixin(ApplicationV2) {
       removeRoot: PaletteApp.#onRemoveRoot,
       undo: PaletteApp.#onUndo,
       disarm: PaletteApp.#onDisarm,
+      blackRock: PaletteApp.#onBlackRock,
+      removeRock: PaletteApp.#onRemoveRock,
       mode: PaletteApp.#onMode
     }
   };
@@ -82,10 +85,10 @@ export class PaletteApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /** The image the current tool is armed with. */
   get #selected() {
-    return (this.#mode === "paint") ? this.tools.paint.settings.src : this.tools.stamp.stamp.src;
+    return (this.#mode === "stamp") ? this.tools.stamp.stamp.src : this.tools[this.#mode].settings.src;
   }
 
-  /** Put both tools away (closing, a scene change). */
+  /** Put every tool away (closing, a scene change). */
   disarmAll() {
     for ( const tool of Object.values(this.tools) ) tool.disarm();
   }
@@ -139,6 +142,9 @@ export class PaletteApp extends HandlebarsApplicationMixin(ApplicationV2) {
       armed: this.tool.armed,
       selectedName: selected ? name(selected) : "",
       paintMode: this.#mode === "paint",
+      carveMode: this.#mode === "carve",
+      carve: this.tools.carve.settings,
+      hasRock: !!canvas.scene?.getFlag(MODULE_ID, "carve"),
       blocks: isBlocking(selected),
       hasSelection: !!selected,
       stamp,
@@ -175,8 +181,9 @@ export class PaletteApp extends HandlebarsApplicationMixin(ApplicationV2) {
         return;
       }
       if ( input.name === "cells" ) this.tools.stamp.set({cells: clamp(value, 10)});
-      else if ( input.name === "brush" ) this.tools.paint.set({brush: clamp(value, 10)});
-      else if ( input.name === "repeat" ) this.tools.paint.set({repeat: clamp(value, 64)});
+      else if ( input.name === "brush" ) this.tool.set({brush: clamp(value, 10)});
+      else if ( input.name === "repeat" ) this.tool.set({repeat: clamp(value, 64)});
+      else if ( input.name === "rockBlocks" ) this.tools.carve.set({rockBlocks: input.checked});
       else this.tools.stamp.set({[input.name]: value});
     });
   }
@@ -260,6 +267,21 @@ export class PaletteApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static #onUndo() {
     return this.tool.undo();
+  }
+
+  /** Carve mode without an image: plain black rock. */
+  static async #onBlackRock() {
+    if ( this.#mode !== "carve" ) return;
+    await this.tool.arm(null);
+  }
+
+  /** Remove the scene's rock layer (tiles, walls, carving) after asking. */
+  static async #onRemoveRock() {
+    const ok = await foundry.applications.api.DialogV2.confirm({
+      window: {title: "DEWARIM_MAP.RemoveRock"}, content: `<p>${_loc("DEWARIM_MAP.RemoveRockConfirm")}</p>`
+    });
+    if ( ok ) await this.tools.carve.removeRock();
+    this.render();
   }
 
   static #onDisarm() {

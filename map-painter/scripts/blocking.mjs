@@ -1,9 +1,11 @@
 // "Blocks view": images marked in the palette become walls. A stamped tile of such an image carries the flag
 // `blocks` and owns four walls along its outline (flag `tile`), kept in step by hooks - moved, resized,
 // turned, deleted and undone with the tile. Painted cells of a blocking texture get walls along the outline
-// of all blocking cells (flag `paint`), recomputed after each stroke. Walls are Foundry's normal walls:
+// of all blocking cells (flag `paint`), recomputed after each stroke; carved cells get walls along the edges
+// of the carved area when the rock blocks view (flag `carve`). Walls are Foundry's normal walls:
 // they block sight, light, sound and movement. Their changes stay out of Foundry's wall history (isUndo):
 // they follow the tile or the paint, and are undone with it.
+import {carveOutline, readCarve} from "./carve-model.mjs";
 import {blockingOutline, diffWalls, readState} from "./paint-model.mjs";
 import {tileOutline} from "./stamp-model.mjs";
 
@@ -89,6 +91,18 @@ export function syncPaintWalls(scene, state) {
   return queued(() => rebuildPaintWalls(scene, state));
 }
 
+/** Walls along the carved edges (flag `carve`); state null: none (the rock layer is gone). */
+export function syncCarveWalls(scene, state) {
+  return queued(() => rebuildCarveWalls(scene, state));
+}
+
+async function rebuildCarveWalls(scene, state) {
+  const existing = scene.walls.filter(w => w.getFlag(MODULE_ID, "carve")).map(w => ({id: w.id, c: w.c}));
+  const {create, remove} = diffWalls(existing, state ? carveOutline(state, scene.grid.size) : []);
+  if ( remove.length ) await scene.deleteEmbeddedDocuments("Wall", remove, quiet());
+  if ( create.length ) await scene.createEmbeddedDocuments("Wall", create.map(c => wallData(c, {carve: true})), quiet());
+}
+
 async function rebuildPaintWalls(scene, state) {
   const existing = scene.walls.filter(w => w.getFlag(MODULE_ID, "paint")).map(w => ({id: w.id, c: w.c}));
   const {create, remove} = diffWalls(existing, blockingOutline(state, scene.grid.size));
@@ -110,5 +124,6 @@ export function rebuildWalls(scene = canvas.scene) {
     if ( orphans.length ) await scene.deleteEmbeddedDocuments("Wall", orphans, quiet());
     for ( const tile of scene.tiles.filter(t => t.getFlag(MODULE_ID, "blocks")) ) await rebuildTileWalls(tile);
     await rebuildPaintWalls(scene, readState(scene.getFlag(MODULE_ID, "paint")));
+    await rebuildCarveWalls(scene, readCarve(scene.getFlag(MODULE_ID, "carve")));
   });
 }

@@ -2,7 +2,7 @@
   "id": "dewarim-map-painter",
   "title": "Dewarim: Map Painter",
   "description": "Build scenes from a palette of images: pick a prop or texture, click or drag on the canvas, and tiles snap to the grid. System-agnostic.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "authors": [
     {
       "name": "Ingo Wiarda",
@@ -47,7 +47,7 @@
   },
   "url": "https://github.com/dewarim/foundry-modules/tree/main/map-painter",
   "manifest": "https://raw.githubusercontent.com/dewarim/foundry-modules/main/map-painter/module.json",
-  "download": "https://github.com/dewarim/foundry-modules/releases/download/map-painter-v0.2.0/map-painter.zip",
+  "download": "https://github.com/dewarim/foundry-modules/releases/download/map-painter-v0.3.0/map-painter.zip",
   "readme": "https://github.com/dewarim/foundry-modules/blob/main/map-painter/README.md",
   "bugs": "https://github.com/dewarim/foundry-modules/issues"
 }

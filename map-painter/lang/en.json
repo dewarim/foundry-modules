@@ -28,6 +28,13 @@
     "PaintSquareOnly": "The brush paints square grids only.",
     "PaintFailed": "Painting failed",
     "Blocks": "Blocks view (walls)",
-    "BlocksHint": "This image becomes walls: stamped tiles get walls around them, painted cells along the outline. Remembered per image for the world."
+    "BlocksHint": "This image becomes walls: stamped tiles get walls around them, painted cells along the outline. Remembered per image for the world.",
+    "ModeCarve": "Carve",
+    "BlackRock": "Black rock",
+    "CarveHint": "Pick a rock texture (or black rock), then carve tunnels and caves into the scene.",
+    "RockBlocks": "Rock blocks view (walls along the edges)",
+    "CarveKeys": "Drag carves · Ctrl+drag carves a rectangle · Alt+drag fills rock back in",
+    "RemoveRock": "Remove the rock layer",
+    "RemoveRockConfirm": "Remove the rock layer of this scene - its tiles, its walls and everything carved? This cannot be undone."
   }
 }

@@ -33,19 +33,32 @@
 
   <footer class="stamp-settings">
     <nav class="mp-modes">
-      <button type="button" data-action="mode" data-mode="stamp" class="{{#unless paintMode}}active{{/unless}}"><i class="fa-solid fa-stamp" inert></i> {{localize "DEWARIM_MAP.ModeStamp"}}</button>
+      <button type="button" data-action="mode" data-mode="stamp" class="{{#unless (or paintMode carveMode)}}active{{/unless}}"><i class="fa-solid fa-stamp" inert></i> {{localize "DEWARIM_MAP.ModeStamp"}}</button>
       <button type="button" data-action="mode" data-mode="paint" class="{{#if paintMode}}active{{/if}}" {{#unless squareGrid}}disabled data-tooltip="{{localize 'DEWARIM_MAP.PaintSquareOnly'}}"{{/unless}}><i class="fa-solid fa-paint-roller" inert></i> {{localize "DEWARIM_MAP.ModePaint"}}</button>
+      <button type="button" data-action="mode" data-mode="carve" class="{{#if carveMode}}active{{/if}}" {{#unless squareGrid}}disabled data-tooltip="{{localize 'DEWARIM_MAP.PaintSquareOnly'}}"{{/unless}}><i class="fa-solid fa-person-digging" inert></i> {{localize "DEWARIM_MAP.ModeCarve"}}</button>
     </nav>
     <div class="mp-armed">
-      {{#if armed}}<i class="fa-solid {{#if paintMode}}fa-paint-roller{{else}}fa-stamp{{/if}}" inert></i> <strong>{{selectedName}}</strong>
+      {{#if armed}}<i class="fa-solid {{#if carveMode}}fa-person-digging{{else if paintMode}}fa-paint-roller{{else}}fa-stamp{{/if}}" inert></i>
+      <strong>{{#if selectedName}}{{selectedName}}{{else}}{{localize "DEWARIM_MAP.BlackRock"}}{{/if}}</strong>
       <a data-action="disarm" data-tooltip="Esc"><i class="fa-solid fa-xmark" inert></i></a>
+      {{else if carveMode}}<span class="mp-hint">{{localize "DEWARIM_MAP.CarveHint"}}</span>
       {{else}}<span class="mp-hint">{{localize (ifThen paintMode "DEWARIM_MAP.PaintHint" "DEWARIM_MAP.PickHint")}}</span>{{/if}}
     </div>
+    {{#if carveMode}}
+    <button type="button" data-action="blackRock"><i class="fa-solid fa-square" inert></i> {{localize "DEWARIM_MAP.BlackRock"}}</button>
+    <label>{{localize "DEWARIM_MAP.Brush"}} <input type="number" name="brush" value="{{carve.brush}}" min="1" max="10"> <span class="mp-key">[ ]</span></label>
+    <label data-tooltip="{{localize 'DEWARIM_MAP.RepeatHint'}}">{{localize "DEWARIM_MAP.Repeat"}} <input type="number" name="repeat" value="{{carve.repeat}}" min="1" max="64"></label>
+    <label><input type="checkbox" name="rockBlocks" {{#if carve.rockBlocks}}checked{{/if}}> <i class="fa-solid fa-block-brick" inert></i> {{localize "DEWARIM_MAP.RockBlocks"}}</label>
+    <p class="mp-hint">{{localize "DEWARIM_MAP.CarveKeys"}}</p>
+    {{#if hasRock}}<button type="button" data-action="removeRock"><i class="fa-solid fa-trash" inert></i> {{localize "DEWARIM_MAP.RemoveRock"}}</button>{{/if}}
+    {{else}}
     <label {{#unless hasSelection}}class="mp-disabled"{{/unless}} data-tooltip="{{localize 'DEWARIM_MAP.BlocksHint'}}"><input type="checkbox" name="blocks" {{#if blocks}}checked{{/if}} {{#unless hasSelection}}disabled{{/unless}}> <i class="fa-solid fa-block-brick" inert></i> {{localize "DEWARIM_MAP.Blocks"}}</label>
+    {{/if}}
     {{#if paintMode}}
     <label>{{localize "DEWARIM_MAP.Brush"}} <input type="number" name="brush" value="{{paint.brush}}" min="1" max="10"> <span class="mp-key">[ ]</span></label>
     <label data-tooltip="{{localize 'DEWARIM_MAP.RepeatHint'}}">{{localize "DEWARIM_MAP.Repeat"}} <input type="number" name="repeat" value="{{paint.repeat}}" min="1" max="64"></label>
     <p class="mp-hint">{{localize "DEWARIM_MAP.PaintKeys"}}</p>
+    {{else if carveMode}}
     {{else}}
     <label>{{localize "DEWARIM_MAP.Size"}} <input type="number" name="cells" value="{{stamp.cells}}" min="1" max="10"> <span class="mp-key">[ ]</span></label>
     <label>{{localize "DEWARIM_MAP.Rotation"}}
