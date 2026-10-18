@@ -1,0 +1,59 @@
+<div class="mp-body">
+  <header class="mp-roots">
+    <select name="root">{{#each roots}}<option value="{{index}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+    <a data-action="addRoot" data-tooltip="{{localize 'DEWARIM_MAP.AddRoot'}}"><i class="fa-solid fa-folder-plus" inert></i></a>
+    {{#if canRemoveRoot}}<a data-action="removeRoot" data-tooltip="{{localize 'DEWARIM_MAP.RemoveRoot'}}"><i class="fa-solid fa-xmark" inert></i></a>{{/if}}
+  </header>
+  <nav class="mp-crumbs">{{#each crumbs}}<a data-action="crumb" data-path="{{path}}">{{label}}</a>{{#unless @last}} / {{/unless}}{{/each}}</nav>
+  <input type="search" name="filter" value="{{filter}}" placeholder="{{localize 'DEWARIM_MAP.Filter'}}">
+
+  {{#if recent.length}}
+  <div class="mp-recent">
+    {{#each recent}}<img src="{{path}}" class="{{#if selected}}selected{{/if}}" data-action="pick" data-path="{{path}}" data-tooltip="{{name}}" alt="">{{/each}}
+  </div>
+  {{/if}}
+
+  <div class="images">
+    {{#if error}}
+    <p class="mp-hint">{{localize "DEWARIM_MAP.Missing"}}</p>
+    {{#if canCreate}}<button type="button" data-action="createFolder"><i class="fa-solid fa-folder-plus" inert></i> {{localize "DEWARIM_MAP.CreateFolder"}}</button>{{/if}}
+    {{/if}}
+    {{#each dirs}}<div class="mp-dir" data-action="enter" data-path="{{path}}"><i class="fa-solid fa-folder" inert></i> {{name}}</div>{{/each}}
+    <div class="mp-grid">
+      {{#each images}}
+      <figure class="mp-image {{#if selected}}selected{{/if}}" data-action="pick" data-path="{{path}}" data-tooltip="{{name}}">
+        <img src="{{path}}" loading="lazy" alt="">
+        {{#if blocks}}<i class="fa-solid fa-block-brick mp-blocks" inert data-tooltip="{{localize 'DEWARIM_MAP.Blocks'}}"></i>{{/if}}
+        <figcaption>{{name}}</figcaption>
+      </figure>
+      {{/each}}
+    </div>
+    {{#unless (or error dirs.length images.length)}}<p class="mp-hint">{{localize "DEWARIM_MAP.Empty"}}</p>{{/unless}}
+  </div>
+
+  <footer class="stamp-settings">
+    <nav class="mp-modes">
+      <button type="button" data-action="mode" data-mode="stamp" class="{{#unless paintMode}}active{{/unless}}"><i class="fa-solid fa-stamp" inert></i> {{localize "DEWARIM_MAP.ModeStamp"}}</button>
+      <button type="button" data-action="mode" data-mode="paint" class="{{#if paintMode}}active{{/if}}" {{#unless squareGrid}}disabled data-tooltip="{{localize 'DEWARIM_MAP.PaintSquareOnly'}}"{{/unless}}><i class="fa-solid fa-paint-roller" inert></i> {{localize "DEWARIM_MAP.ModePaint"}}</button>
+    </nav>
+    <div class="mp-armed">
+      {{#if armed}}<i class="fa-solid {{#if paintMode}}fa-paint-roller{{else}}fa-stamp{{/if}}" inert></i> <strong>{{selectedName}}</strong>
+      <a data-action="disarm" data-tooltip="Esc"><i class="fa-solid fa-xmark" inert></i></a>
+      {{else}}<span class="mp-hint">{{localize (ifThen paintMode "DEWARIM_MAP.PaintHint" "DEWARIM_MAP.PickHint")}}</span>{{/if}}
+    </div>
+    <label {{#unless hasSelection}}class="mp-disabled"{{/unless}} data-tooltip="{{localize 'DEWARIM_MAP.BlocksHint'}}"><input type="checkbox" name="blocks" {{#if blocks}}checked{{/if}} {{#unless hasSelection}}disabled{{/unless}}> <i class="fa-solid fa-block-brick" inert></i> {{localize "DEWARIM_MAP.Blocks"}}</label>
+    {{#if paintMode}}
+    <label>{{localize "DEWARIM_MAP.Brush"}} <input type="number" name="brush" value="{{paint.brush}}" min="1" max="10"> <span class="mp-key">[ ]</span></label>
+    <label data-tooltip="{{localize 'DEWARIM_MAP.RepeatHint'}}">{{localize "DEWARIM_MAP.Repeat"}} <input type="number" name="repeat" value="{{paint.repeat}}" min="1" max="64"></label>
+    <p class="mp-hint">{{localize "DEWARIM_MAP.PaintKeys"}}</p>
+    {{else}}
+    <label>{{localize "DEWARIM_MAP.Size"}} <input type="number" name="cells" value="{{stamp.cells}}" min="1" max="10"> <span class="mp-key">[ ]</span></label>
+    <label>{{localize "DEWARIM_MAP.Rotation"}}
+      <select name="rotation">{{#each rotations}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}°</option>{{/each}}</select> <span class="mp-key">R</span></label>
+    <label><input type="checkbox" name="flip" {{#if stamp.flip}}checked{{/if}}> {{localize "DEWARIM_MAP.Flip"}} <span class="mp-key">F</span></label>
+    <label><input type="checkbox" name="randomRotation" {{#if stamp.randomRotation}}checked{{/if}}> {{localize "DEWARIM_MAP.RandomRotation"}}</label>
+    <label {{#if gridless}}class="mp-disabled"{{/if}}><input type="checkbox" name="snap" {{#if stamp.snap}}checked{{/if}} {{#if gridless}}disabled{{/if}}> {{localize "DEWARIM_MAP.Snap"}} <span class="mp-key">Shift</span></label>
+    {{/if}}
+    <button type="button" data-action="undo" {{#unless canUndo}}disabled{{/unless}}><i class="fa-solid fa-rotate-left" inert></i> {{localize "DEWARIM_MAP.Undo"}} <span class="mp-key">Ctrl+Z</span></button>
+  </footer>
+</div>

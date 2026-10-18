@@ -1,0 +1,33 @@
+{
+  "DEWARIM_MAP": {
+    "Title": "Kartenmaler",
+    "Open": "Kartenmaler öffnen",
+    "UserData": "Benutzerdaten",
+    "Filter": "Filtern…",
+    "AddRoot": "Ordner zur Palette hinzufügen",
+    "AddRootHint": "Ein Ordner in den Benutzerdaten (assets/props, assets/textures/dungeon) oder von Foundry (icons/environment).",
+    "RemoveRoot": "Diesen Ordner aus der Palette entfernen",
+    "Missing": "Diesen Ordner gibt es noch nicht. Bilder mit dem Datei-Commander oder per Upload hineinlegen.",
+    "CreateFolder": "Ordner anlegen",
+    "Empty": "Keine Bilder hier.",
+    "PickHint": "Ein Bild wählen, dann auf die Karte klicken oder ziehen.",
+    "Size": "Größe (Felder)",
+    "Rotation": "Drehung",
+    "Flip": "Spiegeln",
+    "RandomRotation": "Zufällige Drehung (Steine, Bäume)",
+    "Snap": "Am Raster ausrichten",
+    "Undo": "Letzten Strich zurücknehmen",
+    "NoScene": "Zuerst eine Szene öffnen.",
+    "ModeStamp": "Stempel",
+    "ModePaint": "Pinsel",
+    "PaintHint": "Eine Textur wählen, dann Rasterfelder auf der Karte bemalen.",
+    "Brush": "Pinsel (Felder)",
+    "Repeat": "Textur wiederholt sich alle (Felder)",
+    "RepeatHint": "Wie viele Rasterfelder eine Kopie der Textur bedeckt, bevor sie sich wiederholt.",
+    "PaintKeys": "Ziehen malt · Strg+Ziehen füllt ein Rechteck · Alt+Ziehen radiert",
+    "PaintSquareOnly": "Der Pinsel malt nur auf quadratischen Rastern.",
+    "PaintFailed": "Malen fehlgeschlagen",
+    "Blocks": "Blockiert Sicht (Wände)",
+    "BlocksHint": "Dieses Bild wird zu Wänden: gestempelte Kacheln bekommen Wände ringsum, bemalte Felder entlang des Umrisses. Wird pro Bild für die Welt gemerkt."
+  }
+}

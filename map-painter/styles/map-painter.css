@@ -1,0 +1,29 @@
+.dewarim-map-painter .window-content { padding: 0.4rem; }
+.dewarim-map-painter .mp-body { display: flex; flex-direction: column; gap: 0.35rem; height: 100%; }
+.dewarim-map-painter .mp-roots { display: flex; gap: 0.3rem; align-items: center; }
+.dewarim-map-painter .mp-roots select { flex: 1; min-width: 0; }
+.dewarim-map-painter .mp-crumbs { font-size: 0.8rem; opacity: 0.8; word-break: break-all; }
+.dewarim-map-painter .mp-recent { display: flex; gap: 2px; flex-wrap: wrap; }
+.dewarim-map-painter .mp-recent img { width: 2rem; height: 2rem; object-fit: contain; border: 1px solid transparent; cursor: pointer; }
+.dewarim-map-painter .images { flex: 1; overflow-y: auto; min-height: 0; }
+.dewarim-map-painter .mp-dir { cursor: pointer; padding: 1px 2px; }
+.dewarim-map-painter .mp-dir:hover { background: rgb(255 255 255 / 5%); }
+.dewarim-map-painter .mp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr)); gap: 3px; }
+.dewarim-map-painter .mp-image { margin: 0; padding: 2px; border: 1px solid transparent; border-radius: 3px; cursor: pointer; text-align: center; }
+.dewarim-map-painter .mp-image:hover { background: rgb(255 255 255 / 5%); }
+.dewarim-map-painter .mp-image img { width: 100%; height: 3.6rem; object-fit: contain; border: none; }
+.dewarim-map-painter .mp-image figcaption { font-size: 0.65rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dewarim-map-painter .selected { border-color: var(--color-warm-2, #ff6400) !important; background: rgb(255 100 0 / 12%); }
+.dewarim-map-painter .stamp-settings { display: flex; flex-direction: column; gap: 0.2rem; border-top: 1px solid var(--color-border, #555); padding-top: 0.3rem; }
+.dewarim-map-painter .stamp-settings label { display: flex; gap: 0.3rem; align-items: center; }
+.dewarim-map-painter .stamp-settings input[type=number] { width: 3.5rem; }
+.dewarim-map-painter .stamp-settings select { width: auto; }
+.dewarim-map-painter .mp-armed { display: flex; gap: 0.3rem; align-items: center; min-height: 1.5rem; }
+.dewarim-map-painter .mp-key { font-size: 0.7rem; opacity: 0.55; margin-left: auto; }
+.dewarim-map-painter .mp-hint { opacity: 0.6; font-style: italic; margin: 0.2rem 0; }
+.dewarim-map-painter .mp-disabled { opacity: 0.5; }
+.dewarim-map-painter .mp-modes { display: flex; gap: 0.3rem; }
+.dewarim-map-painter .mp-modes button { flex: 1; }
+.dewarim-map-painter .mp-modes button.active { border-color: var(--color-border-highlight, #ff6400); box-shadow: 0 0 4px var(--color-shadow-highlight, #ff6400); }
+.dewarim-map-painter .mp-image { position: relative; }
+.dewarim-map-painter .mp-blocks { position: absolute; top: 3px; right: 3px; font-size: 0.7rem; padding: 2px; border-radius: 2px; background: rgb(0 0 0 / 65%); color: #fff; }

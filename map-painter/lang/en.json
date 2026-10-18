@@ -1,0 +1,33 @@
+{
+  "DEWARIM_MAP": {
+    "Title": "Map Painter",
+    "Open": "Open the Map Painter",
+    "UserData": "User data",
+    "Filter": "Filter…",
+    "AddRoot": "Add a folder to the palette",
+    "AddRootHint": "A folder in user data (assets/props, assets/textures/dungeon) or of Foundry (icons/environment).",
+    "RemoveRoot": "Remove this folder from the palette",
+    "Missing": "This folder does not exist yet. Put images there with the File Commander or by uploading.",
+    "CreateFolder": "Create the folder",
+    "Empty": "No images here.",
+    "PickHint": "Pick an image, then click or drag on the canvas.",
+    "Size": "Size (cells)",
+    "Rotation": "Rotation",
+    "Flip": "Mirror",
+    "RandomRotation": "Random rotation (rocks, trees)",
+    "Snap": "Snap to grid",
+    "Undo": "Undo last stroke",
+    "NoScene": "Open a scene first.",
+    "ModeStamp": "Stamp",
+    "ModePaint": "Paint",
+    "PaintHint": "Pick a texture, then paint grid cells on the canvas.",
+    "Brush": "Brush (cells)",
+    "Repeat": "Texture repeats every (cells)",
+    "RepeatHint": "How many grid cells one copy of the texture covers before it repeats.",
+    "PaintKeys": "Drag paints · Ctrl+drag fills a rectangle · Alt+drag erases",
+    "PaintSquareOnly": "The brush paints square grids only.",
+    "PaintFailed": "Painting failed",
+    "Blocks": "Blocks view (walls)",
+    "BlocksHint": "This image becomes walls: stamped tiles get walls around them, painted cells along the outline. Remembered per image for the world."
+  }
+}
