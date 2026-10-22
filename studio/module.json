@@ -1,0 +1,65 @@
+{
+  "id": "dewarim-studio",
+  "title": "Dewarim: Studio",
+  "description": "Author scenes, actors, items and journals in a world and build them into a content module's Adventure, ready to import into any play world. System-agnostic.",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Ingo Wiarda",
+      "email": "ingo@dewarim.de"
+    }
+  ],
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "relationships": {
+    "recommends": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "6.0"
+        },
+        "reason": "Optional: dnd5e table columns, encounter loot and compendium sources"
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/studio.mjs"
+  ],
+  "styles": [
+    "styles/studio.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    }
+  ],
+  "flags": {
+    "hotReload": {
+      "extensions": [
+        "css",
+        "hbs",
+        "json"
+      ],
+      "paths": [
+        "styles",
+        "templates",
+        "lang"
+      ]
+    }
+  },
+  "url": "https://github.com/dewarim/foundry-modules/tree/main/studio",
+  "manifest": "https://raw.githubusercontent.com/dewarim/foundry-modules/main/studio/module.json",
+  "download": "https://github.com/dewarim/foundry-modules/releases/download/studio-v0.1.0/studio.zip",
+  "readme": "https://github.com/dewarim/foundry-modules/blob/main/studio/README.md",
+  "bugs": "https://github.com/dewarim/foundry-modules/issues"
+}

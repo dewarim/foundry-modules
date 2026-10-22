@@ -1,0 +1,31 @@
+<aside class="source-panel">
+  <header>
+    {{#if types}}<select name="sourceType">{{#each types}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>{{/if}}
+    <select name="sourceScope">
+      {{#each scopes}}<option value="{{value}}" {{#if selected}}selected{{/if}} {{#if disabled}}disabled{{/if}}>{{label}}</option>{{/each}}
+      {{#if packs.length}}<optgroup label="{{localize 'DEWARIM_STUDIO.Commander.Compendiums'}}">
+        {{#each packs}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+      </optgroup>{{/if}}
+    </select>
+  </header>
+  <div class="source-filters">
+    <input type="search" name="sourceFilter" value="{{filter}}" placeholder="{{localize 'DEWARIM_STUDIO.Table.Filter'}}" data-tooltip="{{filterTooltip}}">
+    {{#if subtypes}}<select name="sourceSubtype"><option value="">{{localize "DEWARIM_STUDIO.Table.AllTypes"}}</option>
+      {{#each subtypes}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>{{/if}}
+  </div>
+  {{#if hint}}<p class="source-hint">{{hint}}</p>{{/if}}
+  <ol class="source-rows">
+    {{#each rows}}
+    <li class="source-row" draggable="true" data-uuid="{{uuid}}" data-type="{{type}}">
+      <img src="{{img}}" alt="">
+      <span class="name">{{name}}{{#if origin}}<span class="origin">{{origin}}</span>{{/if}}</span>
+      {{#if badge}}<span class="badge">{{badge}}</span>{{/if}}
+      <a data-source-open class="open" data-tooltip="{{localize 'DEWARIM_STUDIO.Commander.OpenSheet'}}"><i class="fa-solid fa-up-right-from-square" inert></i></a>
+      <a data-source-add class="add" data-tooltip="{{localize ../addHint}}"><i class="fa-solid fa-plus" inert></i></a>
+    </li>
+    {{else}}
+    <li class="empty">{{localize "DEWARIM_STUDIO.Commander.EmptyColumn"}}</li>
+    {{/each}}
+    {{#if more}}<li class="empty">{{localize "DEWARIM_STUDIO.Commander.More" count=more}}</li>{{/if}}
+  </ol>
+</aside>

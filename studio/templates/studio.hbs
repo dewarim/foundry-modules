@@ -1,0 +1,102 @@
+<div class="studio-body">
+  {{#if projects.length}}
+  <div class="form-group">
+    <label>{{localize "DEWARIM_STUDIO.Project"}}</label>
+    <select name="project">
+      {{#unless project}}<option value="" selected>—</option>{{/unless}}
+      {{#each projects}}
+      <option value="{{id}}" {{#if selected}}selected{{/if}}>{{title}}</option>
+      {{/each}}
+    </select>
+  </div>
+  {{else}}
+  <p class="notification warning">{{localize "DEWARIM_STUDIO.NoProjects"}}</p>
+  {{/if}}
+
+  {{#if inactive}}
+  <p class="notification warning">{{localize "DEWARIM_STUDIO.Inactive" module=project.title}}</p>
+  {{/if}}
+
+  {{#if project}}
+  {{#if empty}}
+  <p class="hint">{{localize "DEWARIM_STUDIO.Empty"}}</p>
+  {{/if}}
+  {{#each groups}}
+  <details class="studio-group">
+    <summary>{{label}} <span class="count">{{docs.length}}</span></summary>
+    <ul>
+      {{#each docs}}
+      <li><a data-action="openDocument" data-uuid="{{uuid}}">{{name}}</a></li>
+      {{/each}}
+    </ul>
+  </details>
+  {{/each}}
+
+  <div class="studio-buttons">
+    <button type="button" data-action="build" {{#if (or building inactive)}}disabled{{/if}}>
+      <i class="fa-solid fa-hammer" inert></i> {{localize "DEWARIM_STUDIO.Build.Button"}}
+    </button>
+    {{#if pack}}
+    <button type="button" data-action="openPack">
+      <i class="fa-solid fa-book-atlas" inert></i> {{localize "DEWARIM_STUDIO.OpenPack"}}
+    </button>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  <div class="studio-tables">
+    <button type="button" data-action="openTable" data-document="Actor">
+      <i class="fa-solid fa-table" inert></i> {{localize "DOCUMENT.Actors"}}
+    </button>
+    <button type="button" data-action="openTable" data-document="Item">
+      <i class="fa-solid fa-table" inert></i> {{localize "DOCUMENT.Items"}}
+    </button>
+    <button type="button" data-action="openTable" data-document="Scene">
+      <i class="fa-solid fa-table" inert></i> {{localize "DOCUMENT.Scenes"}}
+    </button>
+    <button type="button" data-action="openTable" data-document="JournalEntry">
+      <i class="fa-solid fa-table" inert></i> {{localize "DOCUMENT.JournalEntries"}}
+    </button>
+    {{#if hasFiles}}
+    <button type="button" data-action="openFiles">
+      <i class="fa-solid fa-folder-tree" inert></i> {{localize "DEWARIM_STUDIO.Files"}}
+    </button>
+    {{/if}}
+    <button type="button" data-action="openCommander">
+      <i class="fa-solid fa-table-columns" inert></i> {{localize "DEWARIM_STUDIO.Commander.Open"}}
+    </button>
+    <button type="button" data-action="openScene">
+      <i class="fa-solid fa-map" inert></i> {{localize "DEWARIM_STUDIO.Scene.Open"}}
+    </button>
+    <button type="button" data-action="openEncounter">
+      <i class="fa-solid fa-dragon" inert></i> {{localize "DEWARIM_STUDIO.Encounter.Open"}}
+    </button>
+  </div>
+
+  {{#if report}}
+  <section class="studio-report">
+    <h4>{{#if report.created}}{{localize "DEWARIM_STUDIO.Report.Created"}}{{else}}{{localize "DEWARIM_STUDIO.Report.Updated"}}{{/if}}</h4>
+    <p>{{report.counts}}</p>
+    <p>{{localize "DEWARIM_STUDIO.Report.Copied" count=report.copied}}</p>
+    {{#if report.added.length}}
+    <p>{{localize "DEWARIM_STUDIO.Report.Added"}}</p>
+    <ul>{{#each report.added}}<li>{{this}}</li>{{/each}}</ul>
+    {{/if}}
+    {{#if report.modules.length}}
+    <p class="warning">{{localize "DEWARIM_STUDIO.Report.Modules"}}</p>
+    <ul>{{#each report.modules}}<li><code>{{id}}</code>: {{#each refs}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}{{#if more}} (+{{more}}){{/if}}</li>{{/each}}</ul>
+    {{/if}}
+    {{#if report.systemPacks.length}}
+    <p class="hint">{{localize "DEWARIM_STUDIO.Report.SystemPacks"}} {{#each report.systemPacks}}<code>{{this}}</code> {{/each}}</p>
+    {{/if}}
+    {{#if report.missing.length}}
+    <p class="warning">{{localize "DEWARIM_STUDIO.Report.Missing"}}</p>
+    <ul>{{#each report.missing}}<li>{{this}}</li>{{/each}}</ul>
+    {{/if}}
+    {{#if report.failedAssets.length}}
+    <p class="warning">{{localize "DEWARIM_STUDIO.Report.FailedAssets"}}</p>
+    <ul>{{#each report.failedAssets}}<li><code>{{path}}</code>: {{error}}</li>{{/each}}</ul>
+    {{/if}}
+  </section>
+  {{/if}}
+</div>

@@ -1,0 +1,64 @@
+<div class="commander-root">
+<div class="commander-toolbar">
+  <button type="button" data-action="undo" {{#unless undo}}disabled{{/unless}} data-tooltip="{{#if undo}}{{undo}}{{else}}{{localize 'DEWARIM_STUDIO.Commander.UndoNone'}}{{/if}}">
+    <i class="fa-solid fa-rotate-left" inert></i> {{localize "DEWARIM_STUDIO.Commander.Undo"}}{{#if undoCount}} ({{undoCount}}){{/if}}
+  </button>
+  {{#if undo}}<span class="undo-label">{{undo}}</span>{{/if}}
+</div>
+<div class="commander-body">
+  {{#each columns}}
+  <section class="commander-column" data-index="{{index}}">
+    <header>
+      <select name="type">{{#each types}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+      <select name="scope">
+        {{#each scopes}}<option value="{{value}}" {{#if selected}}selected{{/if}} {{#if disabled}}disabled{{/if}}>{{label}}</option>{{/each}}
+        {{#if packs.length}}<optgroup label="{{localize 'DEWARIM_STUDIO.Commander.Compendiums'}}">
+          {{#each packs}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </optgroup>{{/if}}
+      </select>
+      {{#if canCreate}}<a data-action="create" data-tooltip="{{localize 'DEWARIM_STUDIO.Commander.New'}}"><i class="fa-solid fa-plus" inert></i></a>{{/if}}
+      {{#if removable}}<a data-action="removeColumn" data-tooltip="{{localize 'DEWARIM_STUDIO.Commander.RemoveColumn'}}"><i class="fa-solid fa-xmark" inert></i></a>{{/if}}
+    </header>
+    <div class="column-filters">
+      <input type="search" name="filter" value="{{filter}}" placeholder="{{localize 'DEWARIM_STUDIO.Table.Filter'}}" data-tooltip="{{filterTooltip}}">
+      {{#if subtypes}}<select name="subtype"><option value="">{{localize "DEWARIM_STUDIO.Table.AllTypes"}}</option>
+        {{#each subtypes}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>{{/if}}
+    </div>
+    {{#if hint}}<p class="source-hint">{{hint}}</p>{{/if}}
+    {{#if isPack}}<p class="accepts">{{localize "DEWARIM_STUDIO.Commander.PackHint"}}</p>{{/if}}
+    {{#if accepts}}<p class="accepts">{{localize "DEWARIM_STUDIO.Commander.Accepts" types=accepts}}</p>{{/if}}
+    <ol class="rows">
+      {{#each rows}}
+      <li class="row {{#if fromPack}}from-pack{{/if}}" draggable="true" data-uuid="{{uuid}}" data-document-name="{{../documentName}}" {{#if fromPack}}data-from-pack="1"{{/if}}>
+        <div class="row-main">
+          {{#if expandable}}
+          <a data-action="toggle" class="toggle"><i class="fa-solid {{#if expanded}}fa-caret-down{{else}}fa-caret-right{{/if}}" inert></i></a>
+          {{else}}<span class="toggle"></span>{{/if}}
+          <img src="{{img}}" alt="">
+          <span class="name">{{name}}{{#if origin}}<span class="origin">{{origin}}</span>{{/if}}</span>
+          {{#if badge}}<span class="badge">{{badge}}</span>{{/if}}
+          <a data-action="variant" class="variant" data-tooltip="{{localize 'DEWARIM_STUDIO.Commander.Variant'}}"><i class="fa-solid fa-clone" inert></i></a>
+          <a data-action="open" class="open" data-tooltip="{{localize 'DEWARIM_STUDIO.Commander.OpenSheet'}}"><i class="fa-solid fa-up-right-from-square" inert></i></a>
+        </div>
+        {{#if expanded}}
+        <ul class="children">
+          {{#each children}}
+          <li class="child" draggable="true" data-uuid="{{uuid}}">
+            <img src="{{img}}" alt=""><span class="name">{{name}}</span><span class="note">{{note}}</span>
+          </li>
+          {{else}}
+          <li class="child empty">{{localize "DEWARIM_STUDIO.Commander.Nothing"}}</li>
+          {{/each}}
+        </ul>
+        {{/if}}
+      </li>
+      {{else}}
+      <li class="empty">{{localize "DEWARIM_STUDIO.Commander.EmptyColumn"}}</li>
+      {{/each}}
+      {{#if more}}<li class="empty">{{localize "DEWARIM_STUDIO.Commander.More" count=more}}</li>{{/if}}
+    </ol>
+  </section>
+  {{/each}}
+  <a class="commander-add" data-action="addColumn" data-tooltip="{{localize 'DEWARIM_STUDIO.Commander.AddColumn'}}"><i class="fa-solid fa-plus" inert></i></a>
+</div>
+</div>

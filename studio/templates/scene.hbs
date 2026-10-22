@@ -1,0 +1,129 @@
+<div class="scene-body">
+  <div class="scene-head">
+    <select name="scene">
+      {{#each scenes}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{#if inProject}}★ {{/if}}{{name}}</option>{{/each}}
+    </select>
+    <button type="button" data-action="view" {{#if viewed}}disabled{{/if}}>
+      <i class="fa-solid fa-eye" inert></i> {{#if viewed}}{{localize "DEWARIM_STUDIO.Scene.Viewed"}}{{else}}{{localize "DEWARIM_STUDIO.Scene.View"}}{{/if}}
+    </button>
+  </div>
+
+  <nav class="scene-tabs">
+    {{#each tabs}}
+    <a data-action="switchTab" data-tab="{{id}}" class="{{#if active}}active{{/if}}">{{label}} <span class="count">{{count}}</span></a>
+    {{/each}}
+  </nav>
+
+  <div class="scene-bulk">
+    {{#if isTokens}}
+    <button type="button" data-action="bulk" data-field="hidden" data-value="true"><i class="fa-solid fa-eye-slash" inert></i> {{localize "DEWARIM_STUDIO.Scene.HideAll"}}</button>
+    <button type="button" data-action="bulk" data-field="hidden" data-value="false"><i class="fa-solid fa-eye" inert></i> {{localize "DEWARIM_STUDIO.Scene.RevealAll"}}</button>
+    {{/if}}
+    {{#if isDoors}}
+    <button type="button" data-action="bulk" data-field="ds" data-value="0">{{localize "DEWARIM_STUDIO.Scene.CloseAll"}}</button>
+    <button type="button" data-action="bulk" data-field="ds" data-value="2"><i class="fa-solid fa-lock" inert></i> {{localize "DEWARIM_STUDIO.Scene.LockAll"}}</button>
+    {{/if}}
+    {{#if isTiles}}
+    <button type="button" data-action="bulk" data-field="hidden" data-value="true">{{localize "DEWARIM_STUDIO.Scene.HideAll"}}</button>
+    <button type="button" data-action="bulk" data-field="hidden" data-value="false">{{localize "DEWARIM_STUDIO.Scene.RevealAll"}}</button>
+    {{/if}}
+    {{#if isLights}}
+    <button type="button" data-action="bulk" data-field="hidden" data-value="true">{{localize "DEWARIM_STUDIO.Scene.LightsOff"}}</button>
+    <button type="button" data-action="bulk" data-field="hidden" data-value="false">{{localize "DEWARIM_STUDIO.Scene.LightsOn"}}</button>
+    {{/if}}
+  </div>
+
+  <div class="scene-scroll">
+    <table>
+      {{#if isTokens}}
+      <thead><tr>
+        <th></th><th>{{localize "DEWARIM_STUDIO.Scene.Name"}}</th><th>{{localize "DEWARIM_STUDIO.Encounter.Actor"}}</th>
+        <th>{{localize "DEWARIM_STUDIO.Encounter.Hidden"}}</th><th>{{localize "DEWARIM_STUDIO.Encounter.Disposition"}}</th>
+        {{#if hasHp}}<th>{{localize "DEWARIM_STUDIO.Encounter.Hp"}}</th>{{/if}}
+        <th>{{localize "DEWARIM_STUDIO.Scene.Items"}}</th><th></th>
+      </tr></thead>
+      <tbody>
+        {{#each rows}}
+        <tr data-id="{{id}}">
+          <td><img src="{{img}}" alt=""></td>
+          <td><input type="text" data-field="name" value="{{name}}"></td>
+          <td><a data-action="openActor">{{#if linked}}<i class="fa-solid fa-link" data-tooltip="{{localize 'DEWARIM_STUDIO.Scene.Linked'}}" inert></i> {{/if}}{{actorName}}</a></td>
+          <td class="center"><input type="checkbox" data-field="hidden" {{#if hidden}}checked{{/if}}></td>
+          <td><select data-field="disposition" data-type="number">{{#each dispositions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></td>
+          {{#if ../hasHp}}<td class="hp"><input type="text" data-field="hp" value="{{hp}}"> / {{hpMax}}</td>{{/if}}
+          <td class="items" {{#if itemNames}}data-tooltip="{{itemNames}}"{{/if}}>{{items}}</td>
+          <td><a data-action="pan" data-tooltip="{{localize 'DEWARIM_STUDIO.Scene.Pan'}}"><i class="fa-solid fa-crosshairs" inert></i></a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+      {{/if}}
+
+      {{#if isDoors}}
+      <thead><tr><th>{{localize "DEWARIM_STUDIO.Scene.Position"}}</th><th>{{localize "DEWARIM_STUDIO.Scene.Secret"}}</th><th>{{localize "DEWARIM_STUDIO.Scene.State"}}</th><th></th></tr></thead>
+      <tbody>
+        {{#each rows}}
+        <tr data-id="{{id}}">
+          <td>{{x}}, {{y}}</td>
+          <td>{{#if secret}}<i class="fa-solid fa-user-secret" inert></i>{{/if}}</td>
+          <td>
+            <select data-field="ds" data-type="number">{{#each states}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+            <a data-action="cycleDoor" data-tooltip="{{localize 'DEWARIM_STUDIO.Scene.Cycle'}}"><i class="fa-solid fa-rotate" inert></i></a>
+          </td>
+          <td><a data-action="pan"><i class="fa-solid fa-crosshairs" inert></i></a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+      {{/if}}
+
+      {{#if isNotes}}
+      <thead><tr><th></th><th>{{localize "DEWARIM_STUDIO.Scene.Label"}}</th><th>{{localize "DOCUMENT.JournalEntry"}}</th>
+        <th data-tooltip="{{localize 'DEWARIM_STUDIO.Scene.GlobalHint'}}">{{localize "DEWARIM_STUDIO.Scene.Global"}}</th><th>{{localize "DEWARIM_STUDIO.Scene.Locked"}}</th><th></th></tr></thead>
+      <tbody>
+        {{#each rows}}
+        <tr data-id="{{id}}">
+          <td><img src="{{img}}" alt=""></td>
+          <td><input type="text" data-field="text" value="{{text}}"></td>
+          <td>{{#if entryUuid}}<a data-action="openJournal" data-uuid="{{entryUuid}}">{{entry}}{{#if page}} › {{page}}{{/if}}</a>{{else}}–{{/if}}</td>
+          <td class="center"><input type="checkbox" data-field="global" {{#if global}}checked{{/if}}></td>
+          <td class="center"><input type="checkbox" data-field="locked" {{#if locked}}checked{{/if}}></td>
+          <td><a data-action="pan"><i class="fa-solid fa-crosshairs" inert></i></a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+      {{/if}}
+
+      {{#if isTiles}}
+      <thead><tr><th></th><th>{{localize "DEWARIM_STUDIO.Scene.Name"}}</th><th>{{localize "DEWARIM_STUDIO.Encounter.Hidden"}}</th><th>{{localize "DEWARIM_STUDIO.Scene.Locked"}}</th><th></th></tr></thead>
+      <tbody>
+        {{#each rows}}
+        <tr data-id="{{id}}">
+          <td><img src="{{img}}" alt=""></td>
+          <td>{{name}}</td>
+          <td class="center"><input type="checkbox" data-field="hidden" {{#if hidden}}checked{{/if}}></td>
+          <td class="center"><input type="checkbox" data-field="locked" {{#if locked}}checked{{/if}}></td>
+          <td><a data-action="pan"><i class="fa-solid fa-crosshairs" inert></i></a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+      {{/if}}
+
+      {{#if isLights}}
+      <thead><tr><th>{{localize "DEWARIM_STUDIO.Scene.Name"}}</th><th>{{localize "DEWARIM_STUDIO.Scene.Position"}}</th><th>{{localize "DEWARIM_STUDIO.Scene.Off"}}</th>
+        <th>{{localize "DEWARIM_STUDIO.Scene.Bright"}}</th><th>{{localize "DEWARIM_STUDIO.Scene.Dim"}}</th><th></th></tr></thead>
+      <tbody>
+        {{#each rows}}
+        <tr data-id="{{id}}">
+          <td>{{name}}</td>
+          <td>{{x}}, {{y}}</td>
+          <td class="center"><input type="checkbox" data-field="hidden" {{#if hidden}}checked{{/if}}></td>
+          <td><input type="text" data-field="config.bright" data-type="number" value="{{bright}}"></td>
+          <td><input type="text" data-field="config.dim" data-type="number" value="{{dim}}"></td>
+          <td><a data-action="pan"><i class="fa-solid fa-crosshairs" inert></i></a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+      {{/if}}
+    </table>
+    {{#unless rows.length}}<p class="hint empty">{{localize "DEWARIM_STUDIO.Scene.Empty"}}</p>{{/unless}}
+  </div>
+</div>

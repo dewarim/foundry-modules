@@ -1,0 +1,104 @@
+<div class="table-body">
+  <div class="table-toolbar">
+    <select name="preset" data-tooltip="{{localize 'DEWARIM_STUDIO.Table.PresetHint'}}">
+      {{#each presets}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+    </select>
+    <select name="scope">
+      {{#each scopes}}<option value="{{id}}" {{#if selected}}selected{{/if}} {{#if disabled}}disabled{{/if}}>{{label}}</option>{{/each}}
+    </select>
+    {{#if subtypes.length}}
+    <select name="subtype">
+      <option value="">{{localize "DEWARIM_STUDIO.Table.AllTypes"}}</option>
+      {{#each subtypes}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+    </select>
+    {{/if}}
+    <input type="search" name="filter" value="{{filter}}" placeholder="{{localize 'DEWARIM_STUDIO.Table.Filter'}}" data-tooltip="{{filterTooltip}}">
+    {{#if filterHint}}<span class="filter-hint">{{filterHint}}</span>{{/if}}
+    <span class="spacer"></span>
+    <input type="text" name="newColumn" placeholder="{{localize 'DEWARIM_STUDIO.Table.ColumnPath'}}">
+    <button type="button" data-action="addColumn" data-tooltip="{{localize 'DEWARIM_STUDIO.Table.AddColumn'}}">
+      <i class="fa-solid fa-table-columns" inert></i>
+    </button>
+    <button type="button" data-action="copyRows" data-tooltip="{{localize 'DEWARIM_STUDIO.Table.CopyHint'}}">
+      <i class="fa-solid fa-copy" inert></i>
+    </button>
+    <button type="button" data-action="pasteRows" data-tooltip="{{localize 'DEWARIM_STUDIO.Table.PasteHint'}}">
+      <i class="fa-solid fa-paste" inert></i>
+    </button>
+    <button type="button" data-action="toggleSources" class="{{#if showSources}}active{{/if}}" data-tooltip="{{localize 'DEWARIM_STUDIO.Table.SourcesHint'}}">
+      <i class="fa-solid fa-book-atlas" inert></i>
+    </button>
+  </div>
+
+  <div class="table-main">
+  <div class="table-scroll" data-tooltip-direction="UP">
+    <table>
+      <thead>
+        <tr>
+          <th class="select"><input type="checkbox" data-action="selectAll" {{#if allSelected}}checked{{/if}}></th>
+          <th class="open"></th>
+          {{#each headers}}
+          <th data-path="{{path}}" data-tooltip="{{path}}">
+            {{label}}
+            {{#if custom}}<a data-action="removeColumn" data-path="{{path}}"><i class="fa-solid fa-xmark" inert></i></a>{{/if}}
+          </th>
+          {{/each}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each rows}}
+        <tr data-id="{{id}}" class="{{#if dirty}}dirty{{/if}}">
+          <td class="select"><input type="checkbox" name="select" {{#if selected}}checked{{/if}}></td>
+          <td class="open"><a data-action="openSheet"><i class="fa-solid fa-up-right-from-square" inert></i></a></td>
+          {{#each cells}}
+          {{#if na}}
+          <td class="na">–</td>
+          {{else}}
+          <td class="cell type-{{type}} {{#if dirty}}dirty{{/if}} {{#if invalid}}invalid{{/if}} {{#if readonly}}readonly{{/if}}"
+              {{#if hint}}data-tooltip="{{hint}}"{{/if}}>
+            {{#if isBoolean}}
+            <input type="checkbox" data-path="{{path}}" {{#if value}}checked{{/if}} {{#if readonly}}disabled{{/if}}>
+            {{else if isSelect}}
+            <select data-path="{{path}}" {{#if readonly}}disabled{{/if}}>
+              {{#if allowEmpty}}<option value=""></option>{{/if}}
+              {{#each choices}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+            {{else if isImage}}
+            <div class="image-cell">
+              <img src="{{#if value}}{{value}}{{else}}icons/svg/mystery-man.svg{{/if}}" data-action="pickImage" alt="">
+              <input type="text" data-path="{{path}}" value="{{value}}" {{#if readonly}}readonly{{/if}}>
+            </div>
+            {{else}}
+            <input type="{{#if isNumber}}text{{else}}text{{/if}}" {{#if isNumber}}inputmode="decimal"{{/if}}
+                   data-path="{{path}}" value="{{value}}" {{#if readonly}}readonly{{/if}}>
+            {{/if}}
+          </td>
+          {{/if}}
+          {{/each}}
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{#if empty}}<p class="hint empty">{{localize "DEWARIM_STUDIO.Table.Empty"}}</p>{{/if}}
+  </div>
+  {{#if showSources}}{{> "modules/dewarim-studio/templates/source-panel.hbs" source}}{{/if}}
+  </div>
+
+  <div class="table-footer">
+    <span><span class="selected-count">{{selectedCount}}</span> {{localize "DEWARIM_STUDIO.Table.Selected"}}</span>
+    <select name="bulkColumn">
+      {{#each bulkColumns}}<option value="{{path}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+    </select>
+    <input type="text" name="bulkValue" placeholder="{{localize 'DEWARIM_STUDIO.Table.BulkValue'}}">
+    <button type="button" data-action="bulk">{{localize "DEWARIM_STUDIO.Table.Bulk"}}</button>
+    <button type="button" data-action="duplicate"><i class="fa-solid fa-copy" inert></i> {{localize "DEWARIM_STUDIO.Table.Duplicate"}}</button>
+    <button type="button" data-action="delete"><i class="fa-solid fa-trash" inert></i> {{localize "DEWARIM_STUDIO.Table.Delete"}}</button>
+    <span class="spacer"></span>
+    {{#if undoLabel}}<button type="button" data-action="undo"><i class="fa-solid fa-rotate-left" inert></i> {{undoLabel}}</button>{{/if}}
+    <button type="button" data-action="create"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_STUDIO.Table.Create"}}</button>
+    <button type="button" data-action="revert" {{#unless (or pending invalid)}}disabled{{/unless}}>{{localize "DEWARIM_STUDIO.Table.Revert"}}</button>
+    <button type="button" data-action="save" class="save" {{#if (or invalid (eq pending 0))}}disabled{{/if}}>
+      <i class="fa-solid fa-floppy-disk" inert></i> {{localize "DEWARIM_STUDIO.Table.Save"}} (<span class="count">{{pending}}</span>)
+    </button>
+  </div>
+</div>

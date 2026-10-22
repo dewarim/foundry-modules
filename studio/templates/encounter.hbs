@@ -1,0 +1,157 @@
+<div class="encounter-layout">
+<div class="encounter-body">
+  <div class="encounter-head encounter-drafts">
+    <label>{{localize "DEWARIM_STUDIO.Encounter.Draft.Label"}}
+      <select name="draft">
+        {{#each drafts}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+    </label>
+    <input type="text" name="draftName" value="{{draftName}}" placeholder="{{draftPlaceholder}}">
+    <button type="button" data-action="saveDraft" class="{{#if draftDirty}}dirty{{/if}}" data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.Draft.SaveHint'}}">
+      <i class="fa-solid fa-floppy-disk" inert></i> {{localize "DEWARIM_STUDIO.Encounter.Draft.Save"}}
+    </button>
+    {{#if hasDraft}}<button type="button" data-action="deleteDraft" data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.Draft.Delete'}}">
+      <i class="fa-solid fa-trash" inert></i>
+    </button>{{/if}}
+  </div>
+  <div class="encounter-head">
+    <label>{{localize "DOCUMENT.Scene"}}
+      <select name="scene">
+        {{#each scenes}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{#if inProject}}★ {{/if}}{{name}}</option>{{/each}}
+      </select>
+    </label>
+    <label>{{localize "DEWARIM_STUDIO.Encounter.Placement.Label"}}
+      <select name="placement">
+        {{#each placements}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+    </label>
+  </div>
+
+  <section class="mobs" data-drop="Actor">
+    <h4>{{localize "DEWARIM_STUDIO.Encounter.Mobs"}}</h4>
+    {{#if mobs.length}}
+    <table>
+      <thead><tr>
+        <th></th><th>{{localize "DEWARIM_STUDIO.Encounter.Actor"}}</th>
+        <th data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.KindHint'}}">{{localize "DEWARIM_STUDIO.Encounter.Kind.Label"}}</th>
+        <th>{{localize "DEWARIM_STUDIO.Encounter.Count"}}</th>
+        <th>{{localize "DEWARIM_STUDIO.Encounter.Pattern"}}</th>
+        {{#if hasHp}}<th data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.HpHint'}}">{{localize "DEWARIM_STUDIO.Encounter.Hp"}}</th>{{/if}}
+        <th>{{localize "DEWARIM_STUDIO.Encounter.Hidden"}}</th><th>{{localize "DEWARIM_STUDIO.Encounter.Disposition"}}</th>
+        {{#if rating}}<th data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.Rating.XpHint'}}">{{localize "DEWARIM_STUDIO.Encounter.Rating.Xp"}}</th>{{/if}}
+        <th></th>
+      </tr></thead>
+      <tbody>
+        {{#each mobs}}
+        <tr data-index="{{index}}" class="{{#if missing}}missing{{/if}}">
+          <td><img src="{{img}}" alt=""></td>
+          <td class="name">{{#if missing}}<i class="fa-solid fa-triangle-exclamation" data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.Draft.MissingRow'}}" inert></i> {{/if}}{{name}}</td>
+          {{#if unique}}
+          <td colspan="3" class="unique" data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.UniqueHint'}}">
+            <i class="fa-solid fa-link" inert></i> {{localize "DEWARIM_STUDIO.Encounter.Kind.unique"}}
+          </td>
+          {{else}}
+          <td><select data-field="kind">{{#each kinds}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></td>
+          <td><input type="number" data-field="count" value="{{count}}" min="0" max="100"></td>
+          <td><input type="text" data-field="pattern" value="{{pattern}}" data-tooltip="{{patternHint}}"></td>
+          {{/if}}
+          {{#if ../hasHp}}<td><input type="text" data-field="hp" value="{{hp}}" placeholder="{{localize 'DEWARIM_STUDIO.Encounter.HpDefault'}}"></td>{{/if}}
+          <td class="center"><input type="checkbox" data-field="hidden" {{#if hidden}}checked{{/if}}></td>
+          <td><select data-field="disposition">{{#each dispositions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></td>
+          {{#if ../rating}}<td class="xp {{#if worth.dim}}dim{{/if}} {{#if worth.strong}}strong{{/if}}" data-tooltip="{{worth.hint}}">
+            {{#if worth.strong}}<i class="fa-solid fa-skull" inert></i> {{/if}}{{worth.text}}</td>{{/if}}
+          <td><a data-action="removeMob"><i class="fa-solid fa-xmark" inert></i></a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{/if}}
+    <p class="drop-hint">{{localize "DEWARIM_STUDIO.Encounter.DropActors"}}</p>
+  </section>
+
+  {{#if rating}}
+  <section class="rating" data-drop="Party">
+    <div class="rating-head">
+      <h4>{{localize "DEWARIM_STUDIO.Encounter.Rating.Title"}}</h4>
+      <label>{{localize "DEWARIM_STUDIO.Encounter.Party.Label"}}
+        <select name="party">{{#each rating.parties}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+      </label>
+      {{#if rating.custom}}
+      <label><input type="number" name="party-count" value="{{rating.count}}" min="1" max="12"> × {{localize "DEWARIM_STUDIO.Encounter.Party.Level"}}
+        <input type="number" name="party-level" value="{{rating.level}}" min="1" max="20"></label>
+      {{/if}}
+      {{#if rating.group}}
+      {{#unless rating.group.primary}}<a data-action="makePrimary" data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.Party.MakePrimary'}}"><i class="fa-regular fa-star" inert></i></a>{{/unless}}
+      <a data-action="openParty" data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.Party.Open'}}"><i class="fa-solid fa-users" inert></i></a>
+      {{/if}}
+      <a data-action="newParty" data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.Party.New'}}"><i class="fa-solid fa-user-plus" inert></i></a>
+    </div>
+    {{#if rating.heroes.length}}
+    <ul class="heroes">
+      {{#each rating.heroes}}
+      <li data-actor-id="{{id}}" class="{{#unless counted}}not-counted{{/unless}}" data-action="openHero"
+        {{#unless counted}}data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.Party.NotCounted'}}"{{/unless}}>
+        <img src="{{img}}" alt=""> {{name}}{{#if counted}} <span class="level">{{level}}</span>{{/if}}
+        {{#if ../rating.group}}<a data-action="removeHero" data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.Party.Remove'}}"><i class="fa-solid fa-xmark" inert></i></a>{{/if}}
+      </li>
+      {{/each}}
+    </ul>
+    {{/if}}
+    {{#if rating.noHeroes}}<p class="drop-hint">{{localize (ifThen rating.group "DEWARIM_STUDIO.Encounter.Party.Empty" "DEWARIM_STUDIO.Encounter.Party.NoPlayers")}}</p>{{/if}}
+    {{#if rating.result.rating}}
+    <div class="rating-bar rating-{{rating.result.rating}}">
+      <div class="fill" style="width: {{rating.result.pct}}%"></div>
+      <span class="stop" style="left: {{rating.result.stops.low}}%"></span>
+      <span class="stop" style="left: {{rating.result.stops.moderate}}%"></span>
+      <span class="stop" style="left: {{rating.result.stops.high}}%"></span>
+    </div>
+    <p class="rating-text rating-{{rating.result.rating}}"><strong>{{rating.result.label}}</strong> · {{rating.result.xp}} XP · {{rating.result.budget}}</p>
+    {{/if}}
+    {{#if rating.group}}<p class="drop-hint">{{localize "DEWARIM_STUDIO.Encounter.Party.DropHint"}}</p>{{/if}}
+  </section>
+  {{/if}}
+
+  <section class="loot" data-drop="Item">
+    <h4>{{localize "DEWARIM_STUDIO.Encounter.Loot"}}</h4>
+    {{#if loot.length}}
+    <table>
+      <thead><tr>
+        <th></th><th>{{localize "DOCUMENT.Item"}}</th>
+        {{#if hasQuantity}}<th>{{localize "DEWARIM_STUDIO.Encounter.Quantity"}}</th>{{/if}}
+        <th>{{localize "DEWARIM_STUDIO.Encounter.Target"}}</th><th></th>
+      </tr></thead>
+      <tbody>
+        {{#each loot}}
+        <tr data-index="{{index}}" class="{{#if missing}}missing{{/if}}">
+          <td><img src="{{img}}" alt=""></td>
+          <td class="name">{{#if missing}}<i class="fa-solid fa-triangle-exclamation" data-tooltip="{{localize 'DEWARIM_STUDIO.Encounter.Draft.MissingRow'}}" inert></i> {{/if}}{{name}}</td>
+          {{#if ../hasQuantity}}<td><input type="number" data-field="quantity" value="{{quantity}}" min="1"></td>{{/if}}
+          <td><select data-field="target">{{#each targets}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></td>
+          <td><a data-action="removeLoot"><i class="fa-solid fa-xmark" inert></i></a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{/if}}
+    <p class="drop-hint">{{localize "DEWARIM_STUDIO.Encounter.DropItems"}}</p>
+    <div class="chest-choice">
+      <label>{{localize "DEWARIM_STUDIO.Encounter.ChestFor"}}
+        <select name="chest">{{#each chests}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+      </label>
+      {{#if chestIsNew}}<label class="chest-name">{{localize "DEWARIM_STUDIO.Encounter.ChestName"}}
+        <input type="text" name="chestName" value="{{chestName}}" placeholder="{{chestPlaceholder}}">
+      </label>{{/if}}
+    </div>
+  </section>
+
+  <div class="encounter-footer">
+    <button type="button" data-action="clear">{{localize "DEWARIM_STUDIO.Encounter.Clear"}}</button>
+    {{#if undoLabel}}<button type="button" data-action="undoPlacement" {{#if busy}}disabled{{/if}}><i class="fa-solid fa-rotate-left" inert></i> {{undoLabel}}</button>{{/if}}
+    <span class="spacer"></span>
+    <button type="button" data-action="create" {{#unless canCreate}}disabled{{/unless}}>
+      <i class="fa-solid fa-dragon" inert></i> {{localize "DEWARIM_STUDIO.Encounter.Create" count=tokenCount}}
+    </button>
+  </div>
+</div>
+{{> "modules/dewarim-studio/templates/source-panel.hbs" source}}
+</div>
