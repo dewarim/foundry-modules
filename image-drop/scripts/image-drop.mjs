@@ -1,8 +1,14 @@
 // Drop image files from the desktop anywhere on the Foundry window; they are uploaded into a configured
 // folder of the user data directory. Generic: no system-specific code.
 import {baseNames, folderChain, normalizeFolder, planUploads} from "./upload-plan.mjs";
+import {isDocumentDragData} from "./drag-source.mjs";
+import {registerChangelog} from "./shared/changelog.mjs";
 
 const MODULE_ID = "dewarim-image-drop";
+
+// After an install or update, GMs see what changed (CHANGELOG.md)
+registerChangelog(MODULE_ID);
+
 const SOURCE = "data";
 
 // Places that already handle a file drop themselves; the module stays out of their way.
@@ -14,6 +20,10 @@ const OWN_DROP_TARGETS = ".ProseMirror, prose-mirror, #file-picker, input[type=f
 
 let overlay;
 let dragDepth = 0;
+// A drag that began inside the window is Foundry's own - an actor onto the canvas, an item onto a sheet.
+// It can carry files all the same: a drag starting on an image (a directory entry's portrait) hands the
+// browser that image as a file, so "Files" in dataTransfer.types is no proof the drag came from outside.
+let internalDrag = false;
 
 Hooks.once("init", () => {
   game.settings.register(MODULE_ID, "folder", {
@@ -37,6 +47,11 @@ Hooks.once("init", () => {
 Hooks.once("ready", () => {
   game.modules.get(MODULE_ID).api = {uploadImages, targetFolder};
   // Capture phase on window: runs before the canvas, the sheets and core's document-level drop blocker.
+  // dragstart/dragend tell an in-window drag from a file dropped in from outside.
+  window.addEventListener("dragstart", onDragStart, true);
+  window.addEventListener("dragend", onDragEnd, true);
+  // A drag whose source element was re-rendered away reports no dragend; the next click clears the flag.
+  window.addEventListener("pointerdown", onDragEnd, true);
   window.addEventListener("dragenter", onDragEnter, true);
   window.addEventListener("dragover", onDragOver, true);
   window.addEventListener("dragleave", onDragLeave, true);
@@ -50,12 +65,24 @@ function targetFolder() {
 
 /** Whether this drag is one the module should take: files from outside, an active user who may upload. */
 function isOurs(event) {
+  if ( internalDrag ) return false;
   if ( !game.settings.get(MODULE_ID, "enabled") ) return false;
   if ( !event.dataTransfer?.types.includes("Files") ) return false;
   return !event.target.closest?.(OWN_DROP_TARGETS);
 }
 
+/** A drag starting in the window belongs to Foundry, whatever the browser put into its dataTransfer. */
+function onDragStart() {
+  internalDrag = true;
+}
+
+/** End of that drag - dragend is also reported when it was dropped outside the window. */
+function onDragEnd() {
+  internalDrag = false;
+}
+
 function onDragEnter(event) {
+  if ( internalDrag ) return;
   if ( !event.dataTransfer?.types.includes("Files") ) return;
   dragDepth++;
   updateOverlay(event);
@@ -73,6 +100,7 @@ function onDragOver(event) {
 }
 
 function onDragLeave(event) {
+  if ( internalDrag ) return;
   if ( !event.dataTransfer?.types.includes("Files") ) return;
   dragDepth = Math.max(0, dragDepth - 1);
   if ( dragDepth === 0 ) hideOverlay();
@@ -81,7 +109,12 @@ function onDragLeave(event) {
 async function onDrop(event) {
   dragDepth = 0;
   hideOverlay();
-  if ( !isOurs(event) ) return;
+  // Only now, in the drop handler, may the drag's data be read: a second check for a drag of Foundry's
+  // own that reached us anyway, e.g. from a second Foundry window, where no dragstart of ours fired.
+  const ours = isOurs(event) && !isDocumentDragData(event.dataTransfer.getData("text/plain"))
+    && (event.dataTransfer.files.length > 0);
+  internalDrag = false;  // the drop ends the drag, and dragend does not always follow
+  if ( !ours ) return;
   event.preventDefault();
   event.stopPropagation();
   if ( !game.user.hasPermission("FILES_UPLOAD") ) {

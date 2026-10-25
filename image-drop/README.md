@@ -11,6 +11,9 @@ File names are made URL-safe (`Drachenhöhle (2).PNG` → `Drachenhohle-2.png`).
 - Leaves alone what already handles file drops: rich-text editors (they embed the image), the
   FilePicker (uploads to the folder it shows), file inputs, and any element marked
   `data-accepts-files` (the File Commander's panes).
+- Leaves alone what Foundry drags itself: an actor onto the canvas, an item onto a sheet, a journal
+  entry into an editor. Only a drag that starts outside the window is taken — a dragged portrait comes
+  along as a file, so what a drag carries is not enough to tell them apart.
 - Non-image files in a drop are skipped with a warning.
 - Per-browser switch *Upload dropped images* turns it off.
 
