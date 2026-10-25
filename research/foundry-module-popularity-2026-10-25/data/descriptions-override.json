@@ -1,0 +1,6 @@
+{
+  "_comment": "Hand-written where no rule can rescue the manifest text: the author's own one-liner is empty, is a version notice, or is marketing copy. Everything else in the tables is derived from the manifest by make-descriptions.py.",
+  "times-up": "Expires active effects when their duration runs out; the author plans no v14 version",
+  "vueport": "Library contributed by The Forge letting modules build interfaces with Vue instead of Handlebars",
+  "av-maps-remake-by-narchy": "Map collection for Pathfinder 2e's Abomination Vaults adventure path"
+}

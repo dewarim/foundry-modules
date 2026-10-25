@@ -1,0 +1,151 @@
+stars	manifest	last_push	state	repo	description
+2923	none	2026-10-25	-	lissy93/portainer-templates	🚢 800+ 1-click Portainer app templates
+941	none	2026-10-25	-	felddy/foundryvtt-docker	An easy-to-deploy containerized Foundry Virtual Tabletop server.
+674	none	2026-07-10	-	BigJk/snd	Sales & Dungeons — Thermal Printer as D&D / TTRPG Utility
+649	none	2026-10-24	-	foundryvtt/pf2e	A community contributed game system for Pathfinder Second Edition.
+605	system.json	2026-10-24	-	foundryvtt/dnd5e	An implementation of the 5th Edition game system for Foundry Virtual Tabletop (http://foundryvtt.com).
+396	none	2026-10-19	-	foundryvtt/foundryvtt	Public issue tracking and documentation for Foundry Virtual Tabletop - software connecting RPG gamers in a shared multiplayer environment with an intuitive interface and powerful API.
+252	none	2026-10-19	-	MrPrimate/ddb-importer	Integrate your dndbeyond.com content into Foundry virtual tabletop
+223	module.json	2024-08-09	-	foundry-vtt-community/macros	FVTT Community Macros - 📝 Contribute macros or download them as a module! 📝
+210	none	2026-10-25	-	aneasystone/github-trending	使用 Github Actions 跟踪 Github 趋势项目。
+209	system.json	2026-10-18	-	deltagreen-foundryvtt/delta-green-foundry-vtt-system	A Foundry VTT game system for Delta Green: The RPG! This is a fan made work that is unaffiliated with Shane Ivey or Arc Dream Publishing, published under the Delta Green Community license. http://www.delta-green.com https://foundryvtt.com/
+205	system.json	2026-06-14	-	fvtt-fria-ligan/forbidden-lands-foundry-vtt	This is a Forbidden Lands game System for the Foundry Virtual Tabletop. Made by @Perfectro, @patrys and @aMediocreDad. Maintained by @Cussa
+200	none	2026-10-22	-	xdy/twodsix-foundryvtt	A system for running games using various 2d6-based role-playing games, specifically with the Cepheus Engine Core Rules and similar systems. <br/>This Product is derived from the Traveller System Reference Document and other Open Gaming Content made available by the Open Gaming License, and does not contain closed content from products published by either Mongoose Publishing or Far Future Enterprises. This Product is not affiliated with either Mongoose Publishing or Far Future Enterprises, and it makes no claim to or challenge to any trademarks held by either entity. The use of the Traveller System Reference Document does not convey the endorsement of this Product by either Mongoose Publishing or Far Future Enterprises as a product of either of their product lines.<br/>Cepheus Engine and Samardan Press™ are the trademarks of Jason "Flynn" Kemp; I am not affiliated with Jason "Flynn" Kemp or Samardan Press™.<br/> See the files OpenGameLicense.md and LICENSE for license details..<br/>
+199	none	2026-09-15	-	Billiam/awesome-ironsworn	An awesome list of awesome Ironsworn projects
+188	system.json	2026-10-25	-	Foundryborne/daggerheart	The official Foundry VTT implementation of the Daggerheart system
+180	none	2023-11-06	ARCH	fantasycalendar/obsidian-fantasy-calendar	
+176	module.json	2024-01-27	-	League-of-Foundry-Developers/FoundryVTT-Module-Template	A template repository for FoundryVTT module development that comes with versioned CI/CD
+170	none	2026-10-10	-	Miskatonic-Investigative-Society/CoC7-FoundryVTT	An implementation of the Call of Cthulhu 7th Edition game system for Foundry Virtual Tabletop.
+169	none	2026-10-09	-	neuralinitiative/claude-dnd-skill	Unofficial D&D 5e Dungeon Master for Claude Code — persistent campaigns, full 5e mechanics, and an optional cinematic display companion for your TV
+159	src/system.json	2026-10-21	-	Eranziel/foundryvtt-lancer	A Foundry VTT game system for LANCER RPG. 
+155	none	2026-10-19	-	League-of-Foundry-Developers/foundry-vtt-types	Unofficial type declarations for the Foundry Virtual Tabletop API
+148	none	2026-10-23	-	fantasycalendar/Fantasy-Calendar	 Build a calendar that fits your world! Whether you're a GM just here to track your Forgotten Realms campaign with a preset calendar, or a fanciful world-builder with 12 moons (Like Eberron's) and zany timekeeping systems to match, we've got you covered.
+143	none	2026-09-12	-	pangoleen/awesome-even-realities-g2	Curated resources for building on the Even Realities G2 smart glasses.
+140	none	2021-01-25	-	bryancasler/Bryans-Preferred-Modules-for-FoundryVTT	My personally cultivated list of FoundryVTT Modules for Dungeons and Dragons 5e and Pathfinder 2e that play nicely together without creating an overwhelming amount of UI options or causing noticeable FPS drops.
+133	system.json	2026-10-19	-	crnormand/gurps	Implementing a GURPS 4e game aid for Foundry VTT
+132	none	2024-03-19	-	VanceCole/macros	A collection of macros and code examples for FoundryVTT
+131	none	2025-05-07	ARCH	flamewave000/discord-overlay	This overlay host is to provide a desktop overlay for when you're playing games in the browser and still want to see who's talking (such as TTRPGs on FoundryVTT or Roll20).
+130	system.json	2026-10-18	-	StarWarsFoundryVTT/StarWarsFFG	StarWarsFFG System for Foundry VTT.
+126	none	2022-10-04	-	NateHawk85/Nathans-DnD5e-Foundry-Modules	A list of modules that I personally use for my Foundry DnD5e games, along with my preferred settings for each.
+125	none	2026-07-07	-	farling42/obsidian-import-json	Plug-in for Obsidian.md which will create Notes from JSON files
+119	none	2023-05-21	-	TheLustriVA/portainer-templates-Nov-2022-collection	A collection of 488 templates for Portainer v2.0 sourced from various repositories
+114	none	2026-10-09	-	foundryvtt/foundryvtt-cli	The official Foundry VTT CLI
+112	system.json	2026-10-25	-	League-of-Fabulous-Developers/FoundryVTT-Fabula-Ultima	Enter Project FU: an unofficial foundry system for Fabula Ultima, channeling the essence of the book while delivering the immersive experience of playing a JRPG in tabletop format.
+108	system.json	2026-01-22	-	vttred/ose	Old-School Essentials – Foundry VTT Edition
+105	system.json	2026-10-18	-	moo-man/WFRP4e-FoundryVTT	The premiere system for running grim and perilous games of Warhammer Fantasy Role-play in the Foundry VTT environment.
+100	none	2026-06-09	-	oakbrad/dungeonchurch	D&D group infrastructure.
+99	none	2026-08-24	-	foundryvtt-starfinder/foundryvtt-starfinder	A community maintained implementation of the Starfinder Roleplaying Game for Foundry VTT.
+97	system.json	2026-10-17	-	Plushtoast/dsa5-foundryVTT	Das Schwarze Auge / The Dark Eye 5th Ed. System for Foundry VTT
+96	module.json	2025-05-24	-	Praxxian/lava-flow	A Foundry VTT module that allows you to import your notes from Obsidian MD into Foundry journal entries.
+91	none	2026-08-24	-	phenomen/flc	Foundry Lightweight Client (FLC) is a bloat-free client app for Foundry VTT
+87	src/module.json	2024-02-04	-	sdenec/tidy5e-sheet	An alternative Character Sheet for Foundry VTT dnd5e aimed at creating a cleaner UI.
+84	none	2026-10-25	-	kgar/foundry-vtt-tidy-5e-sheets	D&D 5e sheet layouts for Foundry VTT, focused on a clean UI, user ergonomics, and extensibility.
+81	none	2026-09-25	-	ben/foundry-ironsworn	Ironsworn and Starforged, for Foundry VTT
+79	none	2026-10-14	-	MrPrimate/ddb-proxy	
+79	none	2026-09-29	-	Muttley/foundryvtt-shadowdark	Shadowdark game system for Foundry VTT
+78	system.json	2026-10-17	-	MetaMorphic-Digital/draw-steel	The official Draw Steel implementation for FoundryVTT
+77	none	2026-10-17	-	adambdooley/foundry-vtt-mcp	An MCP (Model Context Protocol) server that bridges Foundry VTT data with Claude Desktop, enabling users to chat with their game world data using their own Claude subscription.
+77	src/system.json	2026-10-22	-	the-metalworks/cosmere-rpg	A community-developed system for the Cosmere Roleplaying Game, by Dragonsteel Entertainment and Brotherwise Games.
+75	module.json	2026-06-05	-	GeanoFeeFoundry/geanos-scene-rotation	A Foundry VTT module to rotate entire scenes (Background, Walls, Lights, etc.) by 90 degrees.
+75	none	2025-06-11	-	Kuenaimaku/lancer-briefings	self-contained site for presenting LANCER mission briefs to players
+75	none	2021-07-19	ARCH	Widdershin/cycle-ecosystem	What are the most popular and trending libraries for Cycle.js? (curated by robots and people)
+75	module.json	2026-05-28	-	moo-man/FVTT-DD-Import	Allows Importing Dungeondraft map files into FoundryVTT
+74	system.json	2026-10-24	-	SR5-FoundryVTT/SR5-FoundryVTT	Shadowrun 5th Edition system for FoundryVTT
+72	module.json	2026-06-19	-	ironmonk108/monks-active-tiles	
+71	module.json	2026-10-11	-	fantasycalendar/FoundryVTT-Sequencer	This module implements a basic pipeline that can be used for managing the flow of a set of functions, effects, sounds, and macros.
+70	src/module.json	2025-05-12	-	vigoren/foundryvtt-simple-calendar	A simple calendar module for the FoundryVTT system
+69	module.json	2026-06-01	-	GeanoFeeFoundry/geanos-scene-optimizer	High-performance asset optimization for FoundryVTT. Convert scene backgrounds to WebP and audio to OGG Opus directly in your browser using multi-threaded WebCodecs for faster load times and less bandwidth.
+67	none	2026-03-25	-	flamewave000/dragonflagon-fvtt	DragonFlagon FoundryVTT Modules
+65	none	2022-11-05	-	cat-box/aws-foundry-ssl	Deploys Foundry VTT with SSL encryption in AWS using CloudFormation (Beginner Friendly)
+65	module.json	2026-05-17	-	ironmonk108/monks-tokenbar	
+64	none	2026-09-17	-	MrPrimate/ddb-adventure-muncher	Import scenes and journals into Foundry VTT from DDB
+63	module.json	2026-09-14	-	ironmonk108/monks-enhanced-journal	
+62	none	2026-08-23	-	nix-foundryvtt/nix-foundryvtt	A Nix derivation for Foundry VTT
+60	none	2026-09-10	-	Feu-Secret/Tokenmagic	A Foundry VTT module that allows you to add animations and graphic effects to tokens, tiles, templates and drawings.
+60	none	2020-12-18	-	dev7355608/csgo_dont_blind_me	This app reduces the screen brightness when flashed in CS:GO
+59	none	2022-12-08	-	cswendrowski/HumbleBundleBot	Scrapes HumbleBundle.com for new Bundles and posts new bundles to different Discord channels or generic webhooks whenever a new Bundle shows up.
+57	system.json	2026-10-16	-	JohanFalt/Foundry_WoD20	World of Darkness 20th ed for Foundry VTT
+56	static/module.json	2026-10-23	-	DFreds/dfreds-convenient-effects	A FoundryVTT module that adds easy to use toggleable active effects for any system.
+56	module.json	2025-06-21	-	MangoFVTT/fvtt-ready-set-roll-5e	A module for faster, easier, and more dynamic rolling in the D&D 5th Edition system for Foundry VTT.
+55	module.json	2026-09-30	-	Jules-Bens-Aa/JB2A_DnD5e	Free sample of animated assets for FoundryVTT: spells, attacks, tokens and more, usually one color per asset. Works with any game system.
+54	module.json	2023-01-31	ARCH	death-save/combat-utility-belt	Combat Utility Belt module for Foundry Virtual Tabletop
+54	module.json	2025-01-20	ARCH	otigon/automated-jb2a-animations	
+53	module.json	2026-07-18	-	fantasycalendar/FoundryVTT-ItemPiles	
+53	system.json	2021-07-25	-	qennenat/WFRP-4th-Edition-FoundryVTT	Welcome all, and especially newcomers! This is the premiere system for running grim and perilious games of Warhammer Fantasy Role-play in the Foundry VTT environment. (Additional Content Included!)
+52	none	2022-11-11	-	Kekilla0/Personal-Macros	Macros I have made for FoundryVTT
+52	module.json	2023-10-21	-	dev7355608/perfect-vision	Foundry VTT Module: Lighting Drawings and Vision Limitation.
+51	none	2026-10-23	-	Pjb518/FoundryVTT-Level-Up-Official	An official implementation of the Level Up: Advanced 5th Edition system for FoundryVTT.
+50	none	2026-02-18	-	MrPrimate/tokenizer	Tiny yet capable in-game token editor for Foundry VTT
+50	src/module.json	2026-10-17	-	mclemente/fvtt-module-polyglot	Talk to others using a language you can speak and scrambles text you can't understand.
+49	system.json	2026-10-06	-	EndlesNights/dnd4eBeta	An implementation of the dnd4e game system for Foundry Virtual Tabletop (http://foundryvtt.com).
+49	system.json	2024-07-29	-	asacolips-projects/boilerplate	Boilerplate system for FoundryVTT to use as a starting point for your own system's development. Follow along with the [accompanying tutorial](https://foundryvtt.wiki/en/development/guides/SD-tutorial) on the wiki.
+49	module.json	2025-06-19	-	foundry-vtt-community/tables	FVTT Community Tables - 📝 Contribute tables or download them as a module!  📝
+48	system.json	2025-03-22	-	foundryvtt/worldbuilding	A simple game system for Foundry VTT which allows for flexible definition of Actors and Items to assist with worldbuilding or for running games which do not have a more complete system implementation available.
+48	module.json	2026-04-18	-	jopeek/fvtt-loot-sheet-npc-5e	 FVTT - Loot Sheet NPC 5E
+47	module.json	2025-05-02	-	Oromis/touch-vtt	Introduces touch screen support to FoundryVTT
+47	system.json	2026-07-21	-	mcglincy/morkborg-foundry-vtt	An unoffical, community-supported system for playing MÖRK BORG on Foundry VTT.
+47	none	2026-10-19	-	phenomen/foundry-vtt-ru	Russian Localization for Foundry Virtual Tabletop
+47	system.json	2026-10-16	-	pwatson100/alienrpg	Alien RPG system for Foundry VTT. 
+46	src/module.json	2023-06-29	-	EthanJWright/foundryvtt-importer	Import entities from external sources like Reddit, CSV, etc.
+46	module.json	2024-12-26	-	SvenWerlen/moulinette-core	FoundryVTT module which provides a set of tools for DMs for managing assets.
+46	none	2026-06-19	-	ThreeHats/auto-wall	
+46	module.json	2024-05-30	-	dandln/Foundry-VTT-Prettier-Login-Screen	Simple CSS to make Foundry VTT's world login page a little bit prettier.
+46	none	2026-10-23	-	fantasycalendar/kobold-plus-fight-club	A ground-up rewrite of Kobold Fight Club
+46	module.json	2026-05-03	-	ruipin/fvtt-lib-wrapper	Library for Foundry VTT which provides module developers with a simple way to modify core Foundry VTT code, while reducing the likelihood of conflict with other modules.
+46	module.json	2026-06-07	-	saif-ellafi/foundryvtt-mythic-gme	Mythic GM Emulator Macros and Roll Tables
+45	none	2026-06-22	-	aco-rt/Foundry-VTT-Oracle	Files and cmds to install foundry vtt on Oracle free tier.
+44	module.json	2022-11-27	-	Archer39/5e-complete	The full D&D 5th Edition compendium for Foundry VTT.
+44	system.json	2026-10-25	-	foundryvtt-dcc/dcc	Foundry Virtual Tabletop (FoundryVTT) System for Dungeon Crawl Classics RPG (DCC)
+44	module.json	2024-06-22	-	grandseiken/foundryvtt-multilevel-tokens	Multilevel tokens for Foundry VTT
+44	module.json	2024-08-07	-	manuelVo/foundryvtt-drag-ruler	A Foundry VTT module that shows a ruler when dragging tokens so you can see how far you've dragged them
+43	system.json	2024-07-04	-	Rayji96/foundry-V5	World of Darkness 5e system for Foundry VTT
+43	none	2025-05-11	ARCH	ghost-fvtt/foundry-factory	An interactive command line tool to bootstrap new modules and systems for Foundry Virtual Tabletop
+43	src/system.json	2026-10-16	-	mkscho63/sta	This is an unofficial system for Foundry VTT using Modiphius's Star Trek Adventures 2d20 RPG. This system attempts to replicate the feeling of playing through an episode of the epic SciFi that is Star Trek. I am in no way associated with Modiphius.
+43	none	2026-08-03	-	sw5e-foundry/sw5e	SW5e System for Foundry VTT
+42	module.json	2022-09-05	ARCH	Djphoenix719/PDFoundry	A fully featured PDF viewer module for Foundry VTT, including form fillable actor sheets, journal links, and more!
+42	system.json	2022-01-17	ARCH	Rughalt/D35E	3.5e SRD implementation for Foundry VTT.
+41	system.json	2026-10-25	-	foundryvtt/crucible	Crucible is an innovative and modern tabletop role-playing game system built exclusively for Foundry Virtual Tabletop.
+40	none	2026-10-25	-	fscorrupt/awesome-stars	My starred Repos
+40	static/module.json	2026-09-04	-	xdy/xdy-pf2e-workbench	Random assortment of possibly useful doodads, thingumabobs and whatchamacallits for the foundry vtt pf2e system.
+39	none	2024-06-27	-	ChefsSlaad/foundry_swag_docker	a how-to on running foundry-vtt in a docker container and securing the connection using nginx and swag
+39	system.json	2026-10-20	-	WoD5E-Developers/wod5e	The World of Darkness 5e system for FoundryVTT.
+39	module.json	2026-05-17	-	ironmonk108/monks-little-details	
+39	system.json	2025-10-27	-	pokemon-tabletop-reunited/ptr1e	PTU System for FoundryVTT
+39	system.json	2026-09-09	-	yochaigal/Cairn-FoundryVTT	Cairn for FoundryVTT!
+37	src/module.json	2026-08-15	-	League-of-Foundry-Developers/fvtt-module-theatre	
+37	none	2022-09-12	-	RedReign/FoundryVTT-BetterRolls5e	A module for modifying certain sheet functions on Foundry VTT Character sheets for D&D 5th Edition.
+37	module.json	2026-06-17	-	bekriebel/fvtt-module-avclient-livekit	
+37	none	2024-02-27	ARCH	entvex/NgrokGUI	NgrokGUI is a windows GUI for ngrok. It helps download ngrok, getting it ready for first time use and managing tunnels.
+37	system.json	2024-06-06	-	megastruktur/foundryvtt-blades-in-the-dark	Blades In The Dark game system for FoundryVTT
+36	module.json	2026-09-17	-	Codas/foundryvtt-performance-hacks	collection of performance optimizations and hacks
+36	module.json	2026-06-10	-	League-of-Foundry-Developers/fvtt-module-popout	FVTT Module PopOut!
+36	none	2022-04-08	-	MrPrimate/ddb-importer-chrome	
+36	none	2026-10-15	-	MrPrimate/pathmuncher	Munch Pathfinder 2e characters into Foundry from Pathbuilder
+36	none	2022-05-17	-	jbowensii/FOUNDRYVTT-DnD5e-Base-Game-Configuration	My based game configuration for Foundry VTT modules and automation
+35	system.json	2026-10-22	-	kypvalanx/Foundry-VTT-StarWars-SagaEdition	The Star Wars: Saga Edition Tabletop Roleplaying Game for FoundryVTT
+35	module.json	2026-05-24	-	theripper93/enhancedcombathud	
+35	module.json	2026-07-02	-	unsoluble/smalltime	A small FoundryVTT module for displaying and controlling the current time of day.
+34	none	2026-10-24	-	Mongoose-Publishing/traveller-foundryvtt	Mongoose Traveller 2e for Foundry
+34	system.json	2026-10-21	-	Vendare/DarkHeresy2E-FoundryVTT	
+34	none	2025-08-07	-	cclloyd/planeshift	A REST API for FoundryVTT
+34	module.json	2022-09-27	-	jackkerouac/animated-spell-effects	A small, but growing collection of animated spells for use with various VTT's in the top-down/overhead perspective. All files are in transparent webm format. Files will be located in your "Data\\modules\\animated-spell-effects\\spell-effects" folder. If you like my work, consider saying thanks on Discord: jackkerouac#0624.
+34	module.json	2023-06-15	-	kakaroto/fvtt-module-api	This modules makes the Foudry VTT API accessible via HTTP.
+34	none	2026-10-25	-	laurigates/foundryvtt-mcp	A Model Context Protocol (MCP) server that integrates with FoundryVTT, allowing AI assistants to interact with your tabletop gaming sessions. Query actors, roll dice, generate content, and manage your game world through natural language.
+34	none	2020-03-10	-	meeki007/FoundryVTT-Server-HowTo	A guide to installing a FoundryVTT server
+34	module.json	2026-10-14	-	reonZ/pf2e-hud	
+33	module.json	2026-09-09	-	CarlosFdez/world-explorer	Foundry VTT Module for manual hexcrawl revealing
+33	none	2026-05-24	-	Mezryss/FVTT-Genesys	Foundry VTT: Unoffocial implementation of the Genesys RPG
+33	module.json	2026-10-23	-	Sayshal/Calendaria	Your campaign's time deserves more than a number in the corner. Calendaria gives your world a calendar and clock, with an animated HUD that tracks the sun and moons and dims scenes at night. Schedule notes that fire on conditions like "every full moon", roll weather across seasons and zones, and jump ahead with a table-wide cinematic time-skip.
+33	module.json	2026-09-13	-	theripper93/Levels	
+32	none	2025-05-21	ARCH	BenjaminPrice/fvtt-docker	Foundry VTT - Docker
+32	src/module.json	2023-07-06	-	ElfFriend-DnD/foundryvtt-gmScreen	A module which creates a modular GM Screen
+32	module.json	2021-05-22	-	League-of-Foundry-Developers/fvtt-module-furnace	
+32	module.json	2023-01-05	-	VTTAssets/vtta-dndbeyond	Integrates your licensed content from D&D Beyond in your roleplaying gaming session using Foundry VTT
+32	src/system.json	2026-10-13	-	Xacus/demonlord	Shadow of the Demonlord for FoundryVTT.
+32	none	2021-04-07	ARCH	foundry-vtt-community/wiki	FVTT Community Wiki - This repo has been replaced by: https://foundryvtt.wiki
+32	none	2026-09-17	-	foundryvtt/foundryvtt-premium-content	Public issue tracking for feature requests and bug reports related to first-party premium content for Foundry Virtual Tabletop.
+32	module.json	2026-10-22	-	gambit07/fxmaster	A module for Foundry Virtual Tabletop that adds various Particle and Filter environmental effects.
+32	module.json	2024-08-12	-	giffyglyph/foundry-5e-monster-maker	A D&D 5e monster maker module for the Foundry VTT. Build new monsters with level-appropriate, balanced stats in seconds.
+32	module.json	2023-03-06	-	ultrakorne/better-rolltables	Module for FoundryVTT to improve rolltables
+31	none	2026-04-16	-	Ethaks/FVTT-Quench	Harden your Foundry module or system code with end-to-end UI tests directly within Foundry. Powered by Mocha and Chai.
+31	none	2023-02-07	ARCH	Spice-King/foundry-swnr	Stars Without Number: Revised for Foundry VTT
