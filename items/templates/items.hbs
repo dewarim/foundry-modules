@@ -1,0 +1,209 @@
+<div class="items-frame">
+  <aside class="items-list">
+    <div class="items-new">
+      <select data-preset>
+        <option value="">{{localize "DEWARIM_ITEMS.Empty"}}</option>
+        {{#each presets}}<option value="{{id}}">{{label}}</option>{{/each}}
+      </select>
+      <button type="button" data-action="create"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_ITEMS.New"}}</button>
+    </div>
+    <ul>
+      {{#each templates}}
+      <li class="{{#if selected}}selected{{/if}}"><a data-action="select" data-id="{{id}}">{{name}}</a>{{#if count}} <span class="badge" data-tooltip="DEWARIM_ITEMS.CountHint">{{count}}</span>{{/if}}</li>
+      {{else}}
+      <li class="hint">{{localize "DEWARIM_ITEMS.NoTemplates"}}</li>
+      {{/each}}
+    </ul>
+    <div class="buttons">
+      <button type="button" data-action="importAll"><i class="fa-solid fa-file-import" inert></i> {{localize "DEWARIM_ITEMS.Import"}}</button>
+      <button type="button" data-action="exportAll"><i class="fa-solid fa-file-export" inert></i> {{localize "DEWARIM_ITEMS.Export"}}</button>
+    </div>
+  </aside>
+
+  <section class="items-editor standard-form">
+  {{#with template}}
+    <fieldset>
+      <legend>{{localize "DEWARIM_ITEMS.Template"}}</legend>
+      <div class="form-group">
+        <label>{{localize "Name"}}</label>
+        <div class="form-fields"><input type="text" name="t.name" value="{{name}}"></div>
+      </div>
+      <div class="form-group" data-drop="base">
+        <label>{{localize "DEWARIM_ITEMS.Base"}}</label>
+        <div class="form-fields base">
+          {{#if base}}
+          <img src="{{base.img}}" alt=""> <a data-action="openBase">{{base.name}}</a>
+          <a data-action="clearBase" data-tooltip="DEWARIM_ITEMS.Remove"><i class="fa-solid fa-xmark" inert></i></a>
+          {{else}}
+          <span class="drop-zone">{{#if missingBase}}{{localize "DEWARIM_ITEMS.BaseMissing"}}{{else}}{{localize "DEWARIM_ITEMS.BaseDrop"}}{{/if}}</span>
+          {{/if}}
+        </div>
+      </div>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_ITEMS.Pattern"}}</label>
+        <div class="form-fields"><input type="text" name="t.pattern" value="{{pattern}}" placeholder="{{patternPlaceholder}}"></div>
+        <p class="hint">{{localize "DEWARIM_ITEMS.PatternHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_ITEMS.Folder"}}</label>
+        <div class="form-fields"><select name="t.folder">{{#each folders}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{localize "DEWARIM_ITEMS.Variance"}}</legend>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_ITEMS.ModeLabel"}}</label>
+        <div class="form-fields"><select name="variance.mode">{{#each modes}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></div>
+      </div>
+      {{#if range}}
+      <div class="form-group">
+        <label>{{localize "DEWARIM_ITEMS.Range"}}</label>
+        <div class="form-fields">
+          <input type="number" name="variance.min" value="{{range.min}}" step="1"> % … <input type="number" name="variance.max" value="{{range.max}}" step="1"> %
+        </div>
+        <p class="hint">{{localize "DEWARIM_ITEMS.RangeHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_ITEMS.Count"}}</label>
+        <div class="form-fields">
+          <input type="number" name="variance.count" value="{{range.count}}" min="1" max="50" step="1">
+          <label>{{localize "DEWARIM_ITEMS.Step"}}</label> <input type="number" name="variance.step" value="{{range.step}}" min="1" step="1"> %
+          <button type="button" data-action="reroll" data-tooltip="DEWARIM_ITEMS.RerollHint"><i class="fa-solid fa-dice" inert></i> {{localize "DEWARIM_ITEMS.Reroll"}}</button>
+        </div>
+      </div>
+      {{/if}}
+      {{#if tiers}}
+      <table class="tiers-table">
+        <thead><tr><th>{{localize "DEWARIM_ITEMS.Tier.Name"}}</th><th>{{localize "DEWARIM_ITEMS.Tier.Percent"}}</th><th></th></tr></thead>
+        <tbody>
+        {{#each tiers}}
+          <tr data-index="{{index}}">
+            <td><input type="text" name="tiers.{{index}}.name" value="{{name}}"></td>
+            <td><input type="number" name="tiers.{{index}}.percent" value="{{percent}}" step="1"> %</td>
+            <td><a data-action="removeTier" data-tooltip="DEWARIM_ITEMS.Remove"><i class="fa-solid fa-xmark" inert></i></a></td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+      <div class="buttons"><button type="button" data-action="addTier"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_ITEMS.AddTier"}}</button></div>
+      <p class="hint">{{localize "DEWARIM_ITEMS.TiersHint"}}</p>
+      {{/if}}
+      {{#if rows}}
+      <div class="rows-scroll">
+      <table class="rows-table">
+        <thead><tr>
+          {{#each rows.labels}}<th>{{this}}{{#if (eq @index 1)}} ({{../rows.unit}}){{/if}}</th>{{/each}}
+          {{#each rows.columns}}<th><code>{{path}}</code> <a data-action="removeColumn" data-column="{{index}}" data-tooltip="DEWARIM_ITEMS.Remove"><i class="fa-solid fa-xmark" inert></i></a></th>{{/each}}
+          <th></th>
+        </tr></thead>
+        <tbody>
+        {{#each rows.list}}
+          <tr data-index="{{index}}">
+            <td><input type="text" name="rows.{{index}}.name" value="{{name}}"></td>
+            <td><input type="number" name="rows.{{index}}.price" value="{{price}}" min="0" step="any"></td>
+            <td><input type="number" name="rows.{{index}}.weight" value="{{weight}}" min="0" step="any"></td>
+            <td><input type="text" name="rows.{{index}}.img" value="{{img}}"></td>
+            <td><input type="text" name="rows.{{index}}.note" value="{{note}}"></td>
+            {{#each cells}}<td><input type="text" name="rows.{{../index}}.col.{{c}}" value="{{value}}"></td>{{/each}}
+            <td><a data-action="removeRow" data-tooltip="DEWARIM_ITEMS.Remove"><i class="fa-solid fa-xmark" inert></i></a></td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+      </div>
+      <div class="buttons">
+        <button type="button" data-action="addRow"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_ITEMS.Rows.Add"}}</button>
+        <button type="button" data-action="pasteRows"><i class="fa-solid fa-paste" inert></i> {{localize "DEWARIM_ITEMS.Rows.Paste"}}</button>
+        <button type="button" data-action="copyRows"><i class="fa-solid fa-copy" inert></i> {{localize "DEWARIM_ITEMS.Rows.Copy"}}</button>
+        <span class="add-column"><input type="text" data-column placeholder="system.material"> <button type="button" data-action="addColumn"><i class="fa-solid fa-table-columns" inert></i> {{localize "DEWARIM_ITEMS.Rows.AddColumn"}}</button></span>
+      </div>
+      <p class="hint">{{localize "DEWARIM_ITEMS.Rows.Hint"}}</p>
+      {{/if}}
+    </fieldset>
+
+    <fieldset>
+      <legend>{{localize "DEWARIM_ITEMS.Aspects"}}</legend>
+      {{#each aspects}}
+      <div class="aspect {{#if unsupported}}unsupported{{/if}}" data-index="{{index}}" {{#if isRider}}data-drop="rider"{{/if}}>
+        <strong>{{label}}</strong>
+        {{#if isPotency}}
+          <select name="aspects.{{index}}.applies">{{#each applies}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+          <input type="number" name="aspects.{{index}}.percent" value="{{percent}}" step="1"> %
+          <label class="checkbox"><input type="checkbox" name="aspects.{{index}}.follow" {{#if follow}}checked{{/if}}> {{localize "DEWARIM_ITEMS.Aspect.Follow"}}</label>
+        {{/if}}
+        {{#if isScale}}
+          <input type="number" name="aspects.{{index}}.percent" value="{{percent}}" step="1"> %
+          <label class="checkbox"><input type="checkbox" name="aspects.{{index}}.follow" {{#if follow}}checked{{/if}}> {{localize "DEWARIM_ITEMS.Aspect.Follow"}}</label>
+          <label>{{localize "DEWARIM_ITEMS.Aspect.Fixed"}} <input type="number" name="aspects.{{index}}.value" value="{{value}}" min="0" step="any"></label>
+        {{/if}}
+        {{#if isRarity}}
+          <select name="aspects.{{index}}.value">{{#each rarities}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+        {{/if}}
+        {{#if isSet}}
+          <input type="text" name="aspects.{{index}}.path" value="{{path}}" placeholder="system.material">
+          = <input type="text" name="aspects.{{index}}.value" value="{{value}}">
+        {{/if}}
+        {{#if isRider}}
+          <span class="rider">
+            {{localize "DEWARIM_ITEMS.Aspect.DC"}} <input type="number" name="aspects.{{index}}.dc" value="{{dc}}" min="1" max="40" step="1">
+            <select name="aspects.{{index}}.ability">{{#each abilities}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+            → <select name="aspects.{{index}}.condition">{{#each conditions}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+            <input type="number" name="aspects.{{index}}.duration.value" value="{{duration.value}}" min="0" step="any">
+            <select name="aspects.{{index}}.duration.units">{{#each units}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+            {{localize "DEWARIM_ITEMS.Aspect.PricePercent"}} <input type="number" name="aspects.{{index}}.percent" value="{{percent}}" step="1"> %
+          </span>
+          <span class="hint">{{localize "DEWARIM_ITEMS.Aspect.RiderDrop"}}</span>
+        {{/if}}
+        {{#if unsupported}}<span class="hint">{{localize "DEWARIM_ITEMS.Aspect.Unsupported"}}</span>{{/if}}
+        <a class="remove" data-action="removeAspect" data-tooltip="DEWARIM_ITEMS.Remove"><i class="fa-solid fa-xmark" inert></i></a>
+      </div>
+      {{else}}
+      <p class="hint">{{localize "DEWARIM_ITEMS.NoAspects"}}</p>
+      {{/each}}
+      <div class="buttons">
+        <select data-aspect-kind>{{#each kinds}}<option value="{{key}}">{{label}}</option>{{/each}}</select>
+        <button type="button" data-action="addAspect"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_ITEMS.AddAspect"}}</button>
+      </div>
+      <p class="hint">{{localize "DEWARIM_ITEMS.AspectsHint"}}</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{localize "DEWARIM_ITEMS.Preview"}}</legend>
+      {{#if preview.length}}
+      <table class="preview-table">
+        <thead><tr><th></th><th>{{localize "Name"}}</th><th>{{localize "DEWARIM_ITEMS.Formulas"}}</th><th>{{localize "DEWARIM_ITEMS.Rows.Price"}}</th>
+          <th>{{localize "DEWARIM_ITEMS.Rows.Weight"}}</th><th>{{localize "DEWARIM_ITEMS.Rarity"}}</th><th></th></tr></thead>
+        <tbody>
+        {{#each preview}}
+          <tr class="{{#if unchanged}}dim{{/if}}">
+            <td class="img"><img src="{{img}}" alt=""></td>
+            <td>{{#if uuid}}<a data-action="openItem" data-uuid="{{uuid}}">{{name}}</a>{{else}}{{name}}{{/if}}</td>
+            <td>{{formulas}}{{#if unchanged}} <span class="hint">{{localize "DEWARIM_ITEMS.Unchanged"}}</span>{{/if}}</td>
+            <td class="price">{{price}}</td>
+            <td>{{weight}}</td>
+            <td>{{rarity}}</td>
+            <td>{{#if exists}}<span class="badge" data-tooltip="DEWARIM_ITEMS.UpdateHint">↻</span>{{else}}<span class="badge new" data-tooltip="DEWARIM_ITEMS.NewHint">+</span>{{/if}}</td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+      {{else}}
+      <p class="hint">{{#if base}}{{localize "DEWARIM_ITEMS.NothingToMake"}}{{else}}{{localize "DEWARIM_ITEMS.NoBase"}}{{/if}}</p>
+      {{/if}}
+      {{#if stale.length}}
+      <p class="warning">{{localize "DEWARIM_ITEMS.StaleHint"}} {{#each stale}}<a data-action="openItem" data-uuid="{{uuid}}">{{name}}</a>{{#unless @last}}, {{/unless}}{{/each}}</p>
+      {{/if}}
+    </fieldset>
+
+    <footer class="buttons items-footer">
+      <button type="button" data-action="duplicate"><i class="fa-solid fa-clone" inert></i> {{localize "DEWARIM_ITEMS.Duplicate"}}</button>
+      <button type="button" data-action="remove"><i class="fa-solid fa-trash" inert></i> {{localize "DEWARIM_ITEMS.Remove"}}</button>
+      <span class="spacer"></span>
+      <button type="button" class="generate" data-action="generate" {{#if ../busy}}disabled{{/if}}><i class="fa-solid fa-hammer" inert></i> {{localize "DEWARIM_ITEMS.Generate"}}</button>
+    </footer>
+  {{else}}
+    <p class="hint">{{localize "DEWARIM_ITEMS.Intro"}}</p>
+  {{/with}}
+  </section>
+</div>

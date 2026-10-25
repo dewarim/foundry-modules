@@ -1,0 +1,75 @@
+{
+  "id": "dewarim-items",
+  "title": "Dewarim: Item templates",
+  "description": "Items from templates: variants of a base item by strength or quality (Strong, Potent and Mighty potions, Fine and Masterwork weapons), quick mundane items from rows typed or pasted like a spreadsheet, and riders that combine rules - a healing potion that heals more but poisons on a failed save. Merchants stock the variants; the studio builds them into adventures. System-agnostic, with a dnd5e adapter.",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Ingo Wiarda",
+      "email": "ingo@dewarim.de"
+    }
+  ],
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "esmodules": [
+    "scripts/items.mjs"
+  ],
+  "styles": [
+    "styles/items.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    }
+  ],
+  "relationships": {
+    "recommends": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "6.0"
+        },
+        "reason": "Strength of heal and damage dice, riders with saves and conditions, rarity by price, coins"
+      },
+      {
+        "id": "dewarim-merchants",
+        "type": "module",
+        "reason": "Shops stocked with the generated items, and crafters whose stock comes out better than plain"
+      },
+      {
+        "id": "dewarim-studio",
+        "type": "module",
+        "reason": "Generate straight into an adventure project"
+      }
+    ]
+  },
+  "flags": {
+    "hotReload": {
+      "extensions": [
+        "css",
+        "hbs",
+        "json"
+      ],
+      "paths": [
+        "styles",
+        "templates",
+        "lang"
+      ]
+    }
+  },
+  "url": "https://github.com/dewarim/foundry-modules/tree/main/items",
+  "manifest": "https://raw.githubusercontent.com/dewarim/foundry-modules/main/items/module.json",
+  "download": "https://github.com/dewarim/foundry-modules/releases/download/items-v0.1.0/items.zip",
+  "readme": "https://github.com/dewarim/foundry-modules/blob/main/items/README.md",
+  "bugs": "https://github.com/dewarim/foundry-modules/issues"
+}
