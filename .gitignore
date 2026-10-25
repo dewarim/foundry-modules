@@ -1,0 +1,3 @@
+# This working copy is generated: publish.mjs resets it to GitHub and then commits everything in it
+# (git add -A), so local editor state has to be ignored here too, not only in the private repo.
+.idea/
