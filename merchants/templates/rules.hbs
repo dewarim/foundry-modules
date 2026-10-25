@@ -1,0 +1,51 @@
+<div class="rules-frame">
+<div class="rules-body standard-form">
+  <p class="hint">{{localize "DEWARIM_MERCHANTS.Rules.Intro"}}</p>
+  {{#if rules.length}}
+  <table class="rules-table">
+    <thead><tr>
+      <th></th>
+      <th>{{localize "DEWARIM_MERCHANTS.Rules.Merchant"}}</th>
+      <th>{{localize "DEWARIM_MERCHANTS.Rules.Buyer"}}</th>
+      <th>%</th>
+      <th></th>
+    </tr></thead>
+    <tbody>
+    {{#each rules}}
+      <tr data-index="{{index}}">
+        <td><select name="rules.{{index}}.dimension">{{#each dimensions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></td>
+        <td><select name="rules.{{index}}.merchant">{{#each merchants}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></td>
+        <td><select name="rules.{{index}}.buyer">{{#each buyers}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></td>
+        <td><input type="number" name="rules.{{index}}.percent" value="{{percent}}" min="-100" step="1"></td>
+        <td><a data-action="removeRule" data-tooltip="DEWARIM_MERCHANTS.Remove"><i class="fa-solid fa-xmark" inert></i></a></td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+  {{else}}
+  <p class="hint">{{localize "DEWARIM_MERCHANTS.Rules.None"}}</p>
+  {{/if}}
+  <div class="buttons">
+    <button type="button" data-action="addRule" data-dimension="race"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_MERCHANTS.Rules.AddRace"}}</button>
+    <button type="button" data-action="addRule" data-dimension="profession"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_MERCHANTS.Rules.AddProfession"}}</button>
+  </div>
+
+  <h3>{{localize "DEWARIM_MERCHANTS.Rules.ItemLevels"}}</h3>
+  <div class="form-group stacked">
+    <label>{{localize "DEWARIM_MERCHANTS.Rules.Brackets" unit=unit}}</label>
+    <input type="text" name="brackets" value="{{brackets}}">
+    <p class="hint">{{localize "DEWARIM_MERCHANTS.Rules.BracketsHint"}}</p>
+  </div>
+  {{#if systemLevels.length}}
+  <div class="system-levels">
+    {{#each systemLevels}}
+    <label>{{label}} <input type="number" name="systemLevels.{{key}}" value="{{value}}" min="0" max="30" step="1"></label>
+    {{/each}}
+  </div>
+  <p class="hint">{{localize "DEWARIM_MERCHANTS.Rules.SystemLevelsHint"}}</p>
+  {{/if}}
+</div>
+<footer class="form-footer">
+  <button type="submit"><i class="fa-solid fa-floppy-disk" inert></i> {{localize "DEWARIM_MERCHANTS.Save"}}</button>
+</footer>
+</div>

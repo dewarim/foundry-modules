@@ -1,0 +1,247 @@
+<div class="merchant-frame">
+  <header class="merchant-header">
+    <img src="{{img}}" alt="" {{#if gm}}data-action="editImage" data-edit="img" data-tooltip="DEWARIM_MERCHANTS.Config.Image"{{/if}}>
+    <div class="merchant-title">
+      <h2>{{document.name}}</h2>
+      <span class="hint">{{subtitle}}</span>
+    </div>
+    {{#if gm}}
+    <nav class="merchant-tabs">
+      {{#if token}}<button type="button" data-action="showTab" data-tab="shop" class="{{#if (eq tab "shop")}}active{{/if}}">
+        <i class="fa-solid fa-store" inert></i> {{localize "DEWARIM_MERCHANTS.Shop.Tab"}}</button>{{/if}}
+      <button type="button" data-action="showTab" data-tab="config" class="{{#if (eq tab "config")}}active{{/if}}">
+        <i class="fa-solid fa-sliders" inert></i> {{localize "DEWARIM_MERCHANTS.Config.Tab"}}</button>
+    </nav>
+    {{/if}}
+  </header>
+
+  <div class="merchant-body">
+  {{#if (eq tab "none")}}
+    <p class="notification info">{{localize "DEWARIM_MERCHANTS.Shop.VisitOnScene"}}</p>
+  {{/if}}
+
+  {{#with shop}}
+  <section class="merchant-shop">
+    {{#if noGm}}<p class="notification warning">{{localize "DEWARIM_MERCHANTS.Shop.NoGm"}}</p>{{/if}}
+    {{#if noMoney}}<p class="notification warning">{{localize "DEWARIM_MERCHANTS.Shop.NoMoney"}}</p>{{/if}}
+    <div class="shop-buyer">
+      {{#if buyers.length}}
+      <label>{{localize "DEWARIM_MERCHANTS.Shop.Buyer"}}
+        <select name="buyer">
+          {{#each buyers}}<option value="{{uuid}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}
+        </select>
+      </label>
+      <span class="funds"><i class="fa-solid fa-coins" inert></i> {{buyer.funds}}</span>
+      {{else}}
+      <span class="hint">{{localize "DEWARIM_MERCHANTS.Shop.NoBuyer"}}</span>
+      {{/if}}
+      {{#if ../gm}}
+      <span class="spacer"></span>
+      <span class="hint" data-tooltip="DEWARIM_MERCHANTS.Shop.LastRestock">{{#if due}}<i class="fa-solid fa-clock-rotate-left" inert></i>{{/if}} {{lastRestock}}</span>
+      <button type="button" data-action="restock"><i class="fa-solid fa-boxes-stacked" inert></i> {{localize "DEWARIM_MERCHANTS.Restock"}}</button>
+      {{/if}}
+    </div>
+    {{#if notes}}<p class="hint">{{notes}}</p>{{/if}}
+    {{#if purse}}<p class="hint">{{localize "DEWARIM_MERCHANTS.Shop.Purse"}}: {{purse}}</p>{{/if}}
+
+    <h3>{{localize "DEWARIM_MERCHANTS.Shop.Offers"}}</h3>
+    {{#if empty}}<p class="hint">{{localize "DEWARIM_MERCHANTS.Shop.Empty"}}</p>{{else}}
+    <table class="shop-table">
+      <tbody>
+      {{#each stock}}
+        <tr data-item-id="{{id}}" class="{{#unless affordable}}dim{{/unless}}">
+          <td class="img"><img src="{{img}}" alt=""></td>
+          <td class="name"><a data-action="openItem">{{name}}</a>{{#if fixed}} <i class="fa-solid fa-star" data-tooltip="DEWARIM_MERCHANTS.Shop.Special" inert></i>{{/if}}</td>
+          <td class="level">{{#if level}}<span class="badge" data-tooltip="DEWARIM_MERCHANTS.Shop.Level">{{level}}</span>{{/if}}</td>
+          <td class="quantity">{{quantity}}</td>
+          <td class="price">{{price}}</td>
+          {{#if ../canTrade}}
+          <td class="amount"><input type="number" data-quantity value="1" min="1" step="1"></td>
+          <td><button type="button" data-action="buy" {{#if ../busy}}disabled{{/if}} {{#unless affordable}}disabled{{/unless}}>{{localize "DEWARIM_MERCHANTS.Shop.Buy"}}</button></td>
+          {{/if}}
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
+    {{/if}}
+
+    {{#if canTrade}}
+    <h3>{{localize "DEWARIM_MERCHANTS.Shop.Buys"}}</h3>
+    {{#if sell.length}}
+    <table class="shop-table">
+      <tbody>
+      {{#each sell}}
+        <tr data-item-id="{{id}}">
+          <td class="img"><img src="{{img}}" alt=""></td>
+          <td class="name"><a data-action="openItem">{{name}}</a></td>
+          <td class="quantity">{{quantity}}</td>
+          <td class="price">{{price}}</td>
+          <td class="amount"><input type="number" data-quantity value="1" min="1" max="{{quantity}}" step="1"></td>
+          <td><button type="button" data-action="sell" {{#if ../busy}}disabled{{/if}}>{{localize "DEWARIM_MERCHANTS.Shop.Sell"}}</button></td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
+    {{else}}<p class="hint">{{localize "DEWARIM_MERCHANTS.Shop.NothingWanted"}}</p>{{/if}}
+    {{/if}}
+  </section>
+  {{/with}}
+
+  {{#with config}}
+  <section class="merchant-config standard-form">
+    <fieldset>
+      <legend>{{localize "DEWARIM_MERCHANTS.Config.Merchant"}}</legend>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_MERCHANTS.Config.Level"}}</label>
+        <div class="form-fields"><input type="number" name="config.level" value="{{level}}" min="1" max="30" step="1"></div>
+        <p class="hint">{{localize "DEWARIM_MERCHANTS.Config.LevelHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_MERCHANTS.Dimension.race"}}</label>
+        <div class="form-fields"><select name="config.race">{{#each raceChoices}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></div>
+      </div>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_MERCHANTS.Dimension.profession"}}</label>
+        <div class="form-fields"><select name="config.profession">{{#each professionChoices}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{localize "DEWARIM_MERCHANTS.Config.Prices"}}</legend>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_MERCHANTS.Config.Markup"}}</label>
+        <div class="form-fields"><input type="number" name="config.markup" value="{{markup}}" min="-100" step="1"> %</div>
+        <p class="hint">{{localize "DEWARIM_MERCHANTS.Config.MarkupHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_MERCHANTS.Config.BuyDiscount"}}</label>
+        <div class="form-fields"><input type="number" name="config.buyDiscount" value="{{buyDiscount}}" min="0" max="100" step="1"> %</div>
+        <p class="hint">{{localize "DEWARIM_MERCHANTS.Config.BuyDiscountHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_MERCHANTS.Config.Purse"}}</label>
+        <div class="form-fields"><input type="number" name="config.purse" value="{{purse}}" min="0" step="any"> {{unit}}</div>
+        <p class="hint">{{localize "DEWARIM_MERCHANTS.Config.PurseHint"}}</p>
+      </div>
+      <h4>{{localize "DEWARIM_MERCHANTS.Config.OwnRules"}}</h4>
+      <p class="hint">{{localize "DEWARIM_MERCHANTS.Config.OwnRulesHint"}}</p>
+      {{#if rules.length}}
+      <table class="rules-table">
+        <tbody>
+        {{#each rules}}
+          <tr data-index="{{index}}">
+            <td><select name="rules.{{index}}.dimension">{{#each dimensions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></td>
+            <td><select name="rules.{{index}}.buyer">{{#each buyers}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></td>
+            <td><input type="number" name="rules.{{index}}.percent" value="{{percent}}" min="-100" step="1"> %</td>
+            <td><a data-action="removeRule" data-tooltip="DEWARIM_MERCHANTS.Remove"><i class="fa-solid fa-xmark" inert></i></a></td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+      {{/if}}
+      <div class="buttons">
+        <button type="button" data-action="addRule" data-dimension="race"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_MERCHANTS.Rules.AddRace"}}</button>
+        <button type="button" data-action="addRule" data-dimension="profession"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_MERCHANTS.Rules.AddProfession"}}</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{localize "DEWARIM_MERCHANTS.Config.Stock"}}</legend>
+      <div class="form-group stacked">
+        <label>{{localize "DEWARIM_MERCHANTS.Config.ItemTypes"}}</label>
+        <div class="types">
+          {{#each types}}<label class="checkbox"><input type="checkbox" name="types.{{id}}" {{#if checked}}checked{{/if}}> {{label}}</label>{{/each}}
+        </div>
+        <p class="hint">{{localize "DEWARIM_MERCHANTS.Config.ItemTypesHint"}}</p>
+      </div>
+      <div class="form-group stacked" data-drop="sources">
+        <label>{{localize "DEWARIM_MERCHANTS.Config.Sources"}}</label>
+        <textarea name="sources" rows="3">{{sourcesText}}</textarea>
+        {{#if sourceLabels.length}}<p class="hint">{{#each sourceLabels}}{{this}}{{#unless @last}} · {{/unless}}{{/each}}</p>
+        {{else}}<p class="hint">{{localize "DEWARIM_MERCHANTS.Config.DefaultSources" sources=defaultSources}}</p>{{/if}}
+        <div class="add-pack">
+          <select data-pack>{{#each packs}}<option value="{{id}}">{{label}}</option>{{/each}}</select>
+          <button type="button" data-action="addPack"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_MERCHANTS.Config.AddPack"}}</button>
+        </div>
+        <p class="hint">{{localize "DEWARIM_MERCHANTS.Config.SourcesHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_MERCHANTS.Config.Filter"}}</label>
+        <div class="form-fields"><input type="text" name="config.filter" value="{{filter}}" placeholder="price<=500 rarity!=artifact"></div>
+        <p class="hint">{{localize "DEWARIM_MERCHANTS.Config.FilterHint" keys=filterKeys}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_MERCHANTS.Config.StockSize"}}</label>
+        <div class="form-fields"><input type="number" name="config.stockSize" value="{{stockSize}}" min="0" max="200" step="1"></div>
+      </div>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_MERCHANTS.Config.Turnover"}}</label>
+        <div class="form-fields"><input type="number" name="config.turnover" value="{{turnover}}" min="0" max="100" step="1"> %</div>
+        <p class="hint">{{localize "DEWARIM_MERCHANTS.Config.TurnoverHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "DEWARIM_MERCHANTS.Config.Period"}}</label>
+        <div class="form-fields"><input type="number" name="config.restock.period" value="{{restock.period}}" min="0" step="any"> <select name="config.restock.clock">{{#each clocks}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></div>
+        <p class="hint">{{localize "DEWARIM_MERCHANTS.Config.PeriodHint"}}</p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{localize "DEWARIM_MERCHANTS.Craft.Title"}}</legend>
+      <p class="hint">{{localize "DEWARIM_MERCHANTS.Craft.Hint"}}</p>
+      {{#unless hasItems}}<p class="hint warning">{{localize "DEWARIM_MERCHANTS.Craft.NoItems"}}</p>{{/unless}}
+      {{#if craft.length}}
+      <table class="craft-table">
+        <thead><tr><th>{{localize "DEWARIM_MERCHANTS.Config.Filter"}}</th><th>{{localize "DEWARIM_MERCHANTS.Craft.Strength"}}</th>
+          <th>{{localize "DEWARIM_MERCHANTS.Config.Price"}}</th><th></th></tr></thead>
+        <tbody>
+        {{#each craft}}
+          <tr data-index="{{index}}">
+            <td><input type="text" name="craft.{{index}}.filter" value="{{filter}}" placeholder="subtype=potion"></td>
+            <td class="range"><input type="number" name="craft.{{index}}.min" value="{{min}}" step="1"> … <input type="number" name="craft.{{index}}.max" value="{{max}}" step="1"> %</td>
+            <td><input type="number" name="craft.{{index}}.price" value="{{price}}" min="-100" step="1"> %</td>
+            <td><a data-action="removeCraft" data-tooltip="DEWARIM_MERCHANTS.Remove"><i class="fa-solid fa-xmark" inert></i></a></td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+      {{/if}}
+      <div class="buttons">
+        <button type="button" data-action="addCraft"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_MERCHANTS.Craft.Add"}}</button>
+      </div>
+    </fieldset>
+
+    <fieldset data-drop="fixed">
+      <legend>{{localize "DEWARIM_MERCHANTS.Config.Fixed"}}</legend>
+      <p class="hint">{{localize "DEWARIM_MERCHANTS.Config.FixedHint" unit=unit}}</p>
+      {{#if fixed.length}}
+      <table class="fixed-table">
+        <thead><tr><th></th><th></th><th>{{localize "DEWARIM_MERCHANTS.Config.Quantity"}}</th><th>∞</th>
+          <th>{{localize "DEWARIM_MERCHANTS.Config.Price"}} ({{unit}})</th><th data-tooltip="DEWARIM_MERCHANTS.Config.ExactHint">{{localize "DEWARIM_MERCHANTS.Config.Exact"}}</th>
+          <th data-tooltip="DEWARIM_MERCHANTS.Config.ReplenishHint">{{localize "DEWARIM_MERCHANTS.Config.Replenish"}}</th><th></th></tr></thead>
+        <tbody>
+        {{#each fixed}}
+          <tr data-index="{{index}}" class="{{#if missing}}missing{{/if}}">
+            <td class="img"><img src="{{img}}" alt=""></td>
+            <td class="name">{{name}}</td>
+            <td><input type="number" name="fixed.{{index}}.quantity" value="{{#if unlimited}}1{{else}}{{quantity}}{{/if}}" min="1" step="1"></td>
+            <td><input type="checkbox" name="fixed.{{index}}.unlimited" {{#if unlimited}}checked{{/if}}></td>
+            <td><input type="number" name="fixed.{{index}}.price" value="{{price}}" min="0" step="any"></td>
+            <td><input type="checkbox" name="fixed.{{index}}.exact" {{#if exact}}checked{{/if}}></td>
+            <td><input type="checkbox" name="fixed.{{index}}.replenish" {{#if replenish}}checked{{/if}}></td>
+            <td><a data-action="removeFixed" data-tooltip="DEWARIM_MERCHANTS.Remove"><i class="fa-solid fa-xmark" inert></i></a></td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+      {{/if}}
+      <p class="drop-zone">{{localize "DEWARIM_MERCHANTS.Config.FixedDrop"}}</p>
+    </fieldset>
+
+    <div class="buttons">
+      <button type="button" data-action="systemSheet"><i class="fa-solid fa-id-card" inert></i> {{localize "DEWARIM_MERCHANTS.Config.SystemSheet"}}</button>
+    </div>
+  </section>
+  {{/with}}
+  </div>
+</div>

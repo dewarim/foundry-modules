@@ -1,0 +1,76 @@
+{
+  "id": "dewarim-merchants",
+  "title": "Dewarim: Merchants",
+  "description": "Friendly merchants on your scenes: each placed merchant has his own stock, chosen for the scene's level and the same for every visitor, priced per character by sparse race and profession rules. Players buy and sell on their own; restocks by button or after a day. System-agnostic, with a dnd5e adapter.",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Ingo Wiarda",
+      "email": "ingo@dewarim.de"
+    }
+  ],
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "esmodules": [
+    "scripts/merchants.mjs"
+  ],
+  "styles": [
+    "styles/merchants.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    }
+  ],
+  "socket": true,
+  "relationships": {
+    "recommends": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "6.0"
+        },
+        "reason": "Coins, species and classes, item levels by rarity, the SRD equipment as stock"
+      },
+      {
+        "id": "dewarim-studio",
+        "type": "module",
+        "reason": "Fast configuration: a table of all merchants, templates, placing them on scenes and in adventures"
+      },
+      {
+        "id": "dewarim-items",
+        "type": "module",
+        "reason": "Craft: stock in the merchant's own make, stronger and dearer; generated items as stock"
+      }
+    ]
+  },
+  "flags": {
+    "hotReload": {
+      "extensions": [
+        "css",
+        "hbs",
+        "json"
+      ],
+      "paths": [
+        "styles",
+        "templates",
+        "lang"
+      ]
+    }
+  },
+  "url": "https://github.com/dewarim/foundry-modules/tree/main/merchants",
+  "manifest": "https://raw.githubusercontent.com/dewarim/foundry-modules/main/merchants/module.json",
+  "download": "https://github.com/dewarim/foundry-modules/releases/download/merchants-v0.1.0/merchants.zip",
+  "readme": "https://github.com/dewarim/foundry-modules/blob/main/merchants/README.md",
+  "bugs": "https://github.com/dewarim/foundry-modules/issues"
+}

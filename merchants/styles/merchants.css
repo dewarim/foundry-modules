@@ -1,0 +1,73 @@
+/* Sheet */
+.merchant-sheet .window-content { padding: 0.5rem; overflow: hidden; }
+.merchant-sheet .merchant-frame { display: flex; flex-direction: column; gap: 0.5rem; height: 100%; }
+.merchant-sheet .merchant-header { display: flex; gap: 0.75rem; align-items: center; flex: none; }
+.merchant-sheet .merchant-header img { width: 64px; height: 64px; object-fit: cover; border: none; flex: none; }
+.merchant-sheet .merchant-header img[data-edit] { cursor: pointer; }
+.merchant-sheet .merchant-title { flex: 1; display: flex; flex-direction: column; }
+.merchant-sheet .merchant-title h2 { margin: 0; border: none; }
+.merchant-sheet .merchant-tabs { display: flex; gap: 0.25rem; }
+.merchant-sheet .merchant-tabs button { width: auto; }
+.merchant-sheet .merchant-tabs button.active { box-shadow: 0 0 4px var(--color-shadow-primary, #ff6400); }
+.merchant-sheet .merchant-body { flex: 1; min-height: 0; overflow-y: auto; padding-right: 0.25rem; }
+.dewarim-merchants .hint { opacity: 0.7; font-size: var(--font-size-12, 12px); }
+.dewarim-merchants .badge { display: inline-block; min-width: 1.4rem; padding: 0 0.3rem; border-radius: 0.7rem; text-align: center;
+  background: var(--color-cool-4, #333); font-size: var(--font-size-11, 11px); }
+.dewarim-merchants .buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0; }
+.dewarim-merchants .buttons button { width: auto; }
+
+/* Shop */
+.merchant-sheet .shop-buyer { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+.merchant-sheet .shop-buyer label { display: flex; gap: 0.4rem; align-items: center; }
+.merchant-sheet .shop-buyer select { width: auto; min-width: 12rem; }
+.merchant-sheet .shop-buyer .spacer { flex: 1; }
+.merchant-sheet .shop-buyer button { width: auto; }
+.merchant-sheet .funds { font-weight: bold; }
+.merchant-sheet h3 { margin: 0.75rem 0 0.25rem; }
+.merchant-sheet table { margin: 0; border-collapse: collapse; width: 100%; }
+.merchant-sheet td { padding: 2px 4px; vertical-align: middle; }
+.merchant-sheet td.img { width: 2rem; }
+.merchant-sheet td.img img { width: 1.8rem; height: 1.8rem; object-fit: cover; border: none; }
+.merchant-sheet td.name a { cursor: pointer; }
+.merchant-sheet td.level, .merchant-sheet td.quantity { width: 3rem; text-align: center; }
+.merchant-sheet td.price { width: 9rem; text-align: right; white-space: nowrap; }
+.merchant-sheet td.amount { width: 4rem; }
+.merchant-sheet td.amount input { width: 3.5rem; text-align: right; }
+.merchant-sheet td button { width: auto; white-space: nowrap; }
+.merchant-sheet tr.dim td:not(:last-child) { opacity: 0.5; }
+
+/* Configuration */
+.merchant-sheet .merchant-config fieldset { margin-bottom: 0.5rem; }
+.merchant-sheet .merchant-config .form-fields input[type=number] { flex: 0 0 5rem; }
+.merchant-sheet .merchant-config .form-fields select { flex: 0 0 auto; width: auto; }
+.merchant-sheet .merchant-config .form-fields { justify-content: flex-start; }
+.merchant-sheet .merchant-config .types { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; }
+.merchant-sheet .merchant-config .types .checkbox { display: flex; gap: 0.25rem; align-items: center; }
+.merchant-sheet .merchant-config .add-pack { display: flex; gap: 0.5rem; }
+.merchant-sheet .merchant-config .add-pack button { width: auto; flex: none; }
+.merchant-sheet .merchant-config h4 { margin: 0.5rem 0 0; border: none; }
+.merchant-sheet .fixed-table th { text-align: left; font-weight: normal; opacity: 0.8; }
+.merchant-sheet .fixed-table input[type=number] { width: 4.5rem; }
+.merchant-sheet .fixed-table tr.missing td.name { color: var(--color-level-error, #c33); text-decoration: line-through; }
+.merchant-sheet .craft-table th { text-align: left; font-weight: normal; opacity: 0.8; }
+.merchant-sheet .craft-table input[type=number] { width: 4.5rem; }
+.merchant-sheet .craft-table td.range { white-space: nowrap; }
+.merchant-sheet .warning { color: var(--color-level-warning, #c9a227); }
+.merchant-sheet .drop-zone { border: 1px dashed var(--color-border, #777); padding: 0.4rem; text-align: center; opacity: 0.7; }
+.dewarim-merchants [data-drop].drag-over { outline: 2px dashed var(--color-shadow-primary, #ff6400); }
+.dewarim-merchants .rules-table td { padding: 2px; }
+.dewarim-merchants .rules-table input[type=number] { width: 4.5rem; }
+
+/* Rules window */
+.merchant-rules .rules-body { max-height: 70vh; overflow-y: auto; }
+.merchant-rules .rules-table th { text-align: left; }
+.merchant-rules .system-levels { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
+.merchant-rules .system-levels input { width: 3.5rem; }
+
+/* Market */
+.merchant-market .market-list { list-style: none; margin: 0 0 0.5rem; padding: 0; }
+.merchant-market .market-list li { display: flex; gap: 0.5rem; align-items: center; padding: 2px 4px; cursor: pointer; }
+.merchant-market .market-list li:hover { background: var(--color-cool-4, #333); }
+.merchant-market .market-list li.hidden-token { opacity: 0.6; }
+.merchant-market .market-list img { width: 2rem; height: 2rem; object-fit: cover; border: none; }
+.merchant-market .market-list .name { flex: 1; }

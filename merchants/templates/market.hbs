@@ -1,0 +1,29 @@
+<div class="market-body standard-form">
+  <p class="hint">{{scene}}</p>
+  {{#if merchants.length}}
+  <ul class="market-list">
+    {{#each merchants}}
+    <li data-token-id="{{id}}" data-action="open" class="{{#if hidden}}hidden-token{{/if}}">
+      <img src="{{img}}" alt="">
+      <span class="name">{{name}}</span>
+      <span class="hint">{{localize "DEWARIM_MERCHANTS.Market.Offers" count=count}}</span>
+      {{#if ../gm}}<span class="badge" data-tooltip="DEWARIM_MERCHANTS.Shop.Level">{{level}}</span>{{/if}}
+      {{#if due}}<i class="fa-solid fa-clock-rotate-left" data-tooltip="DEWARIM_MERCHANTS.Market.Due" inert></i>{{/if}}
+    </li>
+    {{/each}}
+  </ul>
+  {{else}}
+  <p class="hint">{{localize "DEWARIM_MERCHANTS.Market.None"}}</p>
+  {{/if}}
+  {{#if gm}}
+  <div class="form-group">
+    <label>{{localize "DEWARIM_MERCHANTS.Market.SceneLevel"}}</label>
+    <input type="number" name="level" value="{{level}}" min="1" max="30" step="1" placeholder="{{levelPlaceholder}}">
+    <p class="hint">{{localize "DEWARIM_MERCHANTS.Market.SceneLevelHint"}}</p>
+  </div>
+  <div class="buttons">
+    <button type="button" data-action="restockAll"><i class="fa-solid fa-boxes-stacked" inert></i> {{localize "DEWARIM_MERCHANTS.Market.RestockAll"}}</button>
+    <button type="button" data-action="rules"><i class="fa-solid fa-scale-unbalanced" inert></i> {{localize "DEWARIM_MERCHANTS.Rules.Title"}}</button>
+  </div>
+  {{/if}}
+</div>
