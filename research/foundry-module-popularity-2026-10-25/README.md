@@ -50,13 +50,16 @@ uses for "generic first". 6,008 of 9,219 modules (65%) qualify:
 
 And:
 
+- [**Pain points**](pain-points.md) — what users complain about: 5,251 open issues from the trackers of
+  the top 500 modules, classified, with the maintenance picture behind them
 - [GitHub stars](github-stars.md) — the 52 module repositories found, by stars
 - [Hub endorsements and comments](hub-endorsements.md) — top 108 by install share
 
 Full data in [`data/`](data): `forge-installs-all.tsv` (9,219 rows),
 `forge-installs-system-agnostic.tsv` (6,008), `github-foundry-repos.tsv` (150 repos classified by
-manifest type), `foundry-hub-stats.tsv` (108), `descriptions.tsv` (9,219) and
-`descriptions-override.json`.
+manifest type), `foundry-hub-stats.tsv` (108), `descriptions.tsv` (9,219),
+`descriptions-override.json`, `github-open-issues.tsv` (5,251 open issues) and
+`github-issue-repos.tsv` (402 repositories with their tracker state).
 
 ## The "what it does" column
 
@@ -142,8 +145,15 @@ python3 -I make-descriptions.py forge_modules.json data/descriptions.tsv 95 \
 python3 -I make-tables.py data/forge-installs-all.tsv \
     data/forge-installs-system-agnostic.tsv data/github-foundry-repos.tsv \
     data/foundry-hub-stats.tsv data/descriptions.tsv . 2026-10-25
+python3 -I make-pain-points.py data/github-open-issues.tsv \
+    data/github-issue-repos.tsv pain-points.md 2026-10-25
 ```
+
+The issue data itself comes from the GitHub API, one call per repository for the metadata and up to
+three pages of `/issues?state=open` each, for the 413 GitHub repositories among the top 500 modules.
+`make-issue-tsvs.py` turns that raw fetch into the two TSVs, counting an issue once when several
+modules share a repository and dropping game system repositories; `pain-points.md` records the scope
+and the limits.
 
 Re-running the fetch and diffing against `data/forge-installs-all.tsv` shows what is *gaining*
 installs, which is a better pointer at an unmet need than the absolute ranking.
-
