@@ -2,7 +2,7 @@
   "id": "dewarim-merchants",
   "title": "Dewarim: Merchants",
   "description": "Friendly merchants on your scenes: each placed merchant has his own stock, chosen for the scene's level and the same for every visitor, priced per character by sparse race and profession rules. Players buy and sell on their own; restocks by button or after a day. System-agnostic, with a dnd5e adapter.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "authors": [
     {
       "name": "Ingo Wiarda",
@@ -70,7 +70,7 @@
   },
   "url": "https://github.com/dewarim/foundry-modules/tree/main/merchants",
   "manifest": "https://raw.githubusercontent.com/dewarim/foundry-modules/main/merchants/module.json",
-  "download": "https://github.com/dewarim/foundry-modules/releases/download/merchants-v0.1.0/merchants.zip",
+  "download": "https://github.com/dewarim/foundry-modules/releases/download/merchants-v0.1.1/merchants.zip",
   "readme": "https://github.com/dewarim/foundry-modules/blob/main/merchants/README.md",
   "bugs": "https://github.com/dewarim/foundry-modules/issues"
 }

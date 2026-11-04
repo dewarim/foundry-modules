@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 (2026-11-04)
+
+- The *Market* button keeps its place among the token tools next to other modules' buttons.
+
 ## 0.1.0 (2026-10-25)
 
 - First release. Friendly merchants on your scenes: each placed merchant has his own stock, chosen for

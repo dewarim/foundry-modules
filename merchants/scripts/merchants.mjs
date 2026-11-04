@@ -151,9 +151,12 @@ for ( const hook of ["createToken", "updateToken", "deleteToken", "createItem", 
 Hooks.on("getSceneControlButtons", controls => {
   const tokens = controls.tokens;
   if ( !tokens || !merchantTokens(canvas.scene).length ) return;
-  tokens.tools.merchants = {
-    name: "merchants",
-    order: Object.keys(tokens.tools).length,
+  // Behind every tool that is there, and tied with none: equal orders are decided by insertion order,
+  // and the count of core's own tools is exactly one of their orders (4 in v14: unconstrainedMovement).
+  const last = Math.max(0, ...Object.values(tokens.tools).map(t => t.order ?? 0));
+  tokens.tools.dewarimMerchants = {
+    name: "dewarimMerchants",
+    order: last + 1,
     title: "DEWARIM_MERCHANTS.Market.Title",
     icon: "fa-solid fa-store",
     button: true,
