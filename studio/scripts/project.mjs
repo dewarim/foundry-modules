@@ -33,7 +33,7 @@ export function rootFolder(projectId, type) {
   return game.folders.find(f => (f.type === type) && (f.getFlag(MODULE_ID, "root") === projectId));
 }
 
-async function ensureRootFolder(project, type) {
+export async function ensureRootFolder(project, type) {
   return rootFolder(project.id, type) ?? Folder.implementation.create({
     name: project.title,
     type,

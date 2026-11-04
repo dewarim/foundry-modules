@@ -102,7 +102,11 @@ async function collect(project) {
     const doc = docs[i];
     const refs = findReferences(doc.documentName, doc.toObject());
     refs.packs.forEach(p => packs.add(p));
-    for ( const uuid of refs.world ) {
+    // A merchant (optional module) names compendiums by id and item folders: those are not UUIDs in his data
+    const merchant = merchants()?.references?.(doc);
+    merchant?.packs.forEach(p => packs.add(p));
+    const world = [...refs.world, ...(merchant?.uuids.filter(u => !u.startsWith("Compendium.")) ?? [])];
+    for ( const uuid of world ) {
       if ( seen.has(uuid) ) continue;
       seen.add(uuid);
       const [type, id] = uuid.split(".");
@@ -129,6 +133,9 @@ function collectFolders(docs) {
   return [...folders.values()];
 }
 
+/** The merchants module's API, when it is active: it knows what its flags depend on and what is state. */
+const merchants = () => (game.modules.get("dewarim-merchants")?.active ? game.modules.get("dewarim-merchants").api : null);
+
 function serialize(doc) {
   const data = doc.toCompendium(null, {
     clearSort: false, clearFolder: false, clearFlags: false, clearSource: false,
@@ -141,7 +148,8 @@ function serialize(doc) {
     delete data.flags[MODULE_ID];
     if ( encounters?.length ) data.flags[MODULE_ID] = {encounters};
   }
-  return data;
+  // Placed merchants keep their stock, not their restock state: the play world restocks on the first visit
+  return merchants()?.prepareExport?.(doc.documentName, data) ?? data;
 }
 
 /**

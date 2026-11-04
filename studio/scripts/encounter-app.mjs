@@ -449,12 +449,14 @@ export class EncounterApp extends HandlebarsApplicationMixin(ApplicationV2) {
         existing.count += 1;
         if ( existing.pattern === defaultPattern(existing.count - 1) ) existing.pattern = defaultPattern(existing.count);
       } else {
-        // A linked world actor is an individual already: placed as itself (kind "unique")
-        const unique = !doc.pack && doc.prototypeToken.actorLink;
+        // A linked world actor is an individual already: placed as itself (kind "unique"). A merchant
+        // (dewarim-merchants) is always an unlinked token: each placed one keeps its own stock, in plain view.
+        const merchant = !!game.modules.get("dewarim-merchants")?.api?.isMerchant(doc);
+        const unique = !merchant && !doc.pack && doc.prototypeToken.actorLink;
         this.#mobs.push({
           uuid: doc.uuid, name: doc.name, img: doc.prototypeToken.texture.src || doc.img, count: 1,
-          kind: unique ? "unique" : "group", pattern: defaultPattern(1), hp: "", hidden: true,
-          disposition: doc.prototypeToken.disposition
+          kind: unique ? "unique" : "group", pattern: defaultPattern(1), hp: "", hidden: !merchant,
+          disposition: merchant ? CONST.TOKEN_DISPOSITIONS.FRIENDLY : doc.prototypeToken.disposition
         });
       }
     }
@@ -465,6 +467,21 @@ export class EncounterApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     else return;
     this.render();
+  }
+
+  /**
+   * Rows for these actors on a scene - the merchants window's *Market on scene*: a fresh, unsaved draft.
+   * @param {Actor[]} actors
+   * @param {string} [sceneId]
+   */
+  fill(actors, sceneId) {
+    if ( sceneId && game.scenes.has(sceneId) ) this.#sceneId = sceneId;
+    this.#mobs = [];
+    this.#loot = [];
+    this.#draftId = null;
+    this.#draftName = "";
+    for ( const actor of actors ) this.#add(actor);
+    return this.render({force: true});
   }
 
   static #onRemoveMob(event, target) {

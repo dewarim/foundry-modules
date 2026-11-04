@@ -213,7 +213,8 @@ export async function createEncounter(scene, {mobs, loot, origin, chestName, che
 }
 
 /**
- * Wait for one left click on the canvas and return it in scene coordinates. Escape cancels (null).
+ * Wait for one left click on the canvas and return it in scene coordinates. Escape cancels (null),
+ * and so does a scene change: the canvas the click was meant for is gone.
  * @returns {Promise<{x: number, y: number}|null>}
  */
 export function awaitCanvasClick() {
@@ -222,6 +223,7 @@ export function awaitCanvasClick() {
     const finish = result => {
       view.removeEventListener("pointerdown", onClick, true);
       document.removeEventListener("keydown", onKey, true);
+      Hooks.off("canvasTearDown", onTearDown);
       resolve(result);
     };
     const onClick = event => {
@@ -231,7 +233,11 @@ export function awaitCanvasClick() {
       finish(canvas.canvasCoordinatesFromClient({x: event.clientX, y: event.clientY}));
     };
     const onKey = event => { if ( event.key === "Escape" ) finish(null); };
+    // Without this the keydown listener outlives the canvas it belonged to, and the promise - and
+    // whatever awaits it - never settles.
+    const onTearDown = () => finish(null);
     view.addEventListener("pointerdown", onClick, true);
     document.addEventListener("keydown", onKey, true);
+    Hooks.on("canvasTearDown", onTearDown);
   });
 }

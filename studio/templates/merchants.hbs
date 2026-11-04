@@ -1,0 +1,84 @@
+<div class="merchants-layout">
+<div class="merchants-body">
+  {{#if inactive}}
+  <p class="notification warning">{{localize "DEWARIM_STUDIO.Merchants.Inactive"}}</p>
+  {{else}}
+  <div class="merchants-toolbar">
+    <select name="template">{{#each templates}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+    <input type="text" name="newName" placeholder="{{localize 'DEWARIM_STUDIO.Merchants.Name'}}">
+    <input type="number" name="newLevel" min="1" max="30" step="1" placeholder="{{localize 'DEWARIM_STUDIO.Merchants.Level'}}">
+    <button type="button" data-action="create"><i class="fa-solid fa-plus" inert></i> {{localize "DEWARIM_STUDIO.Merchants.New"}}</button>
+    <span class="spacer"></span>
+    <button type="button" data-action="rules"><i class="fa-solid fa-scale-unbalanced" inert></i> {{localize "DEWARIM_STUDIO.Merchants.Rules"}}</button>
+    <button type="button" data-action="openMarket"><i class="fa-solid fa-store" inert></i> {{localize "DEWARIM_STUDIO.Merchants.Market"}}</button>
+  </div>
+
+  <div class="merchants-scroll">
+  {{#if rows.length}}
+  <table class="merchant-rows">
+    <thead><tr>
+      <th data-tooltip="{{localize 'DEWARIM_STUDIO.Merchants.CheckHint'}}"><i class="fa-solid fa-store" inert></i></th>
+      <th></th>
+      <th>{{localize "DEWARIM_STUDIO.Merchants.Name"}}</th>
+      <th>{{localize "DEWARIM_STUDIO.Merchants.Race"}}</th>
+      <th>{{localize "DEWARIM_STUDIO.Merchants.Profession"}}</th>
+      <th>{{localize "DEWARIM_STUDIO.Merchants.Level"}}</th>
+      <th data-tooltip="{{localize 'DEWARIM_STUDIO.Merchants.MarkupHint'}}">{{localize "DEWARIM_STUDIO.Merchants.Markup"}}</th>
+      <th data-tooltip="{{localize 'DEWARIM_STUDIO.Merchants.BuyDiscountHint'}}">{{localize "DEWARIM_STUDIO.Merchants.BuyDiscount"}}</th>
+      <th>{{localize "DEWARIM_STUDIO.Merchants.StockSize"}}</th>
+      <th data-tooltip="{{localize 'DEWARIM_STUDIO.Merchants.PeriodHint'}}">{{localize "DEWARIM_STUDIO.Merchants.Period"}}</th>
+      <th data-tooltip="{{localize 'DEWARIM_STUDIO.Merchants.FilterHint'}}">{{localize "DEWARIM_STUDIO.Merchants.Filter"}}</th>
+      <th data-tooltip="{{localize 'DEWARIM_STUDIO.Merchants.FixedHint'}}"><i class="fa-solid fa-star" inert></i></th>
+      <th>{{localize "DEWARIM_STUDIO.Merchants.Placed"}}</th>
+      <th></th>
+    </tr></thead>
+    <tbody>
+    {{#each rows}}
+      <tr data-actor-id="{{id}}" data-action="select" class="{{#if selected}}selected{{/if}}">
+        <td class="center"><input type="checkbox" data-field="check" {{#if checked}}checked{{/if}}></td>
+        <td><img src="{{img}}" alt=""></td>
+        <td class="name">{{#if inProject}}★ {{/if}}<input type="text" data-field="name" value="{{name}}"></td>
+        <td><select data-field="race">{{#each raceChoices}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></td>
+        <td><select data-field="profession">{{#each professionChoices}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></td>
+        <td><input type="number" data-field="level" value="{{level}}" min="1" max="30" step="1"></td>
+        <td><input type="number" data-field="markup" value="{{markup}}" min="-100" step="1"></td>
+        <td><input type="number" data-field="buyDiscount" value="{{buyDiscount}}" min="0" max="100" step="1"></td>
+        <td><input type="number" data-field="stockSize" value="{{stockSize}}" min="0" max="200" step="1"></td>
+        <td><input type="number" data-field="period" value="{{restock.period}}" min="0" step="any"></td>
+        <td><input type="text" data-field="filter" value="{{filter}}" class="filter"></td>
+        <td class="center">{{fixedCount}}</td>
+        <td class="center" data-tooltip="{{placedHint}}">{{placed}}</td>
+        <td class="actions">
+          <a data-action="open" data-tooltip="{{localize 'DEWARIM_STUDIO.Merchants.Configure'}}"><i class="fa-solid fa-sliders" inert></i></a>
+          <a data-action="place" data-tooltip="{{localize 'DEWARIM_STUDIO.Merchants.Place'}}"><i class="fa-solid fa-location-dot" inert></i></a>
+          {{#if placed}}<a data-action="restock" data-tooltip="{{localize 'DEWARIM_STUDIO.Merchants.Restock'}}"><i class="fa-solid fa-boxes-stacked" inert></i></a>{{/if}}
+        </td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+  {{else}}
+  <p class="hint">{{localize "DEWARIM_STUDIO.Merchants.None"}}</p>
+  {{/if}}
+  </div>
+
+  <div class="merchants-footer">
+    <label>{{localize "DOCUMENT.Scene"}}
+      <select name="scene">{{#each scenes}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{#if inProject}}★ {{/if}}{{name}}</option>{{/each}}</select>
+    </label>
+    <label data-tooltip="{{localize 'DEWARIM_STUDIO.Merchants.SceneLevelHint'}}">{{localize "DEWARIM_STUDIO.Merchants.SceneLevel"}}
+      <input type="number" name="sceneLevel" value="{{sceneLevel}}" min="1" max="30" step="1">
+    </label>
+    <label>{{localize "DEWARIM_STUDIO.Encounter.Placement.Label"}}
+      <select name="placement">{{#each placements}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+    </label>
+    <span class="spacer"></span>
+    <button type="button" data-action="market" {{#unless checkedCount}}disabled{{/unless}} data-tooltip="{{localize 'DEWARIM_STUDIO.Merchants.MarketOnSceneHint'}}">
+      <i class="fa-solid fa-shop" inert></i> {{localize "DEWARIM_STUDIO.Merchants.MarketOnScene" count=checkedCount}}
+    </button>
+  </div>
+  <p class="hint">{{#if selected}}{{localize "DEWARIM_STUDIO.Merchants.FixedTarget" name=selected}}{{/if}}</p>
+  {{/if}}
+</div>
+{{#unless inactive}}{{> "modules/dewarim-studio/templates/source-panel.hbs" source}}{{/unless}}
+</div>

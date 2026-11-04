@@ -100,6 +100,34 @@ document type.
   player characters in it if you like - the primary party when there is none yet; ☆ makes the chosen one
   primary, the group icon opens its sheet.
 
+## Merchants (with *Dewarim: Merchants*)
+
+Shown in the studio window when the merchants module is active; the merchants module does the trading,
+the studio the fast setup.
+
+- **Table** of every merchant (the project's first, ★): name, race, profession, level, markup, buying
+  discount, stock size, restock hours, filter - written as you type. ⚙ opens the merchant sheet with
+  everything else.
+- **New** from the system's templates (dnd5e: general store, blacksmith, alchemist, scribe, arcanist), into
+  the active project.
+- **Custom stock**: drop an item on a row, or pick a row and press + in the source panel.
+- **Place** a merchant on the scene below: the next free staging cell or where you click. The scene's level
+  (what the stock is chosen for) is set in the footer.
+- **Market on scene**: tick merchants → a new encounter draft with them on that scene (unlinked friendly
+  tokens, each its own stock) - place it, save it as a draft, undo it like any encounter. In the encounter
+  editor a dropped merchant becomes such a row by itself.
+- **Build**: merchants and the scenes they stand on go into the Adventure like any content. The build
+  follows a merchant's sources and custom stock (world items join the project; compendiums are reported),
+  and placed merchants ship with their stock but without their restock state - the play world restocks
+  them on the first visit.
+
+## Item templates (with *Dewarim: Item templates*)
+
+*Item templates* in the studio window opens the items module's template editor with the active project's
+Item folder as the target of new templates: variants of a base item (strengths, quality tiers), quick
+mundane items from rows, riders. Generated items are world items in that folder, so they belong to the
+project, a merchant can take them as stock, and the build puts them into the Adventure.
+
 ## Scene contents
 
 *Studio* → *Scene contents*, or right-click a scene in the sidebar: everything placed on one scene as

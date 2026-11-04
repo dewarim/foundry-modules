@@ -1,6 +1,7 @@
 // The pure half of the filter fields: "goblin cr<=2" is a name word and a condition. Which keys exist
 // (cr, level, rarity ...) is the system adapter's business; this file only parses and compares.
-// Covered by test/filters.test.mjs.
+// Covered by test/filters.test.mjs. dewarim-merchants has a copy (modules cannot import each other's
+// files); its test fails when the two differ below this header.
 
 const CONDITION = /^([a-z][\w.]*)(<=|>=|!=|<|>|=)(.+)$/i;
 

@@ -2,8 +2,9 @@
 // Entry points: the "Studio" button in the Settings sidebar, project entries in the sidebar context menus
 // and in document sheet headers. Generic: no system-specific code.
 import {buildProject} from "./build.mjs";
-import {MODULE_ID, activeProject, assign, assignFolder, getProject, members, projectOf, projects, unassign}
-  from "./project.mjs";
+import {
+  MODULE_ID, activeProject, assign, assignFolder, ensureRootFolder, getProject, members, projectOf, projects, rootFolder, unassign
+} from "./project.mjs";
 import {CONTENT_TYPES} from "./refs.mjs";
 import {StudioApp} from "./studio-app.mjs";
 import {TableApp} from "./table-app.mjs";
@@ -11,8 +12,13 @@ import {registerPreset} from "./columns.mjs";
 import {EncounterApp} from "./encounter-app.mjs";
 import {SceneApp} from "./scene-app.mjs";
 import {CommanderApp} from "./commander-app.mjs";
+import {MerchantsApp} from "./merchants-app.mjs";
 import {registerDropRule, registerSourceSupport} from "./commander.mjs";
 import {registerEncounterSupport} from "./encounter.mjs";
+import {registerChangelog} from "./shared/changelog.mjs";
+
+// After an install or update, GMs see what changed (CHANGELOG.md)
+registerChangelog(MODULE_ID);
 
 let app;
 const tables = new Map();
@@ -20,6 +26,26 @@ const tables = new Map();
 let encounter;
 let sceneApp;
 let commander;
+let merchants;
+
+/**
+ * The item templates of the optional dewarim-items module, writing into the active project's Item folder
+ * (made if it is missing), so generated items join the project and its adventure.
+ */
+async function openItems() {
+  const items = game.modules.get("dewarim-items");
+  if ( !items?.active ) return null;
+  const project = activeProject();
+  const folder = project ? (rootFolder(project.id, "Item") ?? await ensureRootFolder(project, "Item")) : null;
+  return items.api?.open({folder: folder?.uuid ?? ""});
+}
+
+/** The merchants table - only with the optional dewarim-merchants module active. */
+function openMerchants() {
+  if ( !game.modules.get("dewarim-merchants")?.active ) return null;
+  merchants ??= new MerchantsApp();
+  return merchants.render({force: true});
+}
 
 function openCommander() {
   commander ??= new CommanderApp();
@@ -51,6 +77,7 @@ const refresh = foundry.utils.debounce(() => {
   if ( app?.rendered ) app.render();
   if ( encounter?.rendered && !encounter.element.contains(document.activeElement) ) encounter.render();
   commander?.refresh();
+  if ( merchants?.rendered && !merchants.element.contains(document.activeElement) ) merchants.render();
   // A table being typed into is left alone - re-rendering would take the focus away
   for ( const table of tables.values() ) {
     if ( table.rendered && !table.element.contains(document.activeElement) ) table.render();
@@ -90,7 +117,7 @@ Hooks.once("init", () => {
 
 Hooks.once("ready", () => {
   game.modules.get(MODULE_ID).api = {
-    open: openStudio, openTable, openEncounter, openScene, openCommander, registerDropRule, registerPreset, registerEncounterSupport, build: buildProject,
+    open: openStudio, openTable, openEncounter, openScene, openCommander, openMerchants, openItems, registerDropRule, registerPreset, registerEncounterSupport, build: buildProject,
     projects, members, assign, assignFolder, unassign, projectOf
   };
   if ( !game.user.isGM ) return;

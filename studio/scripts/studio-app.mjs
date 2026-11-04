@@ -18,6 +18,10 @@ export class StudioApp extends HandlebarsApplicationMixin(ApplicationV2) {
       openEncounter: () => game.modules.get(MODULE_ID).api.openEncounter(),
       openScene: () => game.modules.get(MODULE_ID).api.openScene(),
       openCommander: () => game.modules.get(MODULE_ID).api.openCommander(),
+      // Another optional module: merchants, configured from here
+      openMerchants: () => game.modules.get(MODULE_ID).api.openMerchants(),
+      // And item templates, generating into the project
+      openItems: () => game.modules.get(MODULE_ID).api.openItems(),
       // A separate, optional module: the files of the content being authored
       openFiles: () => game.modules.get("dewarim-file-commander")?.api?.open()
     }
@@ -51,6 +55,8 @@ export class StudioApp extends HandlebarsApplicationMixin(ApplicationV2) {
       empty: project && !groups.length,
       building: this.#building,
       hasFiles: !!game.modules.get("dewarim-file-commander")?.active,
+      hasMerchants: !!game.modules.get("dewarim-merchants")?.active,
+      hasItems: !!game.modules.get("dewarim-items")?.active,
       report: this.#report && this.#reportContext(this.#report)
     };
   }

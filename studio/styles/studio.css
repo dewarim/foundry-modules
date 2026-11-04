@@ -200,3 +200,34 @@ textarea.dewarim-studio-tsv { width: 100%; min-height: 14rem; font-family: monos
 .dewarim-studio-encounter td.xp { white-space: nowrap; }
 .dewarim-studio-encounter td.xp.dim { opacity: 0.55; font-style: italic; }
 .dewarim-studio-encounter td.xp.strong { color: var(--color-level-error, #c33); }
+
+/* Merchants (with dewarim-merchants) */
+.dewarim-studio-merchants .window-content { padding: 0.5rem; }
+.dewarim-studio-merchants .merchants-layout { display: flex; gap: 0.5rem; height: 100%; min-height: 0; }
+.dewarim-studio-merchants .merchants-body { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+.dewarim-studio-merchants .merchants-toolbar,
+.dewarim-studio-merchants .merchants-footer { display: flex; gap: 0.5rem; align-items: center; flex: none; flex-wrap: wrap; }
+.dewarim-studio-merchants .merchants-toolbar select { width: auto; max-width: 12rem; }
+.dewarim-studio-merchants .merchants-toolbar input[name=newName] { width: 12rem; }
+.dewarim-studio-merchants .merchants-toolbar input[name=newLevel],
+.dewarim-studio-merchants .merchants-footer input[name=sceneLevel] { width: 4rem; }
+.dewarim-studio-merchants .merchants-footer label { display: flex; gap: 0.3rem; align-items: center; }
+.dewarim-studio-merchants .merchants-footer select { width: auto; max-width: 14rem; }
+.dewarim-studio-merchants button { width: auto; flex: none; }
+.dewarim-studio-merchants .spacer { flex: 1; }
+.dewarim-studio-merchants .merchants-scroll { flex: 1; overflow: auto; border: 1px solid var(--color-border, #555); }
+.dewarim-studio-merchants table { margin: 0; border-collapse: collapse; width: max-content; min-width: 100%; }
+.dewarim-studio-merchants thead th { position: sticky; top: 0; z-index: 1; background: var(--color-cool-5, #222);
+  white-space: nowrap; padding: 0.25rem 0.4rem; text-align: left; }
+.dewarim-studio-merchants td { padding: 1px 2px; vertical-align: middle; }
+.dewarim-studio-merchants td img { width: 1.6rem; height: 1.6rem; object-fit: cover; border: none; }
+.dewarim-studio-merchants td input[type=text] { width: 9rem; height: 1.6rem; }
+.dewarim-studio-merchants td.name input { width: 11rem; }
+.dewarim-studio-merchants td input.filter { width: 13rem; }
+.dewarim-studio-merchants td input[type=number] { width: 4rem; height: 1.6rem; text-align: right; }
+.dewarim-studio-merchants td.center { text-align: center; }
+.dewarim-studio-merchants td.actions { white-space: nowrap; }
+.dewarim-studio-merchants td.actions a { margin: 0 0.2rem; }
+.dewarim-studio-merchants tr.selected { background: rgb(255 255 255 / 6%); box-shadow: inset 3px 0 0 var(--color-warm-2, #ff6400); }
+.dewarim-studio-merchants .hint { opacity: 0.7; font-size: 0.8rem; margin: 0; }
+.dewarim-studio-merchants td select { width: 9rem; height: 1.6rem; }

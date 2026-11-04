@@ -71,6 +71,16 @@
     <button type="button" data-action="openEncounter">
       <i class="fa-solid fa-dragon" inert></i> {{localize "DEWARIM_STUDIO.Encounter.Open"}}
     </button>
+    {{#if hasItems}}
+    <button type="button" data-action="openItems">
+      <i class="fa-solid fa-flask-vial" inert></i> {{localize "DEWARIM_STUDIO.ItemTemplates"}}
+    </button>
+    {{/if}}
+    {{#if hasMerchants}}
+    <button type="button" data-action="openMerchants">
+      <i class="fa-solid fa-store" inert></i> {{localize "DEWARIM_STUDIO.Merchants.Open"}}
+    </button>
+    {{/if}}
   </div>
 
   {{#if report}}
