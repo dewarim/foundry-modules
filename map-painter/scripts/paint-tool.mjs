@@ -392,8 +392,12 @@ async function bakeLayer(scene, {flag, prefix, sort, draw}, chunks) {
     const blob = await new Promise(resolve => el.toBlob(resolve, "image/webp", 0.88));
     const name = `${prefix}_${cx}_${cy}.webp`.replace(/-/g, "m");
     const result = await FilePicker.upload("data", folder, new File([blob], name, {type: "image/webp"}), {}, {notify: false});
+    // A refused upload answers false and has put the server's reason on screen already (FilePicker.upload
+    // notifies whatever `notify` says). Without the image there is nothing to show, so the stroke fails
+    // here rather than pointing a tile at a file that was never written.
+    if ( !result?.path ) throw new Error(_loc("DEWARIM_MAP.UploadFailed", {name}));
     // A new query string per bake: the same file name, but every client loads the new image
-    const src = `${result?.path ?? `${folder}/${name}`}?v=${Date.now()}`;
+    const src = `${result.path}?v=${Date.now()}`;
     const data = {
       x: ox + (px / 2), y: oy + (px / 2), width: px, height: px, rotation: 0, sort, locked: true,
       texture: {src, anchorX: 0.5, anchorY: 0.5, scaleX: 1, scaleY: 1}

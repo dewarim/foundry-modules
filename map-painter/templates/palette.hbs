@@ -18,17 +18,19 @@
     <p class="mp-hint">{{localize "DEWARIM_MAP.Missing"}}</p>
     {{#if canCreate}}<button type="button" data-action="createFolder"><i class="fa-solid fa-folder-plus" inert></i> {{localize "DEWARIM_MAP.CreateFolder"}}</button>{{/if}}
     {{/if}}
+    {{#if search}}<p class="mp-found">{{search.text}}{{#if search.note}} <span class="mp-hint">{{search.note}}</span>{{/if}}</p>{{/if}}
     {{#each dirs}}<div class="mp-dir" data-action="enter" data-path="{{path}}"><i class="fa-solid fa-folder" inert></i> {{name}}</div>{{/each}}
     <div class="mp-grid">
       {{#each images}}
-      <figure class="mp-image {{#if selected}}selected{{/if}}" data-action="pick" data-path="{{path}}" data-tooltip="{{name}}">
+      <figure class="mp-image {{#if selected}}selected{{/if}}" data-action="pick" data-path="{{path}}" data-tooltip="{{title}}">
         <img src="{{path}}" loading="lazy" alt="">
         {{#if blocks}}<i class="fa-solid fa-block-brick mp-blocks" inert data-tooltip="{{localize 'DEWARIM_MAP.Blocks'}}"></i>{{/if}}
         <figcaption>{{name}}</figcaption>
+        {{#if sub}}<figcaption class="mp-sub">{{sub}}</figcaption>{{/if}}
       </figure>
       {{/each}}
     </div>
-    {{#unless (or error dirs.length images.length)}}<p class="mp-hint">{{localize "DEWARIM_MAP.Empty"}}</p>{{/unless}}
+    {{#unless (or error search dirs.length images.length)}}<p class="mp-hint">{{localize "DEWARIM_MAP.Empty"}}</p>{{/unless}}
   </div>
 
   <footer class="stamp-settings">

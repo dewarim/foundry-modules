@@ -3,7 +3,7 @@
     "Title": "Kartenmaler",
     "Open": "Kartenmaler öffnen",
     "UserData": "Benutzerdaten",
-    "Filter": "Filtern…",
+    "Filter": "Hier und darunter suchen…",
     "AddRoot": "Ordner zur Palette hinzufügen",
     "AddRootHint": "Ein Ordner in den Benutzerdaten (assets/props, assets/textures/dungeon) oder von Foundry (icons/environment).",
     "RemoveRoot": "Diesen Ordner aus der Palette entfernen",
@@ -35,6 +35,12 @@
     "RockBlocks": "Fels blockiert Sicht (Wände an den Rändern)",
     "CarveKeys": "Ziehen meißelt · Strg+Ziehen meißelt ein Rechteck · Alt+Ziehen füllt Fels zurück",
     "RemoveRock": "Felsschicht entfernen",
-    "RemoveRockConfirm": "Die Felsschicht dieser Szene entfernen - ihre Kacheln, ihre Wände und alles Gemeißelte? Das lässt sich nicht rückgängig machen."
+    "RemoveRockConfirm": "Die Felsschicht dieser Szene entfernen - ihre Kacheln, ihre Wände und alles Gemeißelte? Das lässt sich nicht rückgängig machen.",
+    "SearchFound": "{hits} in {folders} Ordnern unter {where}",
+    "SearchNone": "Nichts zu „{needle}“ in {folders} Ordnern unter {where}",
+    "SearchTruncated": "Die ersten {count} - Suche eingrenzen.",
+    "SearchDeep": "Nach {folders} Ordnern abgebrochen - Suche eingrenzen.",
+    "SearchFailed": "{count} Ordner waren nicht lesbar.",
+    "UploadFailed": "Das gemalte Bild {name} konnte nicht gespeichert werden - siehe den Fehler darüber."
   }
 }

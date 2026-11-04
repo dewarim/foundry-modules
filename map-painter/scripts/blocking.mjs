@@ -74,12 +74,26 @@ export function removeTileWalls(scene, tileId) {
   });
 }
 
+/** Whether an update sets or removes the `blocks` flag. Both land at the same path: v14 writes a
+ *  deletion as an operator object there ({__$OPERATOR$__: "ForcedDeletion"}), not as the `-=blocks`
+ *  key older cores used - and this module needs v14 (module.json). */
+function touchesBlocks(changed) {
+  return foundry.utils.hasProperty(changed, `flags.${MODULE_ID}.blocks`);
+}
+
+/** Whether a tile's walls are the painter's business: it blocks view, or its flag was just set or
+ *  removed (the walls it owned then have to go). Asked before anything else, because finding a tile's
+ *  own walls filters every wall in the scene - a cost foreign tiles (most tile updates on a busy
+ *  scene, from a mass edit or another module) must not pay. */
+export function ownsWalls(tile, changed) {
+  return !!tile.getFlag(MODULE_ID, "blocks") || touchesBlocks(changed);
+}
+
 /** Fields of a tile whose change moves its walls. */
 export function movesWalls(changed) {
   return ["x", "y", "width", "height", "rotation"].some(k => k in changed)
     || ("texture" in changed && ["anchorX", "anchorY"].some(k => k in (changed.texture ?? {})))
-    || foundry.utils.hasProperty(changed, `flags.${MODULE_ID}.blocks`)
-    || foundry.utils.hasProperty(changed, `flags.${MODULE_ID}.-=blocks`);
+    || touchesBlocks(changed);
 }
 
 /* -------------------------------------------- */

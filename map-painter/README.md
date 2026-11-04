@@ -6,7 +6,11 @@ Build scenes from a palette of images instead of drawing tile rectangles by hand
 
 - **Palette**: images from a few folders - by default `assets/props` and `assets/textures` in user data
   (created on request) and Foundry's own `icons/environment` (trees, rocks, ruins …). Add or remove
-  folders, browse subfolders, filter by name; the last used images sit on top. A module can add its
+  folders, browse subfolders; the last used images sit on top. The search box looks through
+  everything *below* the folder you are in, not just that one listing - type `water` at the root of
+  a texture module and it finds `liquids/water-deep` and `hatch/water` three folders apart, each
+  showing where it came from. Case does not matter, several words all have to match (`web red`),
+  the extension is not searched, and folder names count, so `hatch` lists what is in it. A module can add its
   own folders: `"flags": {"dewarim-map-painter": {"roots": [{"path": "modules/<id>/assets", "label": "…"}]}}`
   in its `module.json` - they are listed while that module is active.
 - **Stamps**: pick an image - a ghost follows the mouse, snapped to the grid. Click places a tile, a drag

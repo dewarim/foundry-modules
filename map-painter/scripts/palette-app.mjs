@@ -5,6 +5,7 @@ import {isBlocking, setBlocking} from "./blocking.mjs";
 import {PaintTool} from "./paint-tool.mjs";
 import {StampTool} from "./stamp-tool.mjs";
 import {isImage, remember} from "./stamp-model.mjs";
+import {decode, folderOf, relative, searchTree} from "./search-model.mjs";
 
 export const MODULE_ID = "dewarim-map-painter";
 const {ApplicationV2, HandlebarsApplicationMixin} = foundry.applications.api;
@@ -27,11 +28,6 @@ function moduleRoots() {
     }
   }
   return roots;
-}
-
-function decode(s) {
-  try { return decodeURIComponent(s); }
-  catch { return s; }
 }
 
 export class PaletteApp extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -77,6 +73,14 @@ export class PaletteApp extends HandlebarsApplicationMixin(ApplicationV2) {
   #filter = "";
   /** {dirs, files} of the current folder, or {error} */
   #listing = null;
+  /**
+   * Folder listings for the search, keyed source:path.
+   *
+   * A search opens one folder per request, and it runs again on every keystroke - so without this
+   * a ten-letter word would walk the tree ten times. Cleared whenever the palette navigates, so
+   * what a search finds is never older than the folder the GM is standing in.
+   */
+  #browsed = new Map();
 
   /** The tool picking an image arms. */
   get tool() {
@@ -111,22 +115,47 @@ export class PaletteApp extends HandlebarsApplicationMixin(ApplicationV2) {
   async #load() {
     try {
       const result = await FilePicker().browse(this.#source, this.#path);
+      this.#browsed.set(`${this.#source}:${this.#path}`, Promise.resolve(result));
       this.#listing = {dirs: result.dirs, files: result.files.filter(isImage)};
     } catch(err) {
       this.#listing = {dirs: [], files: [], error: err.message, missing: true};
     }
   }
 
+  /** One folder, from the cache if the current search has already been there. */
+  #browse(path) {
+    const key = `${this.#source}:${path}`;
+    if ( !this.#browsed.has(key) ) this.#browsed.set(key, FilePicker().browse(this.#source, path));
+    return this.#browsed.get(key);
+  }
+
   /** @override */
   async _prepareContext() {
     if ( !this.#listing ) await this.#load();
     const root = this.#roots[this.#root];
-    const needle = this.#filter.trim().toLowerCase();
     const name = p => decode(p.split("/").pop());
-    const keep = p => !needle || name(p).toLowerCase().includes(needle);
     const stamp = this.tools.stamp.stamp;
     const selected = this.#selected;
     const segments = this.#path.slice(root?.path.length ?? 0).split("/").filter(Boolean);
+
+    // A filter searches the whole tree below the current folder, not this one listing: what a GM
+    // is after is hardly ever in the folder they happen to be standing in.
+    //
+    // Searching is asynchronous, and a later keystroke can finish before an earlier one - the
+    // first walk pays for the requests while the next is served from the cache and overtakes it,
+    // which would leave the box showing one word and the grid the results of another. So it is
+    // repeated until what was searched for is still what is in the box. The repeat is free: by
+    // then every folder it needs is cached.
+    let needle = this.#filter.trim();
+    let found = null;
+    for ( let attempt = 0; (attempt < 3) && needle && !this.#listing.error; attempt++ ) {
+      needle = this.#filter.trim();
+      found = await searchTree({browse: path => this.#browse(path), root: this.#path, needle, isImage});
+      if ( this.#filter.trim() === needle ) break;
+    }
+    const dirs = found ? found.dirs : this.#listing.dirs;
+    const images = found ? found.files : this.#listing.files;
+    const where = decode(this.#path.split("/").pop() ?? "");
     return {
       roots: this.#roots.map((r, i) => ({index: i, selected: i === this.#root,
         label: r.label ?? `${r.source === "public" ? "Foundry" : _loc("DEWARIM_MAP.UserData")}: ${decode(r.path)}`})),
@@ -136,8 +165,15 @@ export class PaletteApp extends HandlebarsApplicationMixin(ApplicationV2) {
       filter: this.#filter,
       error: this.#listing.error,
       canCreate: this.#listing.missing && (this.#source === "data") && game.user.hasPermission("FILES_UPLOAD"),
-      dirs: this.#listing.dirs.filter(keep).map(p => ({path: p, name: name(p)})),
-      images: this.#listing.files.filter(keep).map(p => ({path: p, name: name(p), selected: p === selected, blocks: isBlocking(p)})),
+      dirs: dirs.map(p => ({path: p, name: found ? relative(p, this.#path) : name(p)})),
+      images: images.map(p => ({
+        path: p, name: name(p), selected: p === selected, blocks: isBlocking(p),
+        // Where it was found, so two files called red.webp are told apart - and the tooltip is
+        // the whole path below the search, since the caption has room for neither.
+        sub: found ? folderOf(relative(p, this.#path)) : "",
+        title: found ? relative(p, this.#path) : name(p)
+      })),
+      search: found ? this.#searchNote(found, needle, where) : null,
       recent: (game.settings.get(MODULE_ID, "recent") ?? []).map(p => ({path: p, name: name(p), selected: p === selected})),
       armed: this.tool.armed,
       selectedName: selected ? name(selected) : "",
@@ -194,11 +230,27 @@ export class PaletteApp extends HandlebarsApplicationMixin(ApplicationV2) {
     return super._onClose(options);
   }
 
+  /** What the search found, in words: how much, from where, and whether it stopped early. */
+  #searchNote({files, dirs, folders, truncated, deep, failed}, needle, where) {
+    const hits = files.length + dirs.length;
+    const note = [];
+    if ( truncated ) note.push(_loc("DEWARIM_MAP.SearchTruncated", {count: files.length}));
+    else if ( deep ) note.push(_loc("DEWARIM_MAP.SearchDeep", {folders}));
+    if ( failed.length ) note.push(_loc("DEWARIM_MAP.SearchFailed", {count: failed.length}));
+    return {
+      text: hits
+        ? _loc("DEWARIM_MAP.SearchFound", {hits, folders, where})
+        : _loc("DEWARIM_MAP.SearchNone", {needle, folders, where}),
+      note: note.join(" ")
+    };
+  }
+
   async #go(root, path) {
     this.#root = root;
     this.#path = path ?? this.#roots[root]?.path ?? "";
     this.#filter = "";
     this.#listing = null;
+    this.#browsed.clear();
     await this.#remember();
     this.render();
   }

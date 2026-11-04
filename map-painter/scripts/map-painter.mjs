@@ -2,8 +2,12 @@
 // Stamps (pick an image, click or drag on the canvas, tiles snap to the grid) and a texture brush (paint
 // grid cells, baked into chunk tiles). Generic: no system-specific code. Later steps (ROADMAP.md): walls
 // for "blocks view" textures, carving dungeon maps.
-import {movesWalls, rebuildWalls, removeTileWalls, syncTileWalls} from "./blocking.mjs";
+import {movesWalls, ownsWalls, rebuildWalls, removeTileWalls, syncTileWalls} from "./blocking.mjs";
 import {MODULE_ID, PaletteApp} from "./palette-app.mjs";
+import {registerChangelog} from "./shared/changelog.mjs";
+
+// After an install or update, GMs see what changed (CHANGELOG.md)
+registerChangelog(MODULE_ID);
 
 let app;
 
@@ -56,7 +60,7 @@ Hooks.on("createTile", (tile, options, userId) => {
   if ( (userId === game.user.id) && tile.getFlag(MODULE_ID, "blocks") ) syncTileWalls(tile);
 });
 Hooks.on("updateTile", (tile, changed, options, userId) => {
-  if ( (userId === game.user.id) && movesWalls(changed) ) syncTileWalls(tile);
+  if ( (userId === game.user.id) && ownsWalls(tile, changed) && movesWalls(changed) ) syncTileWalls(tile);
 });
 Hooks.on("deleteTile", (tile, options, userId) => {
   if ( (userId === game.user.id) && tile.getFlag(MODULE_ID, "blocks") ) removeTileWalls(tile.parent, tile.id);

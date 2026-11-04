@@ -3,7 +3,7 @@
     "Title": "Map Painter",
     "Open": "Open the Map Painter",
     "UserData": "User data",
-    "Filter": "Filter…",
+    "Filter": "Search here and below…",
     "AddRoot": "Add a folder to the palette",
     "AddRootHint": "A folder in user data (assets/props, assets/textures/dungeon) or of Foundry (icons/environment).",
     "RemoveRoot": "Remove this folder from the palette",
@@ -35,6 +35,12 @@
     "RockBlocks": "Rock blocks view (walls along the edges)",
     "CarveKeys": "Drag carves · Ctrl+drag carves a rectangle · Alt+drag fills rock back in",
     "RemoveRock": "Remove the rock layer",
-    "RemoveRockConfirm": "Remove the rock layer of this scene - its tiles, its walls and everything carved? This cannot be undone."
+    "RemoveRockConfirm": "Remove the rock layer of this scene - its tiles, its walls and everything carved? This cannot be undone.",
+    "SearchFound": "{hits} in {folders} folders below {where}",
+    "SearchNone": "Nothing matching “{needle}” in {folders} folders below {where}",
+    "SearchTruncated": "The first {count} - narrow the search.",
+    "SearchDeep": "Stopped after {folders} folders - narrow the search.",
+    "SearchFailed": "{count} folders could not be read.",
+    "UploadFailed": "The painted image {name} could not be saved - see the error above."
   }
 }
