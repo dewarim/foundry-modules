@@ -1,0 +1,40 @@
+{
+  "id": "dewarim-textures",
+  "title": "Dewarim: Textures",
+  "description": "Seamless top-down textures for painting scenes - stone walls and rock, dirt floors, water and lava - and the 148 named web colours as flat tiles, for blocking a map out quickly. Rendered with POV-Ray from the scene files in the module, so any of them can be recoloured and rebuilt. System-agnostic.",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Ingo Wiarda",
+      "email": "ingo@dewarim.de"
+    }
+  ],
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "relationships": {
+    "recommends": [
+      {
+        "id": "dewarim-map-painter",
+        "type": "module",
+        "reason": "Shows the images as a palette folder"
+      }
+    ]
+  },
+  "flags": {
+    "dewarim-map-painter": {
+      "roots": [
+        {
+          "path": "modules/dewarim-textures/assets",
+          "label": "Textures"
+        }
+      ]
+    }
+  },
+  "url": "https://github.com/dewarim/foundry-modules/tree/main/textures",
+  "manifest": "https://raw.githubusercontent.com/dewarim/foundry-modules/main/textures/module.json",
+  "download": "https://github.com/dewarim/foundry-modules/releases/download/textures-v0.1.0/textures.zip",
+  "readme": "https://github.com/dewarim/foundry-modules/blob/main/textures/README.md",
+  "bugs": "https://github.com/dewarim/foundry-modules/issues"
+}

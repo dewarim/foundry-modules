@@ -1,0 +1,12 @@
+{
+  "out": "liquids/water-lake",
+  "model": "black-forest-labs/FLUX.1-schnell",
+  "prompt": "seamless tileable texture of clear lake water seen straight down from above, gentle overlapping ripples, dark blue-green, sandy bottom faintly visible, soft even overhead daylight, no horizon, no sky, no shoreline, no boats, flat orthographic view",
+  "size": 1024,
+  "steps": 4,
+  "precision": "nf4",
+  "overlap": 0.14,
+  "finalSize": 1024,
+  "seeds": [7703, 7704, 4203],
+  "note": "Generated, then flattened, cross-faded and resized - see renderGenerated() in render.mjs. The seeds were picked by eye out of eighteen: most of what the model draws has a horizontal band across it, a repeated blob, or so little structure that it reads as a flat slab. Keep the size at 1024. At 1152 the same prompt and the same seeds came back with hard stripes and duplicated blocks in six of eight, because schnell is trained around a megapixel and 1.33 of one is off its distribution."
+}
