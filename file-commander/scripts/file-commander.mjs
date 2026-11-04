@@ -5,8 +5,13 @@
 // that used the original with it (repoint.mjs) - which is what makes "copy as" a rename.
 import {basename, cleanFolderName, copyNames, crumbs, extensionOf, fileKind, join, parent, planCopy, select} from "./paths.mjs";
 import {findUses, repoint} from "./repoint.mjs";
+import {registerChangelog} from "./shared/changelog.mjs";
 
 const MODULE_ID = "dewarim-file-commander";
+
+// After an install or update, GMs see what changed (CHANGELOG.md)
+registerChangelog(MODULE_ID);
+
 const {ApplicationV2, HandlebarsApplicationMixin} = foundry.applications.api;
 const FilePicker = () => foundry.applications.apps.FilePicker.implementation;
 
