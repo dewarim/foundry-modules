@@ -5,7 +5,7 @@
 // black. The rock is baked into chunk tiles over the whole scene (above the paint, below the props) with
 // the open cells left transparent - they show the painted floor or the scene's background below. With
 // `blocks`, walls follow the outline of the open cells.
-import {CHUNK, blockingOutline, cellKey, parseKey} from "./paint-model.mjs";
+import {CHUNK, blockingOutline, cellKey} from "./paint-model.mjs";
 
 /** No carving on the scene yet, or a copy of the flag (repaired). */
 export function readCarve(data) {
@@ -74,14 +74,6 @@ export function rockChunks(range, size = CHUNK) {
   return keys;
 }
 
-/** The chunks a list of changes touches. */
-export function carvedChunks(changes, size = CHUNK) {
-  return [...new Set(changes.map(c => {
-    const {col, row} = parseKey(c.key);
-    return `${Math.floor(col / size)},${Math.floor(row / size)}`;
-  }))];
-}
-
 /**
  * Inside one chunk: the rock rectangle (the chunk clipped to the scene's cells) and the open cells to cut
  * out of it, in cells relative to the chunk's corner.
@@ -102,6 +94,51 @@ export function chunkRock(state, {cx, cy}, range, size = CHUNK) {
     rock: (holes.length === area) ? null : {col: c0 - (cx * size), row: r0 - (cy * size), width: c1 - c0 + 1, height: r1 - r0 + 1},
     holes
   };
+}
+
+/**
+ * The chunk's open cells as a bitmap of CHUNK*CHUNK bits, hex. Short, fixed in size and independent of the
+ * order the cells come in; cells outside the chunk are not its business and are left out.
+ */
+export function holeMask(holes, size = CHUNK) {
+  const bytes = new Uint8Array(Math.ceil((size * size) / 8));
+  for ( const {col, row} of holes ) {
+    if ( (col < 0) || (row < 0) || (col >= size) || (row >= size) ) continue;
+    const bit = (row * size) + col;
+    bytes[bit >> 3] |= 1 << (bit & 7);
+  }
+  return [...bytes].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+/**
+ * Everything one baked rock image is made of: the texture, the rock rectangle inside the chunk and the
+ * holes cut out of it. It is kept on the chunk's tile, so a bake can be skipped while nothing about that
+ * image changed - and whatever did change is found again after a reload or on another client, instead of
+ * being remembered in this session. `blocks` is not part of it: it moves walls, not pixels.
+ * @returns {string|null}  null: no rock in this chunk, so no image
+ */
+export function rockDigest(state, chunk, range, size = CHUNK) {
+  const {rock, holes} = chunkRock(state, chunk, range, size);
+  if ( !rock ) return null;
+  return [state.rock.src ?? "", state.rock.repeat, `${rock.col},${rock.row},${rock.width},${rock.height}`,
+    holeMask(holes, size)].join("|");
+}
+
+/**
+ * The state as the rock's walls and the bake see it: the cells the brush carved, plus cells a stamp has
+ * opened (the tiles it placed are the record, so there is nothing in the flag to keep in step - a stamp
+ * deleted, moved or undone closes the rock behind it by itself).
+ * @param {object|null} state
+ * @param {string[]} keys  cell keys
+ */
+export function withOpenings(state, keys) {
+  if ( !state || !keys?.length ) return state;
+  return {...state, open: {...state.open, ...Object.fromEntries(keys.map(k => [k, 1]))}};
+}
+
+/** Whether a cell is one the rock covers at all: beyond the scene's own area there is nothing to open. */
+export function inRock(range, {col, row}) {
+  return (col >= range.col0) && (col <= range.col1) && (row >= range.row0) && (row <= range.row1);
 }
 
 /** Walls along the edges of the carved area (when the rock blocks view): the outline of the open cells. */

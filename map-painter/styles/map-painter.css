@@ -25,7 +25,21 @@
 .dewarim-map-painter .mp-hint { opacity: 0.6; font-style: italic; margin: 0.2rem 0; }
 .dewarim-map-painter .mp-disabled { opacity: 0.5; }
 .dewarim-map-painter .mp-modes { display: flex; gap: 0.3rem; }
+/* The label in front of a row of buttons: it is what keeps *Stamp* from being read as a fourth mode
+   beside *Floor*, *Wall* and *Prop*. Both labels share a width so the two rows line up under each other. */
+.dewarim-map-painter .mp-row { flex: 0 0 2.1rem; align-self: center; text-align: right; font-size: 0.7rem; opacity: 0.55; }
+.dewarim-map-painter .mp-help { flex: 0 0 auto; align-self: center; opacity: 0.6; cursor: pointer; }
+.dewarim-map-painter .mp-help:hover { opacity: 1; }
+/* The second axis (brush or stamp) sits under the modes and reads as the quieter of the two choices:
+   the mode says what a stroke means, the axis only how it is drawn. */
+.dewarim-map-painter .mp-axis { margin-top: 0.2rem; font-size: var(--font-size-12, 0.75rem); }
+/* Filling the world is an action on the scene, not one of the brush's settings: set apart from them */
+.dewarim-map-painter .mp-world { display: flex; flex-direction: column; gap: 0.2rem; margin: 0.3rem 0 0; padding: 0.2rem 0.4rem 0.4rem; border: 1px solid var(--color-border, #555); border-radius: 3px; }
+.dewarim-map-painter .mp-world legend { padding: 0 0.3rem; font-weight: bold; opacity: 0.8; }
+.dewarim-map-painter .mp-world .mp-hint { margin: 0; }
+
 .dewarim-map-painter .mp-modes button { flex: 1; }
+.dewarim-map-painter .mp-reset { display: flex; gap: 0.3rem; }
+.dewarim-map-painter .mp-reset button { flex: 1; }
 .dewarim-map-painter .mp-modes button.active { border-color: var(--color-border-highlight, #ff6400); box-shadow: 0 0 4px var(--color-shadow-highlight, #ff6400); }
 .dewarim-map-painter .mp-image { position: relative; }
-.dewarim-map-painter .mp-blocks { position: absolute; top: 3px; right: 3px; font-size: 0.7rem; padding: 2px; border-radius: 2px; background: rgb(0 0 0 / 65%); color: #fff; }

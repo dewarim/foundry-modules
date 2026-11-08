@@ -3,8 +3,18 @@
 // released. Right-drag still pans, the wheel still zooms. Escape disarms. A stroke is one creation in
 // Foundry's own tile history, so Ctrl+Z (Foundry's tile undo, caught by the letter so it works on any
 // keyboard layout) takes it back - in order with everything else done to tiles, a deleted tile included.
-import {isBlocking} from "./blocking.mjs";
-import {cellAt, cellsBetween, centeredOrigin, freeForStamp, stampSize, tileData} from "./stamp-model.mjs";
+//
+// What a stroke places is the mode's business, not the tool's: a floor, a wall or a prop (slot-model.mjs).
+// The first two take the cell's one slot, so they carry the hole they keep open in the material, sit in the
+// slot's sort band and replace the painter's own floors and walls where they land; a prop lies above all of
+// it and replaces nothing. The kind is written on every tile, because a stroke that cannot tell a stamped
+// floor from a chest cannot replace anything.
+import {releaseCanvas, takeCanvas} from "./canvas-tool.mjs";
+import {cellAt, cellsBetween, centeredOrigin, freeForStamp, stampSize, tileCells, tileData} from "./stamp-model.mjs";
+import {KIND, blocksFor, sortFor, takesSlot} from "./slot-model.mjs";
+import {announceReplaced, replacedIn} from "./slot.mjs";
+
+const MODULE_ID = "dewarim-map-painter";
 
 export class StampTool {
   /**
@@ -12,8 +22,13 @@ export class StampTool {
    */
   constructor({onChange} = {}) {
     this.onChange = onChange ?? (() => {});
-    // aspect: the image's width / height, read when its texture loads - a stamp keeps its proportions
-    this.stamp = {src: null, cells: 1, rotation: 0, flip: false, randomRotation: false, snap: true, aspect: 1};
+    // aspect: the image's width / height, read when its texture loads - a stamp keeps its proportions.
+    // kind: what the mode says this stroke places (slot-model.mjs) - a floor or a wall, which take the
+    // cell's one slot and therefore replace what is in it, or a prop, which lies above it and replaces
+    // nothing. blocks: whether a *prop* blocks view (a pillar, a pile of rocks); a wall always does and a
+    // floor never, so the checkbox is only asked about props.
+    this.stamp = {src: null, cells: 1, rotation: 0, flip: false, randomRotation: false, snap: true, aspect: 1,
+      kind: KIND.PROP, blocks: false};
     this.#onPointerDown = this.#pointerDown.bind(this);
     this.#onPointerMove = this.#pointerMove.bind(this);
     this.#onPointerUp = this.#pointerUp.bind(this);
@@ -27,7 +42,7 @@ export class StampTool {
   /** The ghost sprite, and the sprites of a stroke in progress */
   #ghost = null;
   #pending = [];
-  /** Stroke in progress: placed cells and tile data */
+  /** Stroke in progress: the pointer drawing it, the placed cells and their tile data */
   #stroke = null;
 
   get armed() {
@@ -54,21 +69,25 @@ export class StampTool {
       view.addEventListener("pointerdown", this.#onPointerDown, true);
       view.addEventListener("pointermove", this.#onPointerMove, true);
       window.addEventListener("pointerup", this.#onPointerUp, true);
+      window.addEventListener("pointercancel", this.#onPointerUp, true);
       document.addEventListener("keydown", this.#onKey, true);
       this.#listening = true;
-      // Tiles are what we make: their layer shows them (and Foundry's own tile tools stay at hand)
-      canvas.tiles?.activate();
+      // Tiles are what we make, so their layer shows them - and a drag on it is the stamp's alone while
+      // it is armed, not also Foundry's tile tool's (canvas-tool.mjs)
+      takeCanvas();
     }
     await this.#makeGhost();
     this.onChange();
   }
 
   disarm() {
-    if ( this.#listening ) {
+    const was = this.#listening;
+    if ( was ) {
       const view = canvas.app?.canvas ?? canvas.app?.view;
       view?.removeEventListener("pointerdown", this.#onPointerDown, true);
       view?.removeEventListener("pointermove", this.#onPointerMove, true);
       window.removeEventListener("pointerup", this.#onPointerUp, true);
+      window.removeEventListener("pointercancel", this.#onPointerUp, true);
       document.removeEventListener("keydown", this.#onKey, true);
       this.#listening = false;
     }
@@ -76,6 +95,8 @@ export class StampTool {
     this.#stroke = null;
     this.stamp.src = null;
     this.onChange();
+    // Last: handing the tool back comes round to disarmAll(), and by then there is nothing left to disarm
+    if ( was ) releaseCanvas();
   }
 
   /** Change size, rotation, flip ... and redraw the ghost. */
@@ -116,13 +137,16 @@ export class StampTool {
     if ( (event.button !== 0) || !this.armed ) return;
     // Clicks on the canvas only - not on a window or the HUD above it
     if ( event.target !== (canvas.app.canvas ?? canvas.app.view) ) return;
-    // Before Foundry's own canvas handlers on the same element: no selection box, no deselect
     event.stopImmediatePropagation();
     event.preventDefault();
     // preventDefault keeps the focus where it was - in a palette field, which would then take Ctrl+Z
     releaseFocus();
+    // Every move of *this* pointer and its release come to the canvas now, whatever the browser says
+    // about which buttons are down - a move that reported none used to end the stroke after one stamp
+    try { (canvas.app.canvas ?? canvas.app.view).setPointerCapture(event.pointerId); }
+    catch(err) { /* no capture to be had: the stroke still runs, it just ends with the release */ }
     const snap = this.#snaps(event);
-    this.#stroke = {snap, cells: [], last: null, tiles: []};
+    this.#stroke = {id: event.pointerId, snap, cells: [], last: null, tiles: []};
     this.#addAt(this.#point(event), snap);
   }
 
@@ -131,9 +155,8 @@ export class StampTool {
     const point = this.#point(event);
     const {origin} = this.#placeAt(point, this.#stroke?.snap ?? this.#snaps(event));
     if ( this.#ghost ) this.#position(this.#ghost, origin);
-    if ( !this.#stroke ) return;
-    // Without the left button down the stroke is over (a release that never arrived, another pointer)
-    if ( !(event.buttons & 1) ) return this.#pointerUp(event);
+    // Only the pointer that began the stroke grows it; a second one (a touch, a pen) is not part of it
+    if ( !this.#stroke || (event.pointerId !== this.#stroke.id) ) return;
     event.stopImmediatePropagation();
     event.preventDefault();
     this.#addAt(point, this.#stroke.snap);
@@ -171,18 +194,39 @@ export class StampTool {
     }
   }
 
+  /** The release of the pointer that placed the stroke - or its cancellation. */
   async #pointerUp(event) {
-    if ( !this.#stroke ) return;
+    if ( !this.#stroke || (event.pointerId !== this.#stroke.id) ) return;
     const stroke = this.#stroke;
     this.#stroke = null;
     event.stopImmediatePropagation();
     for ( const s of this.#pending.splice(0) ) s.destroy();
     if ( !stroke.tiles.length || !canvas.scene ) return;
+    const scene = canvas.scene;
+    const kind = this.stamp.kind;
     const defaults = tileDefaults();
-    // A blocking image: each tile brings its walls (the createTile hook, blocking.mjs)
-    if ( isBlocking(this.stamp.src) ) foundry.utils.setProperty(defaults, "flags.dewarim-map-painter.blocks", true);
-    await canvas.scene.createEmbeddedDocuments("Tile",
+    // What the tile is, so a later stroke can tell a stamped floor from a chest (slot-model.mjs)
+    const flags = {kind};
+    // Blocking: each tile brings its four walls (the createTile hook, blocking.mjs)
+    if ( blocksFor(kind, this.stamp.blocks) ) flags.blocks = true;
+    // A floor or a wall *is* its cells, so on a world filled with material it takes the material's place:
+    // the tile carries the hole it keeps open in the rock, and the rock's walls follow the new border. The
+    // flag stays with the tile, so the way closes again when the tile goes.
+    if ( takesSlot(kind) ) flags.opens = true;
+    foundry.utils.setProperty(defaults, `flags.${MODULE_ID}`, flags);
+    // ... and it sits in the slot's own sort band, over the material and under every prop. A prop keeps
+    // Foundry's own default, among the tiles the GM places by hand.
+    const sort = sortFor(kind);
+    if ( sort !== null ) defaults.sort = sort;
+    // The slot: the cells a floor or a wall takes are its alone, so the painter's own floors and walls
+    // there go - and they go *first*, which is also what puts the two entries in Foundry's tile history in
+    // the right order: Ctrl+Z takes these new tiles back, a second one brings the replaced ones again.
+    const replaced = takesSlot(kind)
+      ? replacedIn(scene, stroke.tiles.flatMap(t => tileCells(t, scene.grid.size))) : [];
+    if ( replaced.length ) await scene.deleteEmbeddedDocuments("Tile", replaced.map(t => t._id));
+    await scene.createEmbeddedDocuments("Tile",
       stroke.tiles.map(t => foundry.utils.mergeObject(foundry.utils.deepClone(defaults), t)));
+    announceReplaced(replaced.length);
     this.onChange();
   }
 

@@ -1,13 +1,24 @@
-// "Blocks view": images marked in the palette become walls. A stamped tile of such an image carries the flag
-// `blocks` and owns four walls along its outline (flag `tile`), kept in step by hooks - moved, resized,
-// turned, deleted and undone with the tile. Painted cells of a blocking texture get walls along the outline
-// of all blocking cells (flag `paint`), recomputed after each stroke; carved cells get walls along the edges
-// of the carved area when the rock blocks view (flag `carve`). Walls are Foundry's normal walls:
+// The walls the painter owns. Whether a stroke makes walls is a setting of the stroke - the *Wall* toggle
+// in the palette, kept per mode by the tools - and it is written into what the stroke leaves behind, so the
+// answer travels with the thing and not with the image's file path: a stamped tile carries the flag `blocks`
+// and owns four walls along its outline (flag `tile`), kept in step by hooks - moved, resized, turned,
+// deleted and undone with the tile; a painted texture entry carries `blocks` and its cells get walls along
+// the outline of all blocking cells (flag `paint`), recomputed after each stroke. One image can therefore be
+// a floor in one stroke and a wall in the next: that is two texture entries, and only the second one's cells
+// are walled. Carved cells get walls along the edges of the carved area when the rock blocks view (flag
+// `carve`). Walls are Foundry's normal walls:
 // they block sight, light, sound and movement. Their changes stay out of Foundry's wall history (isUndo):
 // they follow the tile or the paint, and are undone with it.
-import {carveOutline, readCarve} from "./carve-model.mjs";
-import {blockingOutline, diffWalls, readState} from "./paint-model.mjs";
-import {tileOutline} from "./stamp-model.mjs";
+//
+// A stamped tile can also count as carved (flag `opens`): the cells it covers join the rock's open cells,
+// so the rock's walls close around a way stamped through it and two neighbouring stamps have no wall
+// between them. The cells are open in every sense - the rock is cut out of the baked image there too
+// (paint-tool.mjs), so what is under the stamp is the painted floor or the scene's background, not rock.
+// They are not written into the scene's carve flag: the tiles are the record, which is why a stamp
+// deleted, moved or undone needs nothing but a rebuild.
+import {carveOutline, inRock, readCarve, sceneCells, withOpenings} from "./carve-model.mjs";
+import {blockingOutline, cellKey, diffWalls, readState} from "./paint-model.mjs";
+import {tileCells, tileOutline} from "./stamp-model.mjs";
 
 const MODULE_ID = "dewarim-map-painter";
 /** Options for wall changes: out of Foundry's wall history. A fresh object per call - Foundry writes the
@@ -21,19 +32,6 @@ function queued(task) {
   return chain;
 }
 
-/** Whether an image is marked as blocking view (world setting "blocking": a list of image paths). */
-export function isBlocking(src) {
-  return !!src && (game.settings.get(MODULE_ID, "blocking") ?? []).includes(src);
-}
-
-/** Mark or unmark an image. */
-export async function setBlocking(src, blocks) {
-  const list = new Set(game.settings.get(MODULE_ID, "blocking") ?? []);
-  if ( blocks ) list.add(src);
-  else list.delete(src);
-  await game.settings.set(MODULE_ID, "blocking", [...list]);
-}
-
 /* -------------------------------------------- */
 /*  Walls of a tile                             */
 /* -------------------------------------------- */
@@ -42,6 +40,12 @@ function wallData(c, flags, levels) {
   const data = {c, flags: {[MODULE_ID]: flags}};
   if ( levels?.size || levels?.length ) data.levels = [...levels];
   return data;
+}
+
+/** A tile's placement, as the pure geometry functions want it. */
+function placement(tile) {
+  return {x: tile.x, y: tile.y, width: tile.width, height: tile.height, rotation: tile.rotation,
+    texture: {anchorX: tile.texture.anchorX, anchorY: tile.texture.anchorY}};
 }
 
 /** The walls a blocking tile owns. */
@@ -59,8 +63,7 @@ async function rebuildTileWalls(tile) {
   const old = tileWalls(scene, tile.id).map(w => w.id);
   if ( old.length ) await scene.deleteEmbeddedDocuments("Wall", old, quiet());
   if ( !tile.getFlag(MODULE_ID, "blocks") ) return;
-  const walls = tileOutline({x: tile.x, y: tile.y, width: tile.width, height: tile.height, rotation: tile.rotation,
-    texture: {anchorX: tile.texture.anchorX, anchorY: tile.texture.anchorY}})
+  const walls = tileOutline(placement(tile))
     .filter(([x1, y1, x2, y2]) => (x1 !== x2) || (y1 !== y2))
     .map(c => wallData(c, {tile: tile.id}, tile.levels));
   await scene.createEmbeddedDocuments("Wall", walls, quiet());
@@ -74,26 +77,33 @@ export function removeTileWalls(scene, tileId) {
   });
 }
 
-/** Whether an update sets or removes the `blocks` flag. Both land at the same path: v14 writes a
+/** Whether an update sets or removes one of our flags. Both land at the same path: v14 writes a
  *  deletion as an operator object there ({__$OPERATOR$__: "ForcedDeletion"}), not as the `-=blocks`
  *  key older cores used - and this module needs v14 (module.json). */
-function touchesBlocks(changed) {
-  return foundry.utils.hasProperty(changed, `flags.${MODULE_ID}.blocks`);
+function touchesFlag(changed, flag) {
+  return foundry.utils.hasProperty(changed, `flags.${MODULE_ID}.${flag}`);
 }
 
+const touchesBlocks = changed => touchesFlag(changed, "blocks");
+
 /** Whether a tile's walls are the painter's business: it blocks view, or its flag was just set or
- *  removed (the walls it owned then have to go). Asked before anything else, because finding a tile's
- *  own walls filters every wall in the scene - a cost foreign tiles (most tile updates on a busy
- *  scene, from a mass edit or another module) must not pay. */
+ *  removed (the walls it owned then have to go). Asked before any work, because rebuilding a tile's
+ *  walls filters every wall in the scene - a cost foreign tiles (most tile updates on a busy scene,
+ *  from a mass edit or another module) must not pay. */
 export function ownsWalls(tile, changed) {
   return !!tile.getFlag(MODULE_ID, "blocks") || touchesBlocks(changed);
 }
 
-/** Fields of a tile whose change moves its walls. */
+/** Fields of a tile whose change moves its walls - or the hole it keeps open in the rock. */
 export function movesWalls(changed) {
   return ["x", "y", "width", "height", "rotation"].some(k => k in changed)
     || ("texture" in changed && ["anchorX", "anchorY"].some(k => k in (changed.texture ?? {})))
-    || touchesBlocks(changed);
+    || touchesBlocks(changed) || touchesFlag(changed, "opens");
+}
+
+/** Whether a tile opens the rock, or just stopped doing so (then the rock closes again). */
+export function opensRock(tile, changed) {
+  return !!tile.getFlag(MODULE_ID, "opens") || touchesFlag(changed, "opens");
 }
 
 /* -------------------------------------------- */
@@ -110,9 +120,32 @@ export function syncCarveWalls(scene, state) {
   return queued(() => rebuildCarveWalls(scene, state));
 }
 
+/**
+ * Cells the stamps have opened: every cell a tile with the `opens` flag covers, as far as the rock reaches.
+ * A stamp in the padding around the scene opens nothing - there is no rock out there to cut.
+ */
+function stampOpenings(scene) {
+  const range = sceneCells(scene.dimensions.sceneRect, scene.grid.size);
+  const keys = [];
+  for ( const tile of scene.tiles ) {
+    if ( !tile.getFlag(MODULE_ID, "opens") ) continue;
+    for ( const cell of tileCells(placement(tile), scene.grid.size) ) if ( inRock(range, cell) ) keys.push(cellKey(cell));
+  }
+  return keys;
+}
+
+/**
+ * The rock as the walls and the bake see it: the cells the brush carved, plus the cells the stamps have
+ * opened. State null (the rock layer is gone): null.
+ */
+export function openedCarve(scene, state) {
+  return state ? withOpenings(state, stampOpenings(scene)) : null;
+}
+
 async function rebuildCarveWalls(scene, state) {
   const existing = scene.walls.filter(w => w.getFlag(MODULE_ID, "carve")).map(w => ({id: w.id, c: w.c}));
-  const {create, remove} = diffWalls(existing, state ? carveOutline(state, scene.grid.size) : []);
+  const open = openedCarve(scene, state);
+  const {create, remove} = diffWalls(existing, open ? carveOutline(open, scene.grid.size) : []);
   if ( remove.length ) await scene.deleteEmbeddedDocuments("Wall", remove, quiet());
   if ( create.length ) await scene.createEmbeddedDocuments("Wall", create.map(c => wallData(c, {carve: true})), quiet());
 }

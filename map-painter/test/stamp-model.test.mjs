@@ -1,6 +1,6 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {cellAt, cellsBetween, centeredOrigin, freeForStamp, isImage, remember, resize, rotate, stampSize, tileData, tileOutline} from "../scripts/stamp-model.mjs";
+import {cellAt, cellsBetween, centeredOrigin, freeForStamp, isImage, redundantTiles, remember, resize, rotate, stampSize, tileCells, tileData, tileOutline} from "../scripts/stamp-model.mjs";
 
 test("isImage", () => {
   assert.ok(isImage("icons/environment/wilderness/tree-oak.webp"));
@@ -91,4 +91,53 @@ test("tileOutline: the rectangle, turned around the anchor", () => {
   const turned = tileOutline({x: 150, y: 50, width: 200, height: 100, rotation: 90});
   const xs = turned.flatMap(w => [w[0], w[2]]), ys = turned.flatMap(w => [w[1], w[3]]);
   assert.deepEqual([Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)], [100, 200, -50, 150]);
+});
+
+test("tileCells: the cells a stamp covers", () => {
+  const g = 100;
+  const at = (cells, origin, rotation = 0, aspect = 1) =>
+    tileCells(tileData({src: "a.webp", cells, rotation, flip: false, aspect}, origin, g), g);
+  assert.deepEqual(at(1, {x: 200, y: 300}), [{col: 2, row: 3}]);
+  assert.equal(at(3, {x: 0, y: 0}).length, 9);
+  assert.deepEqual(at(1, {x: 200, y: 300}, 90), [{col: 2, row: 3}], "a square stamp turned covers the same cell");
+  // Placed without the grid (Shift), half a cell off: it reaches into both columns - a cell center exactly
+  // on the stamp's edge counts as covered, so a stamp that does line up never leaves a sliver of rock.
+  assert.deepEqual(at(1, {x: 250, y: 300}), [{col: 2, row: 3}, {col: 3, row: 3}]);
+  // Turned by 45 the block is a diamond: the corner cells fall outside, cells beside it come in
+  const diamond = at(3, {x: 0, y: 0}, 45);
+  assert.equal(diamond.length, 13);
+  assert.ok(diamond.some(c => (c.col === -1) && (c.row === 1)));
+  assert.ok(!diamond.some(c => (c.col === -1) && (c.row === 0)));
+});
+
+test("redundantTiles: the same tile stamped twice, and what is not decidable", () => {
+  const tile = (id, over = {}) => ({id, x: 100, y: 100, width: 100, height: 100, rotation: 0, sort: 1,
+    elevation: 0, alpha: 1, hidden: false, texture: {src: "rock.webp", scaleX: 1, scaleY: 1, anchorX: 0.5,
+      anchorY: 0.5, tint: "#ffffff", fit: "fill"}, flags: {}, ...over});
+
+  // two strokes over one cell: the lower one cannot be seen and cannot be clicked
+  let out = redundantTiles([tile("a"), tile("b", {sort: 4})]);
+  assert.deepEqual(out, {remove: ["a"], overlapping: []});
+  assert.deepEqual(redundantTiles([tile("b", {sort: 4}), tile("a")]).remove, ["a"],
+    "the answer does not depend on the order they arrive in");
+
+  // one of them holds a hole in the rock: not interchangeable, so neither goes
+  assert.deepEqual(redundantTiles([tile("a", {flags: {"dewarim-map-painter": {opens: true}}}), tile("b", {sort: 4})]),
+    {remove: [], overlapping: [{id: "a", under: "b"}]}, "reported, not removed");
+
+  // a different image above may have transparent parts - that is what a prop is
+  out = redundantTiles([tile("a"), tile("b", {sort: 4, texture: {...tile("x").texture, src: "chest.webp"}})]);
+  assert.deepEqual(out, {remove: [], overlapping: [{id: "a", under: "b"}]});
+
+  // nothing above it, a different place, another elevation: all left alone
+  assert.deepEqual(redundantTiles([tile("a"), tile("b", {x: 500, sort: 4})]), {remove: [], overlapping: []});
+  assert.deepEqual(redundantTiles([tile("a"), tile("b", {sort: 4, elevation: 10})]), {remove: [], overlapping: []});
+  assert.deepEqual(redundantTiles([tile("a")]), {remove: [], overlapping: []});
+
+  // three of a kind leave one, and the survivor is not reported as hidden by the one it replaced
+  assert.deepEqual(redundantTiles([tile("a"), tile("b", {sort: 2}), tile("c", {sort: 3})]),
+    {remove: ["a", "b"], overlapping: []});
+
+  // hidden from the players is a difference a GM can see: it is not the same tile
+  assert.deepEqual(redundantTiles([tile("a", {hidden: true}), tile("b", {sort: 4})]).remove, []);
 });

@@ -107,6 +107,54 @@ export function freeForStamp(placed, cell, cells) {
   return placed.every(p => (Math.abs(p.col - cell.col) >= cells) || (Math.abs(p.row - cell.row) >= cells));
 }
 
+/**
+ * Tiles another tile makes pointless: the same place, the same image, the same look and the same flags,
+ * with one of them above the other. Whatever the image's transparency, the upper one draws exactly the
+ * pixels the lower one would, so the lower cannot be seen and cannot be clicked - it is a document whose
+ * only effect is to be in the way. Stamping the same cell in two strokes is how they appear.
+ *
+ * Flags are part of the identity on purpose: two tiles alike but for `opens` are *not* interchangeable -
+ * one of them holds a hole in the rock - so they are left alone rather than guessed about.
+ *
+ * Tiles that merely overlap, or sit under a *different* image, are not decidable from the documents: an
+ * image with transparent parts shows what is below it, which is exactly what a prop is for. Those are
+ * reported, never removed.
+ * @param {object[]} tiles  tile data with id, x, y, width, height, rotation, sort, elevation, texture, flags
+ * @param {string} [moduleId]  whose flags count towards identity
+ * @returns {{remove: string[], overlapping: {id: string, under: string}[]}}
+ */
+export function redundantTiles(tiles, moduleId = "dewarim-map-painter") {
+  const look = t => JSON.stringify([t.x, t.y, t.width, t.height, t.rotation ?? 0, t.elevation ?? 0,
+    t.alpha ?? 1, !!t.hidden, t.sort, t.texture?.src ?? null, t.texture?.scaleX ?? 1, t.texture?.scaleY ?? 1,
+    t.texture?.anchorX ?? 0.5, t.texture?.anchorY ?? 0.5, t.texture?.tint ?? null, t.texture?.fit ?? null,
+    [...(t.levels ?? [])].sort(), t.flags?.[moduleId] ?? null]);
+  const place = t => JSON.stringify([t.x, t.y, t.width, t.height, t.rotation ?? 0, t.elevation ?? 0]);
+  const groups = new Map();
+  for ( const t of tiles ) {
+    // `sort` is in the key with the rest of the look, so two tiles only count as the same thing when one
+    // is not above the other at all; `sort` differing is what tells us which of them is on top.
+    const key = look({...t, sort: 0});
+    if ( !groups.has(key) ) groups.set(key, []);
+    groups.get(key).push(t);
+  }
+  const remove = [];
+  for ( const list of groups.values() ) {
+    if ( list.length < 2 ) continue;
+    // Keep the top one: the highest sort, and among equals the last id, so the answer does not depend on
+    // the order the tiles arrived in.
+    const keep = list.reduce((a, b) => ((b.sort > a.sort) || ((b.sort === a.sort) && (b.id > a.id))) ? b : a);
+    for ( const t of list ) if ( t.id !== keep.id ) remove.push(t.id);
+  }
+  const gone = new Set(remove);
+  const overlapping = [];
+  for ( const t of tiles ) {
+    if ( gone.has(t.id) ) continue;
+    const above = tiles.find(o => (o.id !== t.id) && !gone.has(o.id) && (o.sort > t.sort) && (place(o) === place(t)));
+    if ( above ) overlapping.push({id: t.id, under: above.id});
+  }
+  return {remove, overlapping};
+}
+
 /** Stamp size steps: 1…10 cells. */
 export function resize(cells, delta) {
   return Math.min(10, Math.max(1, cells + delta));
@@ -123,18 +171,62 @@ export function remember(recent, src, max = 12) {
 }
 
 /**
- * The four walls around a tile: its rectangle, turned around its anchor by the tile's rotation.
+ * A tile's four corners, turned around its anchor by its rotation: clockwise from the image's top-left
+ * (a v14 tile's x/y is its texture anchor, not its corner).
  * @param {{x: number, y: number, width: number, height: number, rotation?: number,
  *   texture?: {anchorX?: number, anchorY?: number}}} tile
- * @returns {number[][]}  [x1, y1, x2, y2], integers
+ * @returns {number[][]}  [x, y], integers
  */
-export function tileOutline({x, y, width, height, rotation = 0, texture = {}}) {
+export function tileCorners({x, y, width, height, rotation = 0, texture = {}}) {
   const [ax, ay] = [(texture.anchorX ?? 0.5) * width, (texture.anchorY ?? 0.5) * height];
   const rad = (rotation * Math.PI) / 180;
   const [cos, sin] = [Math.cos(rad), Math.sin(rad)];
-  const corners = [[0, 0], [width, 0], [width, height], [0, height]].map(([cx, cy]) => [
+  return [[0, 0], [width, 0], [width, height], [0, height]].map(([cx, cy]) => [
     Math.round(x + (cos * (cx - ax)) - (sin * (cy - ay))),
     Math.round(y + (sin * (cx - ax)) + (cos * (cy - ay)))
   ]);
+}
+
+/**
+ * The four walls around a tile: its rectangle, turned around its anchor by the tile's rotation.
+ * @param {object} tile  as tileCorners takes it
+ * @returns {number[][]}  [x1, y1, x2, y2], integers
+ */
+export function tileOutline(tile) {
+  const corners = tileCorners(tile);
   return corners.map((p, i) => [...p, ...corners[(i + 1) % 4]]);
+}
+
+/**
+ * The grid cells a tile covers: every cell whose center lies under it. By the center, because that is the
+ * rule that makes neighbouring stamps meet - a cell belongs to the stamp over it, not to both. Rotation
+ * counts, so a turned stamp covers the cells it looks like it covers; a stamp narrower than its block
+ * (an image that is not square) covers only the cells it really reaches.
+ * @param {object} tile  as tileCorners takes it
+ * @param {number} gridSize
+ * @returns {{col: number, row: number}[]}
+ */
+export function tileCells(tile, gridSize) {
+  const corners = tileCorners(tile);
+  const xs = corners.map(p => p[0]), ys = corners.map(p => p[1]);
+  const cells = [];
+  for ( let row = Math.floor(Math.min(...ys) / gridSize); row <= (Math.ceil(Math.max(...ys) / gridSize) - 1); row++ ) {
+    for ( let col = Math.floor(Math.min(...xs) / gridSize); col <= (Math.ceil(Math.max(...xs) / gridSize) - 1); col++ ) {
+      if ( covers(corners, (col + 0.5) * gridSize, (row + 0.5) * gridSize) ) cells.push({col, row});
+    }
+  }
+  return cells;
+}
+
+/** Whether a point lies in the (convex) quadrilateral: on the same side of all four edges. */
+function covers(corners, px, py) {
+  let left = false, right = false;
+  for ( let i = 0; i < corners.length; i++ ) {
+    const [ax, ay] = corners[i];
+    const [bx, by] = corners[(i + 1) % corners.length];
+    const cross = ((bx - ax) * (py - ay)) - ((by - ay) * (px - ax));
+    if ( cross > 0 ) right = true;
+    else if ( cross < 0 ) left = true;
+  }
+  return !(left && right);
 }
