@@ -1,0 +1,58 @@
+<div class="studio-body portrait-gen">
+  {{#unless reachable}}
+  <p class="notification warning">{{localize "DEWARIM_STUDIO.ImageGen.Unreachable" url=url}}</p>
+  {{else}}
+
+  <div class="portrait-gen-head">
+    <img src="{{actor.img}}" alt="" class="nopopout">
+    <div>
+      <p class="actor-name">{{actor.name}}</p>
+      {{#if noFoundryFolder}}
+      <p class="notification warning">{{localize "DEWARIM_STUDIO.ImageGen.OutsideFolder" folder=folder}}</p>
+      {{/if}}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "DEWARIM_STUDIO.ImageGen.Prompt"}}</label>
+    <textarea name="prompt" rows="3">{{prompt}}</textarea>
+  </div>
+
+  <div class="form-group portrait-gen-knobs">
+    {{#if models.length}}
+    <select name="modelId">
+      {{#each models}}<option value="{{id}}">{{label}}</option>{{/each}}
+    </select>
+    {{/if}}
+    <label>{{localize "DEWARIM_STUDIO.ImageGen.Width"}}
+      <input type="number" name="width" value="{{sizes.width}}" min="{{sizes.min}}" max="{{sizes.max}}" step="{{sizes.step}}">
+    </label>
+    <label>{{localize "DEWARIM_STUDIO.ImageGen.Height"}}
+      <input type="number" name="height" value="{{sizes.height}}" min="{{sizes.min}}" max="{{sizes.max}}" step="{{sizes.step}}">
+    </label>
+    <label>{{localize "DEWARIM_STUDIO.ImageGen.Count"}}
+      <input type="number" name="count" value="{{sizes.count}}" min="1" max="4" step="1">
+    </label>
+    <button type="button" data-action="run" {{#if busy}}disabled{{/if}}>
+      <i class="fa-solid fa-wand-magic-sparkles"></i> {{localize "DEWARIM_STUDIO.ImageGen.Run"}}
+    </button>
+  </div>
+
+  {{#if note}}<p class="notification">{{note}}</p>{{/if}}
+
+  {{#if images.length}}
+  <p class="hint">{{localize "DEWARIM_STUDIO.ImageGen.PickHint"}}</p>
+  <div class="portrait-gen-results">
+    {{#each images}}
+    <a data-action="choose" data-staged-id="{{stagedId}}" title="{{localize "DEWARIM_STUDIO.ImageGen.Pick"}}">
+      <img src="{{url}}" alt="" class="nopopout">
+    </a>
+    {{/each}}
+  </div>
+  <label class="portrait-gen-token">
+    <input type="checkbox" name="asToken" checked> {{localize "DEWARIM_STUDIO.ImageGen.AsToken"}}
+  </label>
+  {{/if}}
+
+  {{/unless}}
+</div>

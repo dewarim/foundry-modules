@@ -7,6 +7,43 @@
     "Inactive": "{module} is not active in this world. Activate it under Manage Modules - the build writes into its compendium.",
     "Empty": "Nothing in this project yet. Right-click documents or folders in the sidebar (\"Add to project\"), or drag them into the project's folder.",
     "OpenPack": "Open compendium",
+    "ImageGen": {
+      "Title": "Generate a portrait",
+      "Create": "Generate a portrait",
+      "UrlName": "image-gen address",
+      "UrlHint": "The local image-gen (http://127.0.0.1:8090). It runs on this machine only, so a hosted server has none and the window says so.",
+      "Unreachable": "image-gen does not answer at {url}. Start it (mvnd spring-boot:run in ~/code/image-gen) and open this window again.",
+      "OutsideFolder": "The export folder {folder} is not inside a Foundry data directory, so a generated picture cannot be addressed by Foundry. Change it in image-gen's settings.",
+      "Prompt": "Prompt",
+      "Width": "Width",
+      "Height": "Height",
+      "Count": "Pictures",
+      "Run": "Generate",
+      "Working": "Generating…",
+      "Status": "image-gen: {status}",
+      "Saving": "Keeping and copying…",
+      "PickHint": "Click the one to use. The others are thrown away.",
+      "Pick": "Use this one",
+      "AsToken": "Use it as the token picture as well",
+      "Applied": "{name} has its new picture.",
+      "NoPrompt": "Say what to draw.",
+      "Timeout": "image-gen did not finish in five minutes - look at its own window.",
+      "OutsideFoundry": "The picture was written to {file}, which Foundry cannot address. Nothing was changed."
+    },
+    "NpcPage": {
+      "Create": "Journal page",
+      "AutoName": "A journal page for every new NPC",
+      "AutoHint": "When an actor is created in the active project, write its journal page straight away - the same page the <em>Journal page</em> button makes. Imported actors never get one.",
+      "JournalName": "NPCs",
+      "Created": "Page for {name} created in {journal}.",
+      "UseJournal": "Use for NPC pages",
+      "JournalSet": "{journal} takes new NPC pages now."
+    },
+    "Portrait": {
+      "NoUuid": "@Portrait needs a document, for example @Portrait[Actor.xxx]",
+      "Missing": "No document {uuid} - was it imported?",
+      "NoImage": "{name} has no picture"
+    },
     "Menu": {
       "Add": "Add to project",
       "AddFolder": "Add contents to project",

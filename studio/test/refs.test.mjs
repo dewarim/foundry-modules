@@ -61,3 +61,12 @@ test("findReferences: actors and items of encounter drafts on a scene", () => {
   assert.deepEqual(refs.world, ["Actor.aaaaaaaaaaaaaaaa"]);
   assert.deepEqual(refs.packs, ["dnd5e.items"]);
 });
+
+test("journal HTML: a @Portrait reference pulls its actor in like a link", () => {
+  const journal = {pages: [{text: {content:
+    `<p>@Portrait[Actor.${A}]{Marvin} stands behind the bar, @Portrait[Compendium.dewarim-x.actors.Actor.${B} token].</p>`}}]};
+  const {world, packs} = findReferences("JournalEntry", journal);
+  assert.deepEqual(world, [`Actor.${A}`]);
+  assert.deepEqual(packs, ["dewarim-x.actors"]);
+});
+

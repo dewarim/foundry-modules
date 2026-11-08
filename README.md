@@ -10,7 +10,7 @@ Foundry's *Install Module* dialog; Foundry then offers updates by itself.
 | [Dewarim: Item templates](items) | 0.1.0 | `https://raw.githubusercontent.com/dewarim/foundry-modules/main/items/module.json` |
 | [Dewarim: Map Painter](map-painter) | 0.5.0 | `https://raw.githubusercontent.com/dewarim/foundry-modules/main/map-painter/module.json` |
 | [Dewarim: Merchants](merchants) | 0.1.1 | `https://raw.githubusercontent.com/dewarim/foundry-modules/main/merchants/module.json` |
-| [Dewarim: Studio](studio) | 0.2.0 | `https://raw.githubusercontent.com/dewarim/foundry-modules/main/studio/module.json` |
+| [Dewarim: Studio](studio) | 0.3.0 | `https://raw.githubusercontent.com/dewarim/foundry-modules/main/studio/module.json` |
 | [Dewarim: Textures](textures) | 0.1.0 | `https://raw.githubusercontent.com/dewarim/foundry-modules/main/textures/module.json` |
 
 ## Research

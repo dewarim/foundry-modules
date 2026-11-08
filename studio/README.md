@@ -128,6 +128,64 @@ Item folder as the target of new templates: variants of a base item (strengths, 
 mundane items from rows, riders. Generated items are world items in that folder, so they belong to the
 project, a merchant can take them as stock, and the build puts them into the Adventure.
 
+## Portraits in journal text
+
+`@Portrait[Actor.xxx]{Marvin}` in any journal page shows that actor's picture. The picture is **read from
+the actor when the page is rendered**, not copied into the page: change the actor's portrait and every page
+that names it shows the new one, with nothing to keep in step and nothing that can fall out of it.
+
+- Clicking it opens it full size - that is Foundry's own image popout, which takes any image in a journal
+  sheet. The `{label}` becomes the popout's window title; without one it is the document's name.
+- `token` shows the prototype token's picture instead: `@Portrait[Actor.xxx token width=64]`.
+- `width=` / `height=` in pixels (200 wide by default), and `left`, `right` or `center` to float it in the
+  text.
+- A page whose actor is missing - imported without it, or deleted - says which UUID it cannot find instead
+  of leaving a hole.
+- The build's dependency walk reads the reference like any `@UUID` link, so a page that shows an actor
+  pulls that actor into the project, and document ids survive the Adventure, so the reference still
+  resolves in the playing world.
+
+Anything with a picture works, not only actors; an Item or a journal page is fine.
+
+### A page per actor
+
+*Journal page* in an actor sheet's header menu, or in the sidebar's context menu, writes that page for
+you: the portrait floated right, a link to the sheet, and - under dnd5e, for an NPC - the live statblock
+(`@Embed[... statblock]`, which dnd5e renders from the actor, so it follows the actor as the picture
+does). Then it is yours: **the page is seeded, not owned**, and nothing in the module ever rewrites it.
+
+- A second *Journal page* on the same actor opens the page from the first - by a flag, or, when an import
+  has stripped the flag, by the actor's UUID in the page text.
+- New pages go into a journal called *NPCs*: an existing journal of that name is used, otherwise one is
+  made in the active project's journal folder, so the build takes it along. **Use for NPC pages** in a
+  journal's context menu points new pages at that journal instead.
+- **A journal page for every new NPC** (module settings, off by default) writes the page as soon as an
+  actor is created **in the active project** - no window opens, so making five NPCs in a row stays quiet.
+  An actor added to the project afterwards is not covered: it was not a member when it was created, and
+  the button is one click.
+- An import never triggers it. It carries document ids with it, which is how the module recognises it,
+  and imported documents belong to no project in any case: the build strips the studio's flags on export,
+  the folder the Adventure brings included.
+
+## Portraits from image-gen
+
+*Generate a portrait* in an actor sheet's header menu, or in the sidebar's context menu, asks the local
+[image-gen](http://127.0.0.1:8090) for a picture of that actor and writes the one you choose into
+`img` - and into the prototype token's picture as well, if the box is ticked.
+
+- The prompt is written for you from the actor: its name, and whatever the system adapter knows (dnd5e:
+  size, creature kind, challenge rating). It is a text field, so change it before generating.
+- One to four pictures per run. They are shown as thumbnails; the one you click is kept in image-gen's
+  gallery, exported into Foundry's data folder and written into the actor. The rest are thrown away.
+- **Foundry drives, image-gen answers.** The other direction cannot work: a world's actors live in a
+  LevelDB the running world holds a lock on.
+- image-gen runs on *this* machine only - it holds an API key and wants a GPU. On a hosted server the
+  window says it cannot be reached and offers nothing; the address is a setting
+  (`http://127.0.0.1:8090` by default). Generation therefore belongs to authoring: the finished pictures
+  travel into the module's `assets/` and the built Adventure like everything else.
+- image-gen's export folder has to be inside Foundry's `Data/`, or the picture cannot be addressed by
+  Foundry; the window says so before you generate anything.
+
 ## Scene contents
 
 *Studio* → *Scene contents*, or right-click a scene in the sidebar: everything placed on one scene as

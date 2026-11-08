@@ -16,7 +16,25 @@ function crLabel(cr) {
   return `CR ${fractions[cr] ?? cr}`;
 }
 
-export function register({registerPreset, registerEncounterSupport, registerSourceSupport, registerDropRule}) {
+export function register({registerPreset, registerEncounterSupport, registerSourceSupport, registerDropRule,
+  registerNpcPageExtra, registerActorTraits}) {
+  // A new journal page for an NPC gets the live statblock under its portrait. dnd5e renders it from the
+  // actor (NPCData#toEmbed), so it follows the actor like the picture does; characters have no statblock
+  // embed, and a vehicle's would be empty.
+  registerNpcPageExtra(actor => (actor?.type === "npc") ? [`@Embed[${actor.uuid} statblock]`] : []);
+
+  // What a picture model can use: the size, the creature type and how dangerous it is. CONFIG.DND5E holds
+  // the labels; a creature type may be a custom string, and then it is the string.
+  registerActorTraits(actor => {
+    const details = actor?.system?.details;
+    if ( !details ) return [];
+    const type = details.type?.value;
+    const kind = (type === "custom") ? details.type?.custom : (DND5E().creatureTypes?.[type]?.label ?? type);
+    const size = DND5E().actorSizes?.[actor.system.traits?.size]?.label;
+    const cr = (actor.type === "npc") ? crLabel(details.cr) : null;
+    return [[size, kind].filter(Boolean).join(" "), cr].filter(Boolean);
+  });
+
   // Actor -> group or encounter actor: a member. A group takes world actors (a compendium actor is
   // copied in first), an encounter takes NPCs and counts repeats up.
   registerDropRule("Actor", "Actor", {

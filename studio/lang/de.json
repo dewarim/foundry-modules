@@ -7,6 +7,43 @@
     "Inactive": "{module} ist in dieser Welt nicht aktiv. Unter Module verwalten aktivieren - der Build schreibt in sein Kompendium.",
     "Empty": "Noch nichts in diesem Projekt. Dokumente oder Ordner in der Seitenleiste rechtsklicken (\"Zum Projekt hinzufügen\") oder in den Projektordner ziehen.",
     "OpenPack": "Kompendium öffnen",
+    "ImageGen": {
+      "Title": "Porträt erzeugen",
+      "Create": "Porträt erzeugen",
+      "UrlName": "Adresse von image-gen",
+      "UrlHint": "Das lokale image-gen (http://127.0.0.1:8090). Es läuft nur auf diesem Rechner, ein gehosteter Server hat keines - das Fenster sagt es dann.",
+      "Unreachable": "image-gen antwortet nicht unter {url}. Starten (mvnd spring-boot:run in ~/code/image-gen) und dieses Fenster neu öffnen.",
+      "OutsideFolder": "Der Export-Ordner {folder} liegt nicht in einem Foundry-Datenverzeichnis; ein erzeugtes Bild kann Foundry dann nicht ansprechen. In den Einstellungen von image-gen ändern.",
+      "Prompt": "Beschreibung",
+      "Width": "Breite",
+      "Height": "Höhe",
+      "Count": "Bilder",
+      "Run": "Erzeugen",
+      "Working": "Wird erzeugt…",
+      "Status": "image-gen: {status}",
+      "Saving": "Wird übernommen…",
+      "PickHint": "Das gewünschte anklicken. Die anderen werden verworfen.",
+      "Pick": "Dieses nehmen",
+      "AsToken": "Auch als Token-Bild verwenden",
+      "Applied": "{name} hat sein neues Bild.",
+      "NoPrompt": "Sagen, was gezeichnet werden soll.",
+      "Timeout": "image-gen war nach fünf Minuten nicht fertig - im eigenen Fenster nachsehen.",
+      "OutsideFoundry": "Das Bild wurde nach {file} geschrieben, das Foundry nicht ansprechen kann. Es wurde nichts geändert."
+    },
+    "NpcPage": {
+      "Create": "Journalseite",
+      "AutoName": "Journalseite für jeden neuen NSC",
+      "AutoHint": "Wird ein Akteur im aktiven Projekt angelegt, gleich seine Journalseite schreiben - dieselbe, die der Knopf <em>Journalseite</em> anlegt. Importierte Akteure bekommen nie eine.",
+      "JournalName": "NSCs",
+      "Created": "Seite für {name} in {journal} angelegt.",
+      "UseJournal": "Für NSC-Seiten verwenden",
+      "JournalSet": "{journal} nimmt jetzt neue NSC-Seiten auf."
+    },
+    "Portrait": {
+      "NoUuid": "@Portrait braucht ein Dokument, zum Beispiel @Portrait[Actor.xxx]",
+      "Missing": "Kein Dokument {uuid} - wurde es importiert?",
+      "NoImage": "{name} hat kein Bild"
+    },
     "Menu": {
       "Add": "Zum Projekt hinzufügen",
       "AddFolder": "Inhalt zum Projekt hinzufügen",
