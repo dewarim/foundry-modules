@@ -22,7 +22,8 @@ export class EncounterApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this.#sources = new SourcePanel(this, {
       types: ["Actor", "Item"],
       onAdd: async uuid => this.#add(await fromUuid(uuid)),
-      addHint: "DEWARIM_STUDIO.Encounter.AddFromSource"
+      addHint: "DEWARIM_STUDIO.Encounter.AddFromSource",
+      key: "encounter"
     });
   }
 

@@ -8,8 +8,9 @@
     "Empty": "Nothing in this project yet. Right-click documents or folders in the sidebar (\"Add to project\"), or drag them into the project's folder.",
     "OpenPack": "Open compendium",
     "ImageGen": {
-      "Title": "Generate a portrait",
+      "Title": "Generate a picture",
       "Create": "Generate a portrait",
+      "CellHint": "Generate a picture for this cell - needs image-gen running at {url}, with ComfyUI or Mistral behind it",
       "UrlName": "image-gen address",
       "UrlHint": "The local image-gen (http://127.0.0.1:8090). It runs on this machine only, so a hosted server has none and the window says so.",
       "Unreachable": "image-gen does not answer at {url}. Start it (mvnd spring-boot:run in ~/code/image-gen) and open this window again.",

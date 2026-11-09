@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.3.1 (2026-11-09)
+
+- The source panel of a table or the encounter editor opens where it was left: the document type, the
+  scope (project, world, everything, a compendium) and the subtype are remembered per window and per
+  browser. The filter field starts empty, so a condition typed yesterday never hides the list today.
+
+- A spell in a source list carries its level - *Cantrip*, *3rd Level* - where other items show their
+  rarity. Two spells of the same school were told apart by their name alone until now.
+
+- A wand in a table's image cell generates the picture for that row with image-gen, next to the file
+  browser that was already there. The path lands in the cell as a pending edit, so it is saved with
+  everything else, and the window offers only that one picture - the token box belongs to the actor
+  sheet's *Generate a portrait*, which writes both.
+
+- The buttons on the right of a table's toolbar and footer - *New*, *Revert*, *Save*, the column
+  field - move to a line of their own when the window is too narrow for both groups, instead of being
+  pushed off the edge where they could not be reached.
+
 ## 0.3.0 (2026-11-08)
 
 - **A portrait from the local image generator.** *Generate a portrait* on an actor (sheet header or

@@ -141,6 +141,14 @@ Hooks.once("init", () => {
     type: Object,
     default: {}
   });
+  // What each source panel was last showing, by panel name ("encounter", "table:Actor"): the type, the
+  // scope and the subtype, so a window opens where it was left. The filter text is not kept.
+  game.settings.register(MODULE_ID, "sourcePanels", {
+    scope: "client",
+    config: false,
+    type: Object,
+    default: {}
+  });
   // `@Portrait[Actor.xxx]` in any text: the picture is read from the document, never copied
   registerPortraitEnricher();
   // System adapters: column presets for the tables

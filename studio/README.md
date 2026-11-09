@@ -169,9 +169,16 @@ does). Then it is yours: **the page is seeded, not owned**, and nothing in the m
 
 ## Portraits from image-gen
 
-*Generate a portrait* in an actor sheet's header menu, or in the sidebar's context menu, asks the local
-[image-gen](http://127.0.0.1:8090) for a picture of that actor and writes the one you choose into
-`img` - and into the prototype token's picture as well, if the box is ticked.
+**Needs a second program.** Everything in this section talks to **image-gen**
+(`~/code/image-gen`, `http://127.0.0.1:8090` by default, the address is a setting), which in turn needs
+**ComfyUI** with its model files, or a Mistral API key, to make a picture at all. Without it nothing here
+breaks: the window says image-gen cannot be reached and offers nothing, and the wand in a table cell says
+in its tooltip what it needs and where it is looking.
+
+*Generate a portrait* in an actor sheet's header menu, or in the sidebar's context menu, asks image-gen
+for a picture of that actor and writes the one you choose into `img` - and into the prototype token's
+picture as well, if the box is ticked. The wand in a table's image cell does the same for one cell; there
+the path lands as a pending edit, saved with the rest.
 
 - The prompt is written for you from the actor: its name, and whatever the system adapter knows (dnd5e:
   size, creature kind, challenge rating). It is a text field, so change it before generating.

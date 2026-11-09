@@ -15,8 +15,16 @@
 /* Tables */
 .dewarim-studio-table .window-content { padding: 0.5rem; }
 .dewarim-studio-table .table-body { display: flex; flex-direction: column; gap: 0.5rem; height: 100%; }
+/* Two groups, and the second one drops below the first when the window is too narrow for both: the
+   buttons on the right - Save among them - used to be clipped off the edge instead. */
 .dewarim-studio-table .table-toolbar,
-.dewarim-studio-table .table-footer { display: flex; gap: 0.5rem; align-items: center; flex: none; }
+.dewarim-studio-table .table-footer { display: flex; gap: 0.5rem; align-items: center; flex: none;
+  flex-wrap: wrap; row-gap: 0.4rem; }
+.dewarim-studio-table .bar-group { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
+  row-gap: 0.4rem; min-width: 0; }
+.dewarim-studio-table .bar-group.right { margin-left: auto; }
+.dewarim-studio-table .image-cell a[data-action=generateImage] { opacity: 0.55; padding: 0 0.15rem; }
+.dewarim-studio-table .image-cell a[data-action=generateImage]:hover { opacity: 1; text-shadow: 0 0 6px var(--color-warm-2, #ff6400); }
 .dewarim-studio-table .table-toolbar select,
 .dewarim-studio-table .table-footer select { width: auto; max-width: 14rem; }
 .dewarim-studio-table .table-toolbar input[type=search] { width: 12rem; }

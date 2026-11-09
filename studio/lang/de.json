@@ -8,8 +8,9 @@
     "Empty": "Noch nichts in diesem Projekt. Dokumente oder Ordner in der Seitenleiste rechtsklicken (\"Zum Projekt hinzufügen\") oder in den Projektordner ziehen.",
     "OpenPack": "Kompendium öffnen",
     "ImageGen": {
-      "Title": "Porträt erzeugen",
+      "Title": "Bild erzeugen",
       "Create": "Porträt erzeugen",
+      "CellHint": "Ein Bild für diese Zelle erzeugen - braucht image-gen unter {url}, dahinter ComfyUI oder Mistral",
       "UrlName": "Adresse von image-gen",
       "UrlHint": "Das lokale image-gen (http://127.0.0.1:8090). Es läuft nur auf diesem Rechner, ein gehosteter Server hat keines - das Fenster sagt es dann.",
       "Unreachable": "image-gen antwortet nicht unter {url}. Starten (mvnd spring-boot:run in ~/code/image-gen) und dieses Fenster neu öffnen.",

@@ -23,12 +23,20 @@ export class PortraitGenApp extends HandlebarsApplicationMixin(ApplicationV2) {
     main: {template: `modules/${MODULE_ID}/templates/portrait-gen.hbs`, scrollable: [""]}
   };
 
-  /** @param {Actor} actor */
-  constructor(actor, options = {}) {
+  /**
+   * @param {ClientDocument} doc            what the picture is for: its name and traits make the prompt
+   * @param {object} [options]
+   * @param {(path: string) => void} [options.onPicked]  given the path instead of writing the document -
+   *   how a table cell takes it, where an edit stays pending until Save
+   */
+  constructor(doc, {onPicked = null, ...options} = {}) {
     super(options);
-    this.actor = actor;
-    this.#prompt = npcPrompt({name: actor.name, traits: actorTraits(actor)});
+    this.actor = doc;
+    this.#onPicked = onPicked;
+    this.#prompt = npcPrompt({name: doc.name, traits: actorTraits(doc)});
   }
+
+  #onPicked = null;
 
   #prompt = "";
   #knobs = {...DEFAULT_SIZE, count: 2};
@@ -43,6 +51,8 @@ export class PortraitGenApp extends HandlebarsApplicationMixin(ApplicationV2) {
     if ( this.#service === undefined ) this.#service = await status();
     return {
       actor: {name: this.actor.name, img: this.actor.img},
+      // One cell takes one path, so the window does not offer to write the token picture as well
+      singlePath: !!this.#onPicked,
       reachable: !!this.#service,
       url: game.settings.get(MODULE_ID, "imageGenUrl"),
       models: this.#service?.models ?? [],
@@ -114,6 +124,10 @@ export class PortraitGenApp extends HandlebarsApplicationMixin(ApplicationV2) {
       const exported = await exportToFoundry(kept.imageId, "npcs");
       const {path, problem} = picturePath(exported);
       if ( !path ) throw new Error(game.i18n.format("DEWARIM_STUDIO.ImageGen.OutsideFoundry", {file: problem}));
+      if ( this.#onPicked ) {
+        this.#onPicked(path);
+        return this.close();
+      }
       const update = {img: path};
       if ( asToken ) update["prototypeToken.texture.src"] = path;
       await this.actor.update(update);

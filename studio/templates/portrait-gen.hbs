@@ -49,9 +49,11 @@
     </a>
     {{/each}}
   </div>
+  {{#unless singlePath}}
   <label class="portrait-gen-token">
     <input type="checkbox" name="asToken" checked> {{localize "DEWARIM_STUDIO.ImageGen.AsToken"}}
   </label>
+  {{/unless}}
   {{/if}}
 
   {{/unless}}

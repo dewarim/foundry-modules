@@ -34,7 +34,8 @@ export class TableApp extends HandlebarsApplicationMixin(ApplicationV2) {
         await this.#addSource(await fromUuid(uuid));
         this.render();
       },
-      addHint: "DEWARIM_STUDIO.Table.AddFromSource"
+      addHint: "DEWARIM_STUDIO.Table.AddFromSource",
+      key: `table:${this.documentName}`
     });
   }
 
@@ -53,6 +54,7 @@ export class TableApp extends HandlebarsApplicationMixin(ApplicationV2) {
       removeColumn: TableApp.#onRemoveColumn,
       openSheet: TableApp.#onOpenSheet,
       pickImage: TableApp.#onPickImage,
+      generateImage: TableApp.#onGenerateImage,
       selectAll: TableApp.#onSelectAll,
       copyRows: TableApp.#onCopy,
       pasteRows: TableApp.#onPaste,
@@ -137,6 +139,8 @@ export class TableApp extends HandlebarsApplicationMixin(ApplicationV2) {
       filter: this.#filter,
       filterTooltip: filterTooltip(this.documentName),
       filterHint: filterHint(this.documentName, filterPredicate(this.documentName, this.#filter).unknown),
+      // Named in the wand's tooltip: the generator is a separate program on this machine
+      imageGenUrl: game.settings.get(MODULE_ID, "imageGenUrl"),
       showSources: this.#showSources,
       source: this.#showSources ? await this.#sources.context() : null,
       headers,
@@ -414,6 +418,21 @@ export class TableApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }
     });
     picker.render(true);
+  }
+
+  /**
+   * A picture for this row, generated on this machine. The path lands in the cell as a pending edit, like
+   * one picked from the file browser - the table saves on Save, and nothing else here writes documents.
+   */
+  static async #onGenerateImage(event, target) {
+    const input = target.closest("td").querySelector("input");
+    const doc = this.collection.get(target.closest("tr").dataset.id);
+    if ( !doc ) return;
+    const {PortraitGenApp} = await import("./portrait-gen-app.mjs");
+    new PortraitGenApp(doc, {onPicked: path => {
+      input.value = path;
+      input.dispatchEvent(new Event("change", {bubbles: true}));
+    }}).render({force: true});
   }
 
   static #onSelectAll(event, target) {

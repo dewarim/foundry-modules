@@ -9,6 +9,13 @@ import {partyBudget, partyLevel, rate} from "./dnd5e-rating.mjs";
 const DND5E = () => CONFIG.DND5E;
 const PHYSICAL = ["weapon", "equipment", "consumable", "tool", "loot", "container"];
 
+/** "Cantrip", "3rd Level": dnd5e's own labels, so the badge reads like the system's sheets. */
+function spellLevelLabel(entry) {
+  const level = foundry.utils.getProperty(entry, "system.level");
+  if ( (level === null) || (level === undefined) || (level === "") ) return "";
+  return DND5E().spellLevels?.[level] ?? `${_loc("DND5E.AbbreviationLevel")} ${level}`;
+}
+
 /** "1/4" for 0.25: challenge ratings are written as fractions. */
 function crLabel(cr) {
   if ( (cr === null) || (cr === undefined) || (cr === "") ) return "";
@@ -69,7 +76,7 @@ export function register({registerPreset, registerEncounterSupport, registerSour
   registerSourceSupport({
     // Compendium indexes read the stored data, which in dnd5e 6.0.6's own packs still has the old
     // `system.rarity` string - only migrated documents have the `system.rarities` set
-    indexFields: {Actor: ["system.details.cr"], Item: ["system.rarities", "system.rarity"]},
+    indexFields: {Actor: ["system.details.cr"], Item: ["system.rarities", "system.rarity", "system.level"]},
     // Condition keys for filter fields ("cr<=2", "rarity=rare", "level>=3"); `get` for values whose
     // stored shape differs between the system's packs and migrated documents
     filterFields: {
@@ -88,6 +95,8 @@ export function register({registerPreset, registerEncounterSupport, registerSour
     badge(entry, documentName) {
       if ( documentName === "Actor" ) return crLabel(foundry.utils.getProperty(entry, "system.details.cr"));
       if ( documentName === "Item" ) {
+        // A spell has no rarity but a level - and that is what tells two spells apart in a list
+        if ( entry.type === "spell" ) return spellLevelLabel(entry);
         const first = rarityOf(entry)[0];
         return first ? (CONFIG.DND5E.itemRarity[first] ?? first) : "";
       }
