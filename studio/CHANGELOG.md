@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 (2026-11-09)
+
+- **Give items to the actors you ticked.** *Give items* in an actor table opens a picker with every item
+  the studio can see - the project's, the world's, every compendium - and + hands the chosen one to all
+  ticked actors at once, as many as you ask for. What an actor already owns stacks instead of becoming a
+  second row of the same thing. The window stays open for the next item, and each + is its own *Undo*
+  step in the table's footer. Until now this was the one thing a table still sent you to the system's
+  own actor sheet for, one actor at a time.
+
 ## 0.3.1 (2026-11-09)
 
 - The source panel of a table or the encounter editor opens where it was left: the document type, the

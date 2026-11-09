@@ -228,6 +228,20 @@
         "Gone": "Diese Gruppe gibt es nicht mehr."
       }
     },
+    "Give": {
+      "Title": "Gegenstände geben",
+      "Button": "Gegenstände geben",
+      "Hint": "Einen Gegenstand wählen und + drücken: jeder ausgewählte Akteur bekommt ihn. Was ein Akteur schon hat, wird zusammengezählt.",
+      "Targets": "{count} Akteur(e):",
+      "AndMore": "und {count} weitere",
+      "Quantity": "Wie viele",
+      "AddHint": "Diesen Gegenstand den ausgewählten Akteuren geben",
+      "NoneSelected": "Erst die Akteure ankreuzen, die etwas bekommen sollen.",
+      "ItemGone": "Diesen Gegenstand gibt es nicht mehr.",
+      "ActorsGone": "Keiner dieser Akteure existiert noch.",
+      "Done": "{item} ({quantity}) an {count} Akteur(e) gegeben.",
+      "UndoLabel": "{item} an {count} geben"
+    },
     "Scene": {
       "Title": "Szeneninhalt",
       "Open": "Szeneninhalt",

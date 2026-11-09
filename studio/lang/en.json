@@ -228,6 +228,20 @@
         "Gone": "That party does not exist any more."
       }
     },
+    "Give": {
+      "Title": "Give items",
+      "Button": "Give items",
+      "Hint": "Pick an item and press + : every selected actor gets it. What an actor already has stacks.",
+      "Targets": "{count} actor(s):",
+      "AndMore": "and {count} more",
+      "Quantity": "How many",
+      "AddHint": "Give this item to the selected actors",
+      "NoneSelected": "Tick the actors that should get something first.",
+      "ItemGone": "That item is gone.",
+      "ActorsGone": "None of those actors exists any more.",
+      "Done": "{item} ({quantity}) given to {count} actor(s).",
+      "UndoLabel": "giving {item} to {count}"
+    },
     "Scene": {
       "Title": "Scene contents",
       "Open": "Scene contents",

@@ -1,0 +1,12 @@
+<div class="studio-body give-items">
+  <p class="give-targets">
+    <i class="fa-solid fa-users" inert></i>
+    {{localize "DEWARIM_STUDIO.Give.Targets" count=count}}
+    <span class="names">{{names}}{{#if more}} {{localize "DEWARIM_STUDIO.Give.AndMore" count=more}}{{/if}}</span>
+  </p>
+  <label class="give-quantity">{{localize "DEWARIM_STUDIO.Give.Quantity"}}
+    <input type="number" name="quantity" value="{{quantity}}" min="1" step="1">
+  </label>
+  <p class="hint">{{localize "DEWARIM_STUDIO.Give.Hint"}}</p>
+  {{> "modules/dewarim-studio/templates/source-panel.hbs" source}}
+</div>

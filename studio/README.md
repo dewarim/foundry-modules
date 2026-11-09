@@ -45,6 +45,12 @@ document type.
 - **Set for selected**: tick rows, pick a column, enter a value - it becomes a pending edit on each row.
 - **New**, **Duplicate**, **Delete** (with confirmation) work on the selection. New and dropped documents
   join the project when the table shows the project.
+- **Give items** (actor tables): tick actors, press *Give items*, and a window offers every item - the
+  project's own, the world's, every compendium - with the same search and conditions as any source panel.
+  Press + and each ticked actor gets it, as many as *How many* says. What an actor already has stacks by
+  name and type rather than becoming a second row, so a cult fanatic who owns a dagger ends up with two
+  daggers, not two entries. The window stays open for the next item and keeps the actors it was opened
+  for, and every + is its own *Undo* step.
 - **Drop** a document from a compendium onto the table to copy it into the world (its compendium source
   is kept), or from the sidebar to pull it into the project.
 - **Spreadsheet**: *copy* puts the selected rows (or all shown) on the clipboard as tab-separated text with

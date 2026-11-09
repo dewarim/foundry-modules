@@ -100,6 +100,7 @@
     </select>
     <input type="text" name="bulkValue" placeholder="{{localize 'DEWARIM_STUDIO.Table.BulkValue'}}">
     <button type="button" data-action="bulk">{{localize "DEWARIM_STUDIO.Table.Bulk"}}</button>
+    {{#if canGive}}<button type="button" data-action="give" data-tooltip="{{localize 'DEWARIM_STUDIO.Give.Hint'}}"><i class="fa-solid fa-hand-holding-heart" inert></i> {{localize "DEWARIM_STUDIO.Give.Button"}}</button>{{/if}}
     <button type="button" data-action="duplicate"><i class="fa-solid fa-copy" inert></i> {{localize "DEWARIM_STUDIO.Table.Duplicate"}}</button>
     <button type="button" data-action="delete"><i class="fa-solid fa-trash" inert></i> {{localize "DEWARIM_STUDIO.Table.Delete"}}</button>
     </div>

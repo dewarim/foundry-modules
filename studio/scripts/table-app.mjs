@@ -3,6 +3,8 @@
 // never loses typing. Drop a document from a compendium to copy it into the world, or from the sidebar
 // to pull it into the project. The source panel (toolbar button) offers the same from every compendium.
 import {columnWriters, readValue, presetsFor, resolveColumn} from "./columns.mjs";
+import {giveToActors} from "./encounter.mjs";
+import {GiveItemsApp} from "./give-items-app.mjs";
 import {MODULE_ID, activeProject, assign, members} from "./project.mjs";
 import {SOURCE_PANEL_TEMPLATE, SourcePanel} from "./source-panel.mjs";
 import {filterHint, filterPredicate, filterTooltip} from "./sources.mjs";
@@ -50,6 +52,7 @@ export class TableApp extends HandlebarsApplicationMixin(ApplicationV2) {
       duplicate: TableApp.#onDuplicate,
       delete: TableApp.#onDelete,
       bulk: TableApp.#onBulk,
+      give: TableApp.#onGive,
       addColumn: TableApp.#onAddColumn,
       removeColumn: TableApp.#onRemoveColumn,
       openSheet: TableApp.#onOpenSheet,
@@ -150,6 +153,8 @@ export class TableApp extends HandlebarsApplicationMixin(ApplicationV2) {
       undoLabel: this.#undo.length ? _loc("DEWARIM_STUDIO.Commander.UndoLast", {action: this.#undo.at(-1).label}) : null,
       invalid: this.#invalid.size,
       selectedCount: this.#selected.size,
+      // Items live on actors; no other document type has an inventory to give to
+      canGive: this.documentName === "Actor",
       allSelected: rows.length && rows.every(r => r.selected),
       bulkColumns: headers.filter(h => h.editable).map(h => ({...h, selected: h.path === this.#bulkColumn}))
     };
@@ -386,6 +391,24 @@ export class TableApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     ui.notifications.info(_loc("DEWARIM_STUDIO.Table.BulkApplied", {count: applied}));
     this.render();
+  }
+
+  /**
+   * Give an item to the selected actors. The picker stays open and hands items back one at a time; each
+   * give is its own undo step, because the GM may want the potions back and the sword kept.
+   */
+  static #onGive() {
+    const actors = this.#selectedDocuments();
+    if ( !actors.length ) return ui.notifications.warn("DEWARIM_STUDIO.Give.NoneSelected", {localize: true});
+    new GiveItemsApp(actors, {
+      onGive: async (item, quantity, targets) => {
+        const label = _loc("DEWARIM_STUDIO.Give.UndoLabel", {item: item.name, count: targets.length});
+        await this.#record(label, () => giveToActors(targets, item, quantity));
+        ui.notifications.info(_loc("DEWARIM_STUDIO.Give.Done",
+          {item: item.name, quantity, count: targets.length}));
+        this.render();
+      }
+    }).render({force: true});
   }
 
   static async #onAddColumn() {

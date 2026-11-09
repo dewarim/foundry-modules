@@ -262,3 +262,12 @@ textarea.dewarim-studio-tsv { width: 100%; min-height: 14rem; font-family: monos
 .dewarim-studio-portrait-gen .portrait-gen-results a:hover img { border-color: var(--color-warm-2, #ff6400); }
 .dewarim-studio-portrait-gen .portrait-gen-token { display: block; margin-bottom: 0.4rem; }
 
+
+/* Give items: here the source panel is the whole window, not a column beside something else */
+.dewarim-studio-give-items .studio-body { height: 100%; min-height: 0; }
+.dewarim-studio-give-items .source-panel { width: auto; flex: 1; border-left: none; padding-left: 0; }
+.dewarim-studio-give-items .give-targets { margin: 0; }
+.dewarim-studio-give-items .give-targets .names { display: block; font-size: 0.85rem; opacity: 0.8; }
+.dewarim-studio-give-items .give-quantity { display: flex; gap: 0.4rem; align-items: center; }
+.dewarim-studio-give-items .give-quantity input { width: 5rem; }
+.dewarim-studio-give-items .hint { margin: 0; font-size: 0.8rem; opacity: 0.75; }

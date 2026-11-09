@@ -103,6 +103,24 @@ export async function addToActor(actor, items) {
   if ( plan.create.length ) await actor.createEmbeddedDocuments("Item", plan.create.map(i => items[i]));
 }
 
+/**
+ * Give one item to several actors at once, stacking what an actor already has (`addToActor`). Each actor
+ * gets its own copy of the data: `itemData` hands out a fresh `_id`, and two actors sharing one would be
+ * the same embedded document in two places.
+ * @param {Actor[]} actors
+ * @param {Item} source          a world or compendium item
+ * @param {number} [quantity]
+ * @returns {Promise<Actor[]>}   the actors that got it
+ */
+export async function giveToActors(actors, source, quantity = 1) {
+  const given = [];
+  for ( const actor of actors ) {
+    await addToActor(actor, [itemData(source, quantity)]);
+    given.push(actor);
+  }
+  return given;
+}
+
 /** Give items to an actor (a world actor, or a token's synthetic actor - then they land in its delta). */
 export async function giveItems(actor, items) {
   return actor.createEmbeddedDocuments("Item", items.map(i => itemData(i.source, i.quantity)));
